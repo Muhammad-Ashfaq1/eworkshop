@@ -55,6 +55,9 @@
                                         <div>
                                             <label for="partName" class="form-label">Part Name</label>
                                             <input type="text" class="form-control" id="partName" name="name" placeholder="Enter partname">
+                                            @error('partName')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -118,12 +121,6 @@
                             timer: 1500,
                             showConfirmButton: false
                         });
-                        $('#js-add-location-submit').text('Add');
-                        $('#js-model-title').text('Add Location');
-                        $('#js-location-id').val('');
-
-                        // Reset validation
-                        $('#js-add-location-form').validate().resetForm();
 
                     }
                     else
@@ -133,9 +130,48 @@
                     }
                 }
             });
+             });
 
-
+        //delete vehicle part
+         $(document).on('click', '#vehicle-part-delete-btn', function(e)
+    {
+        e.preventDefault();
+        var deleteUrl = $(this).attr('href');
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to delete this Vehicle Part!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading("Deleting Part...");
+                $.ajax({
+                    url: deleteUrl,
+                    type: "DELETE",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            showSuccessAlert("Vehicle part deleted successfully!", 1500);
+                        } else {
+                            showErrorAlert("Failed to delete Vehicle part. Please try again.");
+                        }
+                        // closeAlert();
+                        $('#js-vehicle-part-table-body').html(response.html);
+                    },
+                    error: function(xhr) {
+                        closeAlert();
+                        showErrorAlert("Failed to delete Vehicle part. Please try again.");
+                    }
+                });
+            }
         });
+    });
+
     });
 </script>
 

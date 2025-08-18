@@ -7,7 +7,7 @@
             <input class="form-check-input fs-15" type="checkbox" name="checkAll" value="option1">
         </div>
     </th>
-    <td>{{ $vehicle_part->id }}</td>
+    <td>{{ $loop->iteration }}</td>
     <td>{{ $vehicle_part->name }}</td>
     <td>{{ $vehicle_part->slug }}</td>
     <td>
@@ -17,8 +17,8 @@
             <span class="badge bg-danger">Inactive</span>
         @endif
     </td>
-    <td>245</td>
-    <td>432</td>
+    <td>{{ $vehicle_part->created_at->format('d-M-Y') }}</td>
+    <td>{{ $vehicle_part->updated_at->format('d-M-Y') }}</td>
 
     <td>
         <div class="dropdown d-inline-block">
@@ -29,7 +29,7 @@
                 <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
                 <li><a href="" class="dropdown-item edit-item-btn" ><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
                 <li>
-                    <a href="" class="dropdown-item remove-item-btn" id="location-delete-btn">
+                    <a href="{{ route('admin.vehicle.part.destroy', $vehicle_part->id) }}" class="dropdown-item remove-item-btn" id="vehicle-part-delete-btn">
                         <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                     </a>
                 </li>
