@@ -17,15 +17,9 @@ class VehiclePartController extends Controller
 
     public function store(StoreVehiclePartRequest $request)
     {
-         //$vehiclePart_id = $request->vehiclePart_id ?? null;
-         $is_active = $request->is_active;
-         $name = $request->name;
-            $slug = Str::of($request->name)
-            ->slug()
-            ->replace('-', '_')
-            ->lower()
-            ->toString();
-
+        $is_active = $request->is_active;
+        $name = $request->name;
+        $slug = Str::slug($name);
         VehiclePart::create([
             'name' => $name,
             'slug' => $slug,

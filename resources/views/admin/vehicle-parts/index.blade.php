@@ -51,7 +51,6 @@
                             <form action="{{ route('admin.vehicle.part.store') }}" id="js-add-vehicle-part-form" method="POST">
                                 @csrf
                                  <input type="text" id="js-vehiclePart-id" name="vehiclePart_id" value="" hidden>
-
                                 <div class="row g-3">
                                     <div class="col-xxl-6">
                                         <div>
@@ -95,46 +94,84 @@
 <script>
     $(document).ready(function(){
         $('#js-vehicle-part-table').DataTable();
+
+
         //add vechile part form
-        $('#js-add-vehicle-part-form').on('submit',function(e){
-            e.preventDefault();
+        $('#js-add-vehicle-part-form').validate({
 
-            console.log('Form submitted'); // Debugging line to check if the form is submitted
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 250
+                },
+                is_active: {
+                    required: true
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter part name",
+                    minlength: "Part name must be at least 3 characters long",
+                    maxlength: "Part name cannot exceed 250 characters"
+                },
+                is_active: {
+                    required: "Please select a status"
+                }
+            },
 
-            var url=$(this).attr('action');
-            var formData = $(this).serialize();
-            $.ajax({
-                url:url,
-                data:formData,
-                type:'POST',
-                dataType:'json',
-                success:function(response){
-                    if(response.success)
-                    {
-                        $('#js-add-vehicle-part-modal').modal('hide');
-                        $('#js-vehicle-part-table-body').html();
-                        $('#js-vehicle-part-table-body').html(response.html);
-                        $('#js-add-vehicle-part-form')[0].reset();
+            submitHandler: function(form) {
+                var url=$(form).attr('action');
+                var formData = $(form).serialize();
+                $.ajax({
+                    url:url,
+                    data:formData,
+                    type:'POST',
+                    method:'POST',
+                    dataType:'json',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                    },
+                    success:function(response){
+                        if(response.success)
+                        {
+                            $('#js-add-vehicle-part-modal').modal('hide');
+                            $('#js-vehicle-part-table-body').html();
+                            $('#js-vehicle-part-table-body').html(response.html);
+                            $('#js-add-vehicle-part-form')[0].reset();
+                            swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
 
-                        swal.fire({
-                            title: "Success!",
-                            text: response.message,
-                            icon: "success",
-                            timer: 1500,
-                            showConfirmButton: false
+                        } else {
+                            swal.fire({
+                                title: "Error!",
+                                text: response.message,
+                                icon: "error",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    },
+                    error:function(xhr){
+                        var errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, value) {
+                            toastr.error(value[0]);
                         });
-
+                    },
+                    complete: function() {
+                        $('#js-add-vehicle-part-modal').modal('hide');
+                        $('#js-add-vehicle-part-form')[0].reset();
                     }
-                    else
-                    {
-                        toastr.error(response.message);
-
-                    }
+                });
                 }
             });
-             });
 
-             
+
         //delete vehicle part
     $(document).on('click', '#vehicle-part-delete-btn', function(e)
     {
@@ -163,12 +200,14 @@
                         } else {
                             showErrorAlert("Failed to delete Vehicle part. Please try again.");
                         }
-                        // closeAlert();
                         $('#js-vehicle-part-table-body').html(response.html);
                     },
                     error: function(xhr) {
                         closeAlert();
                         showErrorAlert("Failed to delete Vehicle part. Please try again.");
+                    },
+                    complete: function() {
+                        closeAlert();
                     }
                 });
             }
