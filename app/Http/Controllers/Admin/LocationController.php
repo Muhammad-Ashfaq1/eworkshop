@@ -16,14 +16,19 @@ class LocationController extends Controller
     }
     public function store(StoreLocationRequest $request)
     {
+        $location_id = $request->location_id ?? null;
         $name = $request->name;
         $slug = $request->slug;
         $is_active = $request->is_active;
-       Location::create([
-           'name' => $name,
-           'slug' => $slug,
-            'is_active' => $is_active,
-        ]);
+
+        Location::updateOrCreate(
+            ['id' => $location_id],
+            [
+                'name' => $name,
+                'slug' => $slug,
+                'is_active' => $is_active,
+            ]
+        );
 
         return $this->getLatestRecords(true, 'Location created successfully.');
     }
@@ -34,7 +39,6 @@ class LocationController extends Controller
         return response()->json([
             'success'=>true,
             'location' => $location,
-
         ]);
     }
 

@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::create([
-        //     'first_name' => 'Admin',
-        //     'last_name' => 'User',
-        //     'email' => 'admin@auth.com',
-        //     'password' => 'password'
-        // ]);
+        User::create([
+            'first_name' => 'Admin',
+            'last_name' => 'User',
+            'email' => 'admin@auth.com',
+            'password' => 'password'
+        ]);
         $admin = User::where('email' , 'admin@auth.com')->first();
         if ($admin) {
             $admin->password = 'password';
