@@ -110,6 +110,21 @@
                         $('#js-vehicle-part-table-body').html();
                         $('#js-vehicle-part-table-body').html(response.html);
                         $('#js-add-vehicle-part-form')[0].reset();
+
+                        swal.fire({
+                            title: "Success!",
+                            text: response.message,
+                            icon: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $('#js-add-location-submit').text('Add');
+                        $('#js-model-title').text('Add Location');
+                        $('#js-location-id').val('');
+
+                        // Reset validation
+                        $('#js-add-location-form').validate().resetForm();
+
                     }
                     else
                     {
