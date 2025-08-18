@@ -1,4 +1,5 @@
 @extends('layout.main')
+@section('title', 'Locations')
 @section('content')
 <div class="row">
                     <div class="col-lg-12">

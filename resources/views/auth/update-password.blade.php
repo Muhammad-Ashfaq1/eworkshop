@@ -1,5 +1,5 @@
 @extends('auth.auth-main')
-{{-- @dd($token) --}}
+@section('title', 'Update Password')
 @section('formContent')
 <div class="row justify-content-center">
                     <div class="col-md-8 col-lg-6 col-xl-5">
@@ -33,7 +33,7 @@
                                                     </div>
                                                     @error('password')
                                                     <div class="text-danger small">{{ $message }}</div>
-                                                    
+
                                             @enderror
                                                 </div>
                                             </div>
