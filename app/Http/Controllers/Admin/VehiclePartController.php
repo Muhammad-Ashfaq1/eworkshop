@@ -17,14 +17,14 @@ class VehiclePartController extends Controller
 
     public function store(StoreVehiclePartRequest $request)
     {
-        $name = $request->name;
-      $slug = Str::of($request->name)
-        ->slug()
-        ->replace('-', '_')
-        ->lower()
-        ->toString();
-
-        $is_active = $request->is_active;
+         //$vehiclePart_id = $request->vehiclePart_id ?? null;
+         $is_active = $request->is_active;
+         $name = $request->name;
+            $slug = Str::of($request->name)
+            ->slug()
+            ->replace('-', '_')
+            ->lower()
+            ->toString();
 
         VehiclePart::create([
             'name' => $name,

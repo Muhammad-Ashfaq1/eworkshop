@@ -50,12 +50,14 @@
                         <div class="modal-body">
                             <form action="{{ route('admin.vehicle.part.store') }}" id="js-add-vehicle-part-form" method="POST">
                                 @csrf
+                                 <input type="text" id="js-vehiclePart-id" name="vehiclePart_id" value="" hidden>
+
                                 <div class="row g-3">
                                     <div class="col-xxl-6">
                                         <div>
                                             <label for="partName" class="form-label">Part Name</label>
                                             <input type="text" class="form-control" id="partName" name="name" placeholder="Enter partname">
-                                            @error('partName')
+                                            @error('name')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -132,8 +134,9 @@
             });
              });
 
+             
         //delete vehicle part
-         $(document).on('click', '#vehicle-part-delete-btn', function(e)
+    $(document).on('click', '#vehicle-part-delete-btn', function(e)
     {
         e.preventDefault();
         var deleteUrl = $(this).attr('href');
