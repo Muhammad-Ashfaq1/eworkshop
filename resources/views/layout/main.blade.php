@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--Swiper slider css-->
     <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('assets/css/toaster.css') }}" />
+    {{-- <link rel="stylesheet" href="{{ asset('assets/css/toaster.css') }}" /> --}}
     <!--datatable responsive css-->
     <!-- Bootstrap Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}" type="text/css" />
@@ -32,7 +32,20 @@
     <link href="{{ asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{ asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        .error {
+            color: #dc3545;
+            font-size: 0.875em;
+            }
+            input.error, select.error {
+            border-color: #dc3545;
+        }
+    </style>
     @yield('styles')
 
 </head>
@@ -121,6 +134,9 @@
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
 
 
     @yield('scripts')

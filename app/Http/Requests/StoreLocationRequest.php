@@ -22,8 +22,10 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-           'name' => 'required|string|max:255',
-           'slug' => 'required|string|max:255|unique:locations,slug',
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:locations,slug' . ($this->location_id ? ',' . $this->location_id : ''),
+            'is_active' => 'required|boolean',
+            'location_id' => 'nullable|exists:locations,id',
         ];
     }
 }
