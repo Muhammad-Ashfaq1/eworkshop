@@ -54,7 +54,7 @@
                                 <div class="row g-3">
                                     <div class="col-xxl-6">
                                         <div>
-                                            <label for="partName" class="form-label">Part Name</label>
+                                            <label for="partName" class="form-label">Part Name <x-req /></label>
                                             <input type="text" class="form-control" id="partName" name="name" placeholder="Enter partname">
                                             @error('name')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -64,7 +64,7 @@
                                     <!--end col-->
                                     <div class="col-xxl-6">
                                         <div>
-                                            <label for="status" class="form-label">Status</label>
+                                            <label for="status" class="form-label">Status <x-req /></label>
                                             <select name="is_active" id="myDropdown" class="form-control">
                                             <option value="" selected disabled>Select Status</option>
                                             <option value="1">Active</option>
