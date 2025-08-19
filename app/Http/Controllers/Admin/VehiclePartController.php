@@ -34,6 +34,9 @@ class VehiclePartController extends Controller
     public function destroy($id)
     {
         $vehicle_part = VehiclePart::findOrFail($id);
+        if (!$vehicle_part) {
+            return response()->json(['success' => false, 'message' => 'Vehicle Part not found.'], 404);
+        }
         $vehicle_part->delete();
         return $this->getLatestRecords(true, 'Vehicle Part deleted successfully.');
     }

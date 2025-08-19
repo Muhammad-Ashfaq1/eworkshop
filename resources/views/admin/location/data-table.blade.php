@@ -9,6 +9,8 @@
     <td>{{  $loop->iteration }}</td>
     <td>{{  $location->name }}</td>
     <td>{{  $location->slug }}</td>
+     <td>{{  ucfirst($location->location_type) }}</td>
+
     <td>
         @if($location->is_active)
             <span class="badge bg-success">Active</span>

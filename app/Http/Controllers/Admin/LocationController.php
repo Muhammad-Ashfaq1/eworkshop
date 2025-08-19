@@ -19,6 +19,10 @@ class LocationController extends Controller
         $location_id = $request->location_id ?? null;
         $name = $request->name;
         $slug = $request->slug;
+        $location_type = $request->location_type;
+        if (!$slug) {
+            $slug = str($name)->slug();
+        }
         $is_active = $request->is_active;
 
         Location::updateOrCreate(
@@ -26,6 +30,7 @@ class LocationController extends Controller
             [
                 'name' => $name,
                 'slug' => $slug,
+                'location_type' => $location_type,
                 'is_active' => $is_active,
             ]
         );

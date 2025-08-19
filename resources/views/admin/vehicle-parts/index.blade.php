@@ -50,7 +50,7 @@
                         <div class="modal-body">
                             <form action="{{ route('admin.vehicle.part.store') }}" id="js-add-vehicle-part-form" method="POST">
                                 @csrf
-                                 <input type="text" id="js-vehiclePart-id" name="vehiclePart_id" value="" hidden>
+                                 <input type="text" id="js-vehiclePart-id" name="vehicle_part" value="" hidden>
                                 <div class="row g-3">
                                     <div class="col-xxl-6">
                                         <div>
@@ -75,7 +75,7 @@
                                     <div class="col-lg-12">
                                         <div class="hstack gap-2 justify-content-end">
                                             <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Add</button>
+                                            <button type="submit" class="btn btn-primary" id="js-add-vehicle-part-submit">Add</button>
                                         </div>
                                     </div>
                                     <!--end col-->
@@ -138,6 +138,7 @@
                             $('#js-add-vehicle-part-modal').modal('hide');
                             $('#js-vehicle-part-table-body').html();
                             $('#js-vehicle-part-table-body').html(response.html);
+                            $('#js-vehiclePart-id').val('');
                             $('#js-add-vehicle-part-form')[0].reset();
                             swal.fire({
                                 title: "Success!",
@@ -174,7 +175,44 @@
 
 
 //edit vehicle part starts here
+            $(document).on('click', '.edit-vehicle-part-btn', function(e){
+                e.preventDefault();
+                var url=$(this).attr('href');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                    },
+                    success:function(response)
+                    {
+                        if(response.success)
+                        {
+                            var vehiclePart = response.vehiclePart;
+                            $('#js-modal-title').text('Edit vehicle part');
+                            $('#js-vehiclePart-id').val(vehiclePart.id);
+                            $('#partName').val(vehiclePart.name);
+                            $('#myDropdown').val(vehiclePart.is_active);
+                            $('#js-add-vehicle-part-modal').modal('show');
+                            $('#js-add-vehicle-part-submit').text('Update');
 
+                        }
+                        else {
+                            toastr.error(response.message);
+                        }
+                    },
+                        error: function(xhr) {
+                        if (xhr.status === 404) {
+                            toastr.error("Vehicle part not found.");
+                        } else {
+                            toastr.error("An error occurred while fetching vehicle part data.");
+                        }
+                    }
+
+                });
+
+            });
 //edit vehicle  part ends here
             //delete vehicle part
     $(document).on('click', '#vehicle-part-delete-btn', function(e)

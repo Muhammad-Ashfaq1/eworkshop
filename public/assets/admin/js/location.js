@@ -17,6 +17,9 @@
             },
             is_active: {
                 required: true,
+            },
+            location_type: {
+                required: true,
             }
         },
         messages: {
@@ -31,6 +34,9 @@
             },
             is_active: {
                 required: "Please select a status",
+            },
+            location_type: {
+                required: "Please select a location type",
             }
         },
         submitHandler: function(form) {
@@ -107,6 +113,7 @@
                     $('#slug').val(location.slug);
                     $('#js-is-active').val(location.is_active);
                     $('#js-location-id').val(location.id);
+                    $('#js-location-type').val(location.location_type);
                     $('#js-add-location-modal').modal('show');
                     $('#js-add-location-submit').text('Update');
                     $('#js-model-title').text('Edit Location');
