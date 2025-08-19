@@ -68,6 +68,9 @@
                                      <li class="nav-item">
                                         <a href="{{ route('admin.vehicle.part.index') }}" class="nav-link" data-key="t-analytics"> Vehicle Parts </a>
                                     </li>
+                                      <li class="nav-item">
+                                        <a href="{{ route('admin.vehicle.index') }}" class="nav-link" data-key="t-analytics"> Vehicle </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>

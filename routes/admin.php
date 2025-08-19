@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\VehiclePartController;
+use App\Http\Controllers\Admin\VehicleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,12 +22,15 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
         Route::post('store' ,  'store')->name('store');
         Route::delete('destroy/{id}', 'destroy')->name('destroy');
         Route::get('edit/{id}','edit')->name('edit');
+     });
 
+
+    // Vehicle Routes
+    Route::controller(VehicleController::class)->prefix('vehicles')
+    ->name('vehicle.')->group(function(){
+        Route::get('/' ,  'index')->name('index');
 
     });
-
-
-
 
 });
 
