@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
         User::create([
             'first_name' => 'Admin',
             'last_name' => 'User',
-            'email' => 'admin@auth.com',
+            'email' => 'admin@eworkshop.com',
             'password' => 'password'
         ]);
-        $admin = User::where('email' , 'admin@auth.com')->first();
+        $admin = User::where('email' , 'admin@eworkshop.com')->first();
         if ($admin) {
             $admin->password = 'password';
             $admin->is_active = true;
