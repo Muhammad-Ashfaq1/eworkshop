@@ -28,7 +28,7 @@ class VehiclePartController extends Controller
             'slug' => $slug,
             'is_active' => $is_active,
         ]);
-        return $this->getLatestRecords(true, 'Vehicle Part created successfully.');
+        return $this->getLatestRecords(true, 'Vehicle Part saved successfully.');
 
     }
     public function destroy($id)
@@ -44,10 +44,11 @@ class VehiclePartController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Vehicle Part retrieved successfully.',
+            'vehiclePart' => $vehicle_part,
         ]);
     }
 
-    private function getLatestRecords($success = true , $message = 'Location created successfully.')
+    private function getLatestRecords($success = true , $message = 'vehicle saved successfully.')
     {
         $vehicle_parts = VehiclePart::latest()->get();
         $html = view('admin.vehicle-parts.data-table', compact('vehicle_parts'))->render();
