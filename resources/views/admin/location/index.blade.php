@@ -58,20 +58,20 @@
                                                 <div class="row g-3">
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="firstName" class="form-label">Name</label>
+                                                            <label for="firstName" class="form-label">Name <x-req /> </label>
                                                             <input type="text" class="form-control" id="firstName" name="name" placeholder="Enter firstname">
                                                         </div>
                                                     </div>
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="slug" class="form-label">Slug</label>
+                                                            <label for="slug" class="form-label">Slug <x-req /></label>
                                                             <input type="text" class="form-control" id="slug" readonly name="slug" placeholder="Enter firstname">
                                                         </div>
                                                     </div>
                                                     <!--end col-->
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Status</label>
+                                                            <label for="status" class="form-label">Status <x-req /> </label>
                                                             <select name="is_active" id="js-is-active" class="form-control">
                                                             <option value="" selected disabled>Select Status</option>
                                                             <option value="1">Active</option>
