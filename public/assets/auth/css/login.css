@@ -1,0 +1,390 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #7dd3c0 0%, #5fb3a3 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    max-width: 1200px;
+    width: 90%;
+    height: 90vh;
+    min-height: 600px;
+    overflow: hidden;
+}
+
+.left-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: rgb(125,217,194) ;
+}
+
+.government-logo {
+    margin-bottom: 40px;
+}
+
+.gov-logo {
+    width: 80px;
+    height: 80px;
+    filter: brightness(0) invert(1);
+}
+
+.content .main-heading {
+    font-size: 48px;
+    font-weight: 700;
+    color: #2d5a4a;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    max-width: 500px;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #2d5a4a;
+    margin-bottom: 60px;
+    opacity: 0.8;
+}
+
+.workers-img {
+    width: 100%;
+    height: 300px;
+    /* max-height: 300px; */
+}
+
+.right-section {
+    flex: 0 0 450px;
+    background: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form-container {
+    /* max-width: 400px; */
+    width: 100%;
+}
+
+.portal-header {
+    display: flex;
+    /* align-items: center; */
+    margin-bottom: 40px;
+    gap: 16px;
+}
+
+.recycle-icon {
+    flex-shrink: 0;
+}
+
+.recycle-logo {
+    width: 100px;
+    height: 100px;
+}
+
+.portal-title {
+    flex: 1;
+    /* width: 40rem; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    /* height: 3rem; */
+
+}
+.portal-title h3{
+    /* align-items: end; */
+    text-align: right;
+    font-size: 1.75rem;
+}
+.urdu-title {
+    font-size: 34px;
+    font-weight: 600;
+    color: #2d5a4a;
+    margin-bottom: 4px;
+    direction: rtl;
+    text-align: right;
+}
+
+.english-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+}
+
+.login-form {
+    margin-bottom: 40px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    font-size: 18px;
+    color: #666;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+}
+
+.user-icon::before {
+    content: "👤";
+}
+
+.lock-icon::before {
+    content: "🔒";
+}
+
+.form-input {
+    width: 100%;
+    padding: 16px 16px 16px 50px;
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #7dd3c0;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(125, 211, 192, 0.1);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+}
+
+.checkbox {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #2d5a4a;
+}
+
+.forgot-password {
+    color: #7dd3c0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.sign-in-btn {
+    width: 100%;
+    background: #2d5a4a;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+}
+
+.sign-in-btn:hover {
+    background: #1e3d2f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 90, 74, 0.3);
+}
+
+.signup-link {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.signup-link a {
+    color: #7dd3c0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.footer-gov-logo {
+    width: 32px;
+    height: 32px;
+}
+
+.footer-text {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.4;
+}
+
+.footer-text span {
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        width: 95%;
+        height: auto;
+        min-height: 0;
+    }
+    .content .main-heading {
+        font-size: 36px;
+    }
+    .subtitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        flex-direction: column;
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        margin: 20px;
+    }
+    .left-section {
+        border-radius: 24px 24px 0 0;
+        padding: 30px;
+        text-align: center;
+    }
+    .content .main-heading {
+        max-width: 100%;
+    }
+    .workers-img {
+        display: none;
+    }
+    .right-section {
+        flex: 1;
+        border-radius: 0 0 24px 24px;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+    .container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+    .left-section {
+        border-radius: 0;
+        padding: 20px;
+    }
+    .right-section {
+        border-radius: 0;
+        padding: 20px;
+    }
+    .content .main-heading {
+        font-size: 28px;
+    }
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+    .portal-header {
+
+        /* text-align: ; */
+        gap: 12px;
+    }
+    /* .urdu-title {
+     text-align: center
+    } */
+}
+
+@media (max-width: 480px) {
+    .portal-header {
+        margin-bottom: 20px;
+    }
+    .recycle-logo {
+        width: 80px;
+        height: 80px;
+    }
+    .urdu-title {
+        font-size: 28px;
+    }
+    .english-title {
+        font-size: 14px;
+    }
+    .form-options {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .sign-in-btn {
+        padding: 14px;
+        font-size: 14px;
+    }
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+}
