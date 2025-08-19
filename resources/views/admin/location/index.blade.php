@@ -59,19 +59,19 @@
                                                 <div class="row g-3">
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="firstName" class="form-label">Location</label>
+                                                            <label for="firstName" class="form-label">Location <x-req /></label>
                                                             <input type="text" class="form-control" id="firstName" name="name" placeholder="Enter Location / Workshop Name" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="slug" class="form-label">Slug</label>
+                                                            <label for="slug" class="form-label">Slug <x-req /></label>
                                                             <input type="text" class="form-control" id="slug" readonly name="slug" placeholder="Enter Slug" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Select Location Type</label>
+                                                            <label for="status" class="form-label">Select Location Type <x-req /></label>
                                                             <select name="location_type" id="js-location-type" class="form-control">
                                                             <option  selected disabled>Select Location Type</option>
                                                             <option value="town">Town</option>
@@ -82,7 +82,7 @@
                                                     <!--end col-->
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Status</label>
+                                                            <label for="status" class="form-label">Status <x-req /></label>
                                                             <select name="is_active" id="js-is-active" class="form-control">
                                                             <option value="" selected disabled>Select Status</option>
                                                             <option value="1">Active</option>
