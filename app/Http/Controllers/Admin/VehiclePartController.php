@@ -17,10 +17,13 @@ class VehiclePartController extends Controller
 
     public function store(StoreVehiclePartRequest $request)
     {
+        $vehicle_part=$request->vehicle_part ?? null;
         $is_active = $request->is_active;
         $name = $request->name;
         $slug = Str::slug($name);
-        VehiclePart::create([
+        VehiclePart::updateOrCreate([
+            'id' => $vehicle_part,
+        ], [
             'name' => $name,
             'slug' => $slug,
             'is_active' => $is_active,
@@ -33,6 +36,15 @@ class VehiclePartController extends Controller
         $vehicle_part = VehiclePart::findOrFail($id);
         $vehicle_part->delete();
         return $this->getLatestRecords(true, 'Vehicle Part deleted successfully.');
+    }
+
+    public function edit($id)
+    {
+        $vehicle_part = VehiclePart::findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Vehicle Part retrieved successfully.',
+        ]);
     }
 
     private function getLatestRecords($success = true , $message = 'Location created successfully.')
