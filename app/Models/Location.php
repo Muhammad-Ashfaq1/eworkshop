@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Location extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name','slug','is_active'];
+    protected $fillable = ['name','slug','is_active','location_type'];
 }

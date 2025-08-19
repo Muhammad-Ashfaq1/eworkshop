@@ -78,6 +78,7 @@ body {
 }
 
 .login-form-container {
+    /* max-width: 400px; */
     width: 100%;
 }
 
@@ -105,6 +106,7 @@ body {
     justify-content: center;
     gap: 4px;
     /* height: 3rem; */
+
 }
 .portal-title h3{
     /* align-items: end; */

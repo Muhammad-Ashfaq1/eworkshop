@@ -5,7 +5,7 @@
         <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Locations</h5>
+                        <h5 class="card-title mb-0">Locations / Workshop</h5>
                         <div class="float-end">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-location-modal">
                                 Add New Locations
@@ -23,6 +23,7 @@
                                     <th data-ordering="false">SR No.</th>
                                     <th>Location</th>
                                     <th>Slug</th>
+                                    <th>Type</th>
                                     <th>Status</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
@@ -47,7 +48,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="js-model-title">Add Location</h5>
+                                            <h5 class="modal-title" id="js-model-title">Add Location / Workshop</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
 
@@ -58,20 +59,30 @@
                                                 <div class="row g-3">
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="firstName" class="form-label">Name <x-req /> </label>
-                                                            <input type="text" class="form-control" id="firstName" name="name" placeholder="Enter firstname">
+                                                            <label for="firstName" class="form-label">Location</label>
+                                                            <input type="text" class="form-control" id="firstName" name="name" placeholder="Enter Location / Workshop Name" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="slug" class="form-label">Slug <x-req /></label>
-                                                            <input type="text" class="form-control" id="slug" readonly name="slug" placeholder="Enter firstname">
+                                                            <label for="slug" class="form-label">Slug</label>
+                                                            <input type="text" class="form-control" id="slug" readonly name="slug" placeholder="Enter Slug" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6">
+                                                        <div>
+                                                            <label for="status" class="form-label">Select Location Type</label>
+                                                            <select name="location_type" id="js-location-type" class="form-control">
+                                                            <option  selected disabled>Select Location Type</option>
+                                                            <option value="town">Town</option>
+                                                            <option value="workshop">Workshop</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <!--end col-->
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Status <x-req /> </label>
+                                                            <label for="status" class="form-label">Status</label>
                                                             <select name="is_active" id="js-is-active" class="form-control">
                                                             <option value="" selected disabled>Select Status</option>
                                                             <option value="1">Active</option>
@@ -93,7 +104,7 @@
                                     </div>
                                 </div>
                             </div>
-        </div>
+                        </div>
 
                     <!-- Modal ends here -->
     </div>

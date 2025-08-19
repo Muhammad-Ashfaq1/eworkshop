@@ -22,7 +22,7 @@ class StoreVehiclePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255' . ($this->vehicle_part ? ',' . $this->vehicle_part : ''),
             'is_active' => 'required|boolean',
         ];
     }

@@ -26,6 +26,7 @@ class StoreLocationRequest extends FormRequest
             'slug' => 'required|string|max:255|unique:locations,slug' . ($this->location_id ? ',' . $this->location_id : ''),
             'is_active' => 'required|boolean',
             'location_id' => 'nullable|exists:locations,id',
+            'location_type' => 'required|in:town,workshop',
         ];
     }
 }

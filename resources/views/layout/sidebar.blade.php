@@ -63,7 +63,7 @@
                             <div class="collapse menu-dropdown" id="sidebarDashboards">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ route('admin.location.index') }}" class="nav-link" data-key="t-analytics"> Locations </a>
+                                        <a href="{{ route('admin.location.index') }}" class="nav-link" data-key="t-analytics"> Locations / Workshop</a>
                                     </li>
                                      <li class="nav-item">
                                         <a href="{{ route('admin.vehicle.part.index') }}" class="nav-link" data-key="t-analytics"> Vehicle Parts </a>
