@@ -1,98 +1,81 @@
-@extends('auth.auth-main')
-@section('title', 'Login')
-@section('formContent')
- <div class="row justify-content-center">
-                    <div class="col-md-8 col-lg-6 col-xl-5">
-                        <div class="card mt-4 card-bg-fill">
-
-                            <div class="card-body p-4">
-                                <div class="text-center mt-2">
-                                    <h5 class="text-primary">Welcome Back !</h5>
-                                    <p class="text-muted">Sign in to continue to Velzon.</p>
-                                </div>
-                                <div class="p-2 mt-4">
-
-                                    <form action="{{ route('login.action') }}"id="loginform"method="POST">
-                                    @csrf
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">User Name</label>
-                                            <input type="email" class="form-control" id="username"name="email" placeholder="Enter username">
-                                             @error('email')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="float-end">
-                                                <a href="{{ route('auth.forgot.password') }}" class="text-muted">Forgot password?</a>
-                                            </div>
-                                            <label class="form-label" for="password-input">Password</label>
-                                            <div class="position-relative auth-pass-inputgroup mb-3">
-                                                <input type="password" class="form-control pe-5 password-input" placeholder="Enter password" id="password-input" name="password">
-                                                <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon material-shadow-none" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="true" id="auth-remember-check" name="remember_me">
-                                            <label class="form-check-label" for="auth-remember-check">Remember me</label>
-                                        </div>
-
-                                        <div class="mt-4">
-                                            <button class="btn btn-success w-100" type="submit">Login In</button>
-                                        </div>
-
-                                        <div class="mt-4 text-center">
-                                            <div class="signin-other-title">
-                                                <h5 class="fs-13 mb-4 title">Sign In with</h5>
-                                            </div>
-                                            <div>
-                                                <button type="button" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></button>
-                                                <button type="button" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></button>
-                                                <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-                                                <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- end card body -->
-                        </div>
-                        <!-- end card -->
-
-                        <div class="mt-4 text-center">
-                            <p class="mb-0">Don't have an account ? <a href="{{ route('register') }}" class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- end row -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Waste Management Portal - Sign In</title>
+    <link href="{{ asset('assets/auth/css/login.css') }}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="government-logo">
+                <img src="{{asset('assets/auth/images/government-logo-small.png')}}" alt="Government of Pakistan Logo" class="gov-logo">
             </div>
-            <!-- end container -->
+
+            <div class="content">
+                <h1 class="main-heading">Sign in to Citizen Waste Management Portal</h1>
+                 <p class="subtitle">Access billing, complaints and service requests</p>
+
+                 <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}" alt="Waste management workers illustration" class="workers-img">
+
+            </div>
         </div>
 
-@endsection
+        <div class="right-section">
+            <div class="login-form-container">
+                <div class="portal-header">
+                    <img src="{{ ('assets/auth/images/recycle-icon.png') }}" alt="Recycle icon" class="recycle-logo">
+                    <div class="portal-title">
+                        <h2 class="urdu-title">شہری پورٹل</h2>
+                        <h3 class="english-title">Citizen Portal</h3>
+                    </div>
+                </div>
 
-@section('scripts')
-<script>
-        @if(session('success'))
-            toastr.success('{{ session('success') }}');
-        @endif
-        @if(session('error'))
-            toastr.error('{{ session('error') }}');
-        @endif
-        // jquery validation
-        $(document).ready(function()
-        {
-            $('#loginform').validate({
-                rules:{
-                 email:{
-                    required:true
-                 }
-                }
-            })
-        })
+                <form class="login-form" action="{{ route('login.action') }}" method="POST">
+                    @csrf
+                    <div class="input-group">
+                        <label for="login-id" class="form-label">CNIC or Email</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon user-icon"></span>
+                            <input type="text" id="login-id" placeholder="Enter your Email" class="form-input" name="email" required>
+                        </div>
+                    </div>
 
-</script>
+                    <div class="input-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon lock-icon"></span>
+                            <input type="password" id="password" placeholder="Enter your password" class="form-input" name="password" required value="{{ old('password') }}">
+                        </div>
+                    </div>
 
-@endsection
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" class="checkbox" value="true" id="auth-remember-check" name="remember_me">
+                            Remember me
+                        </label>
+                        <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="sign-in-btn">Sign in</button>
+
+                    <div class="signup-link">
+                        <span>New user? </span><a href="{{ route('register') }}">Sign up</a>
+                    </div>
+                </form>
+
+                <div class="footer">
+                    <div class="footer-logo">
+                        <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government Logo" class="footer-gov-logo">
+                    </div>
+                    <div class="footer-text">
+                        <span>Managed by Ministry of Climate Change,</span>
+                        <span>Government of Pakistan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
