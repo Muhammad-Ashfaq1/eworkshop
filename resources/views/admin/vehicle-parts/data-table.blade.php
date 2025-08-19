@@ -27,7 +27,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
-                <li><a href="" class="dropdown-item edit-item-btn" ><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
+                <li><a href="{{ route('admin.vehicle.part.edit',$vehicle_part->id) }}" class="dropdown-item edit-vehicle-part-btn" ><i class="ri-pencil-fill align-bottom me-2 text-muted" ></i>Edit</a></li>
                 <li>
                     <a href="{{ route('admin.vehicle.part.destroy', $vehicle_part->id) }}" class="dropdown-item remove-item-btn" id="vehicle-part-delete-btn">
                         <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete

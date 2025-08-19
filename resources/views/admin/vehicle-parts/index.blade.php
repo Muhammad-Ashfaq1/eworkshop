@@ -172,7 +172,11 @@
             });
 
 
-        //delete vehicle part
+
+//edit vehicle part starts here
+
+//edit vehicle  part ends here
+            //delete vehicle part
     $(document).on('click', '#vehicle-part-delete-btn', function(e)
     {
         e.preventDefault();
