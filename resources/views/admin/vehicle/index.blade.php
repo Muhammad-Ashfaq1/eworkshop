@@ -12,7 +12,7 @@
                             </button>
                     </div>
                     <div class="card-body">
-                        <table id="js-vehicles-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col" style="width: 10px;">
@@ -70,6 +70,7 @@
                                                             <select name="town" id="js-town" class="form-control">
                                                             <option  selected disabled>Town</option>
                                                             <option value="town" id="js-town-option">Town</option>
+                                                            <option value="workshop" id="js-workshop-option">Workshop</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -85,9 +86,9 @@
                                                     </div>
                                                      <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Status <x-req /></label>
-                                                            <select name="status" id="js-status" class="form-control">
-                                                            <option  selected disabled>Status</option>
+                                                            <label for="condition" class="form-label">Condition <x-req /></label>
+                                                            <select name="condition" id="js-condition" class="form-control">
+                                                            <option  selected disabled>Condition</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -133,6 +134,13 @@
 
 
 @section('scripts')
+<script>
+       // $(document).ready(function(){
+        //$('#js-vehicle-table').DataTable();
 
+
+    //});
+
+</script>
 
 @endsection

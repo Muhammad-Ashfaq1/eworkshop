@@ -5,13 +5,13 @@
             <input class="form-check-input fs-15" type="checkbox" name="checkAll" value="option1">
         </div>
     </th>
-    <td>sdff</td>
-    <td>edf</td>
-    <td>ds</td>
-     <td>34</td>
+    <td>1</td>
+    <td>locatiuon</td>
+    <td>slug</td>
+     <td>type</td>
 
     <td>
-        active
+        status
     </td>
 
     <td>2023-10-01</td>
