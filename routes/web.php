@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\ProfileController;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\DropdownController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\PasswordController;
 
 
 Route::get('/', function () {
@@ -33,6 +34,10 @@ Route::post('/forgot-password-link', [PasswordController::class, 'forgotPassword
 Route::get('/forgot-password/{token}/{email}', [PasswordController::class, 'verifyEmail'])->name('auth.forgot.password.verify');
 Route::post('/reset-password',[PasswordController::class, 'resetPassword'])->name('reset.password');
 Route::get('/verify-user/{id}',[AuthController::class, 'verifyUser'])->name('verify.user');
+
+
+Route::get('get-towns', [DropdownController::class, 'getTowns'])->name('dropdown.getTowns');
+Route::get('get-vehicle-categories', [DropdownController::class, 'getVehicleCategories'])->name('dropdown.getVehicleCategories');
 
 
 //location routes
