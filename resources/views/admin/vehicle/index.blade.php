@@ -1,18 +1,18 @@
 @extends('layout.main')
-@section('title', 'Locations')
+@section('title', 'Vehicles')
 @section('content')
     <div class="row">
         <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Locations / Workshop</h5>
+                        <h5 class="card-title mb-0">Vehicles</h5>
                         <div class="float-end">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-location-modal">
-                                Add New Locations
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-vehicle-modal">
+                                Add New Vehicles
                             </button>
                     </div>
                     <div class="card-body">
-                        <table id="js-locations-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col" style="width: 10px;">
@@ -30,8 +30,8 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="js-location-table-body">
-                                @include('admin.location.data-table')
+                            <tbody id="js-vehicle-table-body">
+                                @include('admin.vehicle.data-table')
                             </tbody>
                         </table>
                     </div>
@@ -44,38 +44,60 @@
         <!-- Modal starts here-->
         <div class="live-preview">
 
-                            <div class="modal fade" id="js-add-location-modal" tabindex="-1" aria-labelledby="exampleModalgridLabel">
+                            <div class="modal fade" id="js-add-vehicle-modal" tabindex="-1" aria-labelledby="exampleModalgridLabel">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="js-model-title">Add Location / Workshop</h5>
+                                            <h5 class="modal-title" id="js-model-title">Add Vehicle</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
 
                                         <div class="modal-body">
-                                            <form action="{{ route('admin.location.store') }}" id="js-add-location-form" method="POST">
+                                            <form action="" id="js-add-vehicle-form" method="POST">
                                                 @csrf
-                                                <input type="text" id="js-location-id" name="location_id" value="" hidden>
+                                                <input type="text" id="js-vehicle-id" name="vehicle_id" value="" hidden>
                                                 <div class="row g-3">
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="firstName" class="form-label">Location <x-req /></label>
-                                                            <input type="text" class="form-control" id="firstName" name="name" placeholder="Enter Location / Workshop Name" required>
+                                                            <label for="vehicleNumber" class="form-label">Vehicle Number <x-req /></label>
+                                                            <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" placeholder="Enter Vehicle Number" required>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="slug" class="form-label">Slug <x-req /></label>
-                                                            <input type="text" class="form-control" id="slug" readonly name="slug" placeholder="Enter Slug" required>
+                                                            <label for="town" class="form-label">Town <x-req /></label>
+                                                            <select name="town" id="js-town" class="form-control">
+                                                            <option  selected disabled>Town</option>
+                                                            <option value="town" id="js-town-option">Town</option>
+                                                            <option value="workshop" id="js-workshop-option">Workshop</option>
+                                                            </select>
                                                         </div>
                                                     </div>
+
                                                     <div class="col-xxl-6">
                                                         <div>
-                                                            <label for="status" class="form-label">Select Location Type <x-req /></label>
-                                                            <select name="location_type" id="js-location-type" class="form-control">
-                                                            <option  selected disabled>Select Location Type</option>
-                                                            <option value="town">Town</option>
-                                                            <option value="workshop">Workshop</option>
+                                                            <label for="category" class="form-label">Category <x-req /></label>
+                                                            <select name="category" id="js-category" class="form-control">
+                                                            <option  selected disabled>Category</option>
+                                                            <option value="category" id="js-category-option">Category</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                     <div class="col-xxl-6">
+                                                        <div>
+                                                            <label for="condition" class="form-label">Condition <x-req /></label>
+                                                            <select name="condition" id="js-condition" class="form-control">
+                                                            <option  selected disabled>Condition</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                     <div class="col-xxl-6">
+                                                        <div>
+                                                            <label for="category" class="form-label">Category <x-req /></label>
+                                                            <select name="category" id="js-category" class="form-control">
+                                                            <option  selected disabled>Category</option>
+                                                            <option value="category" id="js-category-option">Category</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -112,6 +134,13 @@
 
 
 @section('scripts')
+<script>
+       // $(document).ready(function(){
+        //$('#js-vehicle-table').DataTable();
 
-<script src="{{ asset('assets/admin/js/location.js') }}"></script>
+
+    //});
+
+</script>
+
 @endsection

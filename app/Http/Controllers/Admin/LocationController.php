@@ -11,14 +11,22 @@ class LocationController extends Controller
 {
     public function index()
     {
+        $this->authorize('read_locations');
+
         $locations=Location::latest()->get();
         return view('admin.location.index',compact('locations'));
     }
     public function store(StoreLocationRequest $request)
     {
+        $this->authorize('create_locations');
+
         $location_id = $request->location_id ?? null;
         $name = $request->name;
         $slug = $request->slug;
+        $location_type = $request->location_type;
+        if (!$slug) {
+            $slug = str($name)->slug();
+        }
         $is_active = $request->is_active;
 
         Location::updateOrCreate(
@@ -26,6 +34,7 @@ class LocationController extends Controller
             [
                 'name' => $name,
                 'slug' => $slug,
+                'location_type' => $location_type,
                 'is_active' => $is_active,
             ]
         );
@@ -35,6 +44,8 @@ class LocationController extends Controller
 
     public function edit($id)
     {
+        $this->authorize('update_locations');
+
         $location=Location::findOrFail($id);
         return response()->json([
             'success'=>true,
@@ -45,6 +56,8 @@ class LocationController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete_locations');
+
         $location = Location::findOrFail($id);
         $location->delete();
         return $this->getLatestRecords(true, 'Location deleted successfully.');
