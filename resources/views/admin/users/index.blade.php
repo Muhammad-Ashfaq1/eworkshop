@@ -23,7 +23,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">Users List</h5>
                         <button type="button" class="btn btn-primary" id="addUserBtn">
-                            <i class="ri-add-line align-bottom me-1"></i> Add User
+                            <i class="ri-user-add-line align-bottom me-1"></i> Add User
                         </button>
                     </div>
                 </div>
@@ -71,15 +71,15 @@
                                     <td>{{ $user->created_at->format('d M, Y') }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <button type="button" class="btn btn-sm btn-soft-primary edit-user-btn" data-user-id="{{ $user->id }}" title="Edit">
-                                                <i class="ri-pencil-fill"></i>
+                                            <button type="button" class="btn btn-sm btn-soft-primary edit-user-btn" data-user-id="{{ $user->id }}" title="Edit User">
+                                                <i class="ri-edit-2-line"></i>
                                             </button>
                                             <button type="button" class="btn btn-sm btn-soft-info reset-password-btn" data-user-id="{{ $user->id }}" title="Reset Password">
-                                                <i class="ri-key-2-line"></i>
+                                                <i class="ri-lock-password-line"></i>
                                             </button>
                                             @if(!$user->hasRole('super_admin'))
-                                            <button type="button" class="btn btn-sm btn-soft-danger delete-user-btn" data-user-id="{{ $user->id }}" title="Delete">
-                                                <i class="ri-delete-bin-line"></i>
+                                            <button type="button" class="btn btn-sm btn-soft-danger delete-user-btn" data-user-id="{{ $user->id }}" title="Delete User">
+                                                <i class="ri-delete-bin-2-line"></i>
                                             </button>
                                             @endif
                                         </div>
@@ -104,7 +104,9 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="userModalLabel">Add New User</h5>
+                <h5 class="modal-title" id="userModalLabel">
+                    <i class="ri-user-add-line me-2"></i>Add New User
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="userForm" novalidate>
@@ -115,26 +117,34 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                                <label for="first_name" class="form-label">
+                                    <i class="ri-user-line me-1"></i>First Name <span class="text-danger">*</span>
+                                </label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" required>
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <label for="last_name" class="form-label">
+                                    <i class="ri-user-line me-1"></i>Last Name <span class="text-danger">*</span>
+                                </label>
                                 <input type="text" class="form-control" id="last_name" name="last_name" required>
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <label for="email" class="form-label">
+                            <i class="ri-mail-line me-1"></i>Email <span class="text-danger">*</span>
+                        </label>
                         <input type="email" class="form-control" id="email" name="email" required>
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="mb-3">
-                        <label for="phone_number" class="form-label">Phone Number</label>
+                        <label for="phone_number" class="form-label">
+                            <i class="ri-phone-line me-1"></i>Phone Number
+                        </label>
                         <input type="text" class="form-control" id="phone_number" name="phone_number">
                         <div class="invalid-feedback"></div>
                     </div>
@@ -181,8 +191,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="saveUserBtn">Save User</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="ri-close-line me-1"></i>Close
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveUserBtn">
+                        <i class="ri-save-line me-1"></i>Save User
+                    </button>
                 </div>
             </form>
         </div>
@@ -194,7 +208,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                <h5 class="modal-title" id="resetPasswordModalLabel">
+                    <i class="ri-lock-password-line me-2"></i>Reset Password
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="resetPasswordForm">
@@ -213,8 +229,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Reset Password</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="ri-close-line me-1"></i>Close
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="ri-lock-password-line me-1"></i>Reset Password
+                    </button>
                 </div>
             </form>
         </div>
@@ -300,8 +320,8 @@ function openCreateModal() {
     currentUserId = null;
 
     // Reset modal
-    $('#userModalLabel').text('Add New User');
-    $('#saveUserBtn').text('Save User');
+    $('#userModalLabel').html('<i class="ri-user-add-line me-2"></i>Add New User');
+    $('#saveUserBtn').html('<i class="ri-save-line me-1"></i>Save User');
     $('#userForm')[0].reset();
     $('#user_id').val('');
     $('#form_method').val('POST');
@@ -341,8 +361,8 @@ function editUser(userId) {
                 const user = response.user;
 
                 // Update modal for editing
-                $('#userModalLabel').text('Edit User');
-                $('#saveUserBtn').text('Update User');
+                $('#userModalLabel').html('<i class="ri-edit-2-line me-2"></i>Edit User');
+                $('#saveUserBtn').html('<i class="ri-refresh-line me-1"></i>Update User');
                 $('#form_method').val('PUT');
                 $('#user_id').val(user.id);
 
@@ -389,10 +409,10 @@ function submitUserForm() {
         formData.append('_method', 'PUT');
     }
 
-    // Disable submit button
+        // Disable submit button
     const $submitBtn = $('#saveUserBtn');
-    const originalText = $submitBtn.text();
-    $submitBtn.prop('disabled', true).text('Saving...');
+    const originalText = $submitBtn.html();
+    $submitBtn.prop('disabled', true).html('<i class="ri-loader-2-line me-1"></i>Saving...');
 
     // Clear previous validation errors
     clearValidationErrors();
@@ -411,7 +431,7 @@ function submitUserForm() {
             console.log('Form submission response:', response);
 
             // Re-enable submit button
-            $submitBtn.prop('disabled', false).text(originalText);
+            $submitBtn.prop('disabled', false).html(originalText);
 
             if (response.success) {
                 $('#userModal').modal('hide');
@@ -426,10 +446,10 @@ function submitUserForm() {
             }
         },
         error: function(xhr) {
-            console.error('Form submission error:', xhr.responseText);
+                        console.error('Form submission error:', xhr.responseText);
 
             // Re-enable submit button
-            $submitBtn.prop('disabled', false).text(originalText);
+            $submitBtn.prop('disabled', false).html(originalText);
 
             if (xhr.status === 422) {
                 // Validation errors
@@ -537,8 +557,8 @@ function submitResetPasswordForm() {
 
     // Disable submit button
     const $submitBtn = $('#resetPasswordForm button[type="submit"]');
-    const originalText = $submitBtn.text();
-    $submitBtn.prop('disabled', true).text('Resetting...');
+    const originalText = $submitBtn.html();
+    $submitBtn.prop('disabled', true).html('<i class="ri-loader-2-line me-1"></i>Resetting...');
 
     // Clear previous validation errors
     clearValidationErrors('resetPasswordForm');
@@ -555,7 +575,7 @@ function submitResetPasswordForm() {
         },
         success: function(response) {
             // Re-enable submit button
-            $submitBtn.prop('disabled', false).text(originalText);
+            $submitBtn.prop('disabled', false).html(originalText);
 
             if (response.success) {
                 $('#resetPasswordModal').modal('hide');
@@ -565,10 +585,10 @@ function submitResetPasswordForm() {
             }
         },
         error: function(xhr) {
-            console.error('Reset password error:', xhr.responseText);
+                        console.error('Reset password error:', xhr.responseText);
 
             // Re-enable submit button
-            $submitBtn.prop('disabled', false).text(originalText);
+            $submitBtn.prop('disabled', false).html(originalText);
 
             if (xhr.status === 422) {
                 // Validation errors

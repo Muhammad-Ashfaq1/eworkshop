@@ -60,7 +60,7 @@
                         @role('super_admin')
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="{{ route('admin.user.index') }}">
-                                <i class="ri-user-settings-line"></i> <span data-key="t-user-management">User Management</span>
+                                <i class="ri-team-line"></i> <span data-key="t-user-management">User Management</span>
                             </a>
                         </li>
                         @endrole
@@ -72,13 +72,19 @@
                             <div class="collapse menu-dropdown" id="sidebarDashboards">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ route('admin.location.index') }}" class="nav-link" data-key="t-analytics"> Locations / Workshop</a>
+                                        <a href="{{ route('admin.location.index') }}" class="nav-link" data-key="t-analytics">
+                                            <i class="ri-map-pin-line me-2"></i>Locations / Workshop
+                                        </a>
                                     </li>
                                      <li class="nav-item">
-                                        <a href="{{ route('admin.vehicle.part.index') }}" class="nav-link" data-key="t-analytics"> Vehicle Parts </a>
+                                        <a href="{{ route('admin.vehicle.part.index') }}" class="nav-link" data-key="t-analytics">
+                                            <i class="ri-settings-3-line me-2"></i>Vehicle Parts
+                                        </a>
                                     </li>
                                       <li class="nav-item">
-                                        <a href="{{ route('admin.vehicle.index') }}" class="nav-link" data-key="t-analytics"> Vehicle </a>
+                                        <a href="{{ route('admin.vehicle.index') }}" class="nav-link" data-key="t-analytics">
+                                            <i class="ri-car-line me-2"></i>Vehicle
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
