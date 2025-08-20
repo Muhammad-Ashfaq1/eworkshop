@@ -56,20 +56,44 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+
+                        @role('super_admin')
                         <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}" href="{{ route('admin.user.index') }}">
+                                <i class="ri-team-line"></i> <span data-key="t-user-management">User Management</span>
+                            </a>
+                        </li>
+                        @endrole
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'active' : '' }}"
+                               href="#sidebarDashboards" data-bs-toggle="collapse" role="button"
+                               aria-expanded="{{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'true' : 'false' }}"
+                               aria-controls="sidebarDashboards">
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Master Data</span>
                             </a>
-                            <div class="collapse menu-dropdown" id="sidebarDashboards">
+                            <div class="collapse menu-dropdown {{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'show' : '' }}" id="sidebarDashboards">
                                 <ul class="nav nav-sm flex-column">
                                     <li class="nav-item">
-                                        <a href="{{ route('admin.location.index') }}" class="nav-link" data-key="t-analytics"> Locations / Workshop</a>
+                                        <a href="{{ route('admin.location.index') }}"
+                                           class="nav-link {{ request()->routeIs('admin.location.*') ? 'active' : '' }}"
+                                           data-key="t-analytics">
+                                            <i class="ri-map-pin-line me-2"></i>Locations / Workshop
+                                        </a>
                                     </li>
                                      <li class="nav-item">
-                                        <a href="{{ route('admin.vehicle.part.index') }}" class="nav-link" data-key="t-analytics"> Vehicle Parts </a>
+                                        <a href="{{ route('admin.vehicle.part.index') }}"
+                                           class="nav-link {{ request()->routeIs('admin.vehicle.part.*') ? 'active' : '' }}"
+                                           data-key="t-analytics">
+                                            <i class="ri-settings-3-line me-2"></i>Vehicle Parts
+                                        </a>
                                     </li>
                                       <li class="nav-item">
-                                        <a href="{{ route('admin.vehicle.index') }}" class="nav-link" data-key="t-analytics"> Vehicle </a>
+                                        <a href="{{ route('admin.vehicle.index') }}"
+                                           class="nav-link {{ request()->routeIs('admin.vehicle.index') ? 'active' : '' }}"
+                                           data-key="t-analytics">
+                                            <i class="ri-car-line me-2"></i>Vehicle
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

@@ -16,21 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-            VehicleCategorySeeder::class,
+            RolePermissionSeeder::class,
+            DefaultUsersSeeder::class,
         ]);
-
-
-        User::create([
-            'first_name' => 'Admin',
-            'last_name' => 'User',
-            'email' => 'admin@eworkshop.com',
-            'password' => 'password'
-        ]);
-        $admin = User::where('email' , 'admin@eworkshop.com')->first();
-        if ($admin) {
-            $admin->password = 'password';
-            $admin->is_active = true;
-            $admin->save();
-        }
     }
 }
