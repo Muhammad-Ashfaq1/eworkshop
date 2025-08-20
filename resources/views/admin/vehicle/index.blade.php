@@ -1,5 +1,6 @@
 @extends('layout.main')
 @section('title', 'Vehicles')
+
 @section('content')
     <div class="row">
         <div class="col-lg-12">
@@ -113,13 +114,6 @@
 
 
 @section('scripts')
-<script>
-       // $(document).ready(function(){
-        //$('#js-vehicle-table').DataTable();
-
-
-    //});
-
-</script>
-
+    <script src="{{ asset('assets/admin/js/vehicle.js') }}">
+    </script>
 @endsection

@@ -40,10 +40,19 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
 
 
     // Vehicle Routes
+    // Route::controller(VehicleController::class)->prefix('vehicles')
+    // ->name('vehicle.')->group(function(){
+    //     Route::get('/' ,  'index')->name('index');
+
+
+    // });
+
     Route::controller(VehicleController::class)->prefix('vehicles')
     ->name('vehicle.')->group(function(){
         Route::get('/' ,  'index')->name('index');
-
+        Route::post('store' ,  'store')->name('store');
+        Route::get('edit/{id}','edit')->name('edit');
+        Route::delete('destroy/{id}', 'destroy')->name('destroy');
     });
 
 });
