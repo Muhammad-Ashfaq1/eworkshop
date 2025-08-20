@@ -15,6 +15,8 @@ class ProfileController extends Controller
 {
     public function profile()
     {
+        $this->authorize('read_profile');
+
         $user=Auth::user();
         if(!empty($user))
         {
@@ -24,6 +26,8 @@ class ProfileController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $this->authorize('update_profile');
+
         $request->validate([
                     "first_name"=>"required|string",
                     "last_name"=>"sometimes|string",

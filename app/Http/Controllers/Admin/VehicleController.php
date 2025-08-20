@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Vehicle;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VehicleRequest;
-use Illuminate\Http\Request;
+
 
 class VehicleController extends Controller
 {
     public function index()
     {
-        $vehicles = Vehicle::with(['location', 'category'])->latest()->get();
-        return view('admin.vehicle.index', compact('vehicles'));
+        return view('admin.vehicle.index');
     }
-
     public function store(VehicleRequest $request)
     {
         try {
