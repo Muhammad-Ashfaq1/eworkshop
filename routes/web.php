@@ -35,5 +35,9 @@ Route::post('/reset-password',[PasswordController::class, 'resetPassword'])->nam
 Route::get('/verify-user/{id}',[AuthController::class, 'verifyUser'])->name('verify.user');
 
 
+Route::get('get-towns', [DropdownController::class, 'getTowns'])->name('dropdown.getTowns');
+Route::get('get-vehicle-categories', [DropdownController::class, 'getVehicleCategories'])->name('dropdown.getVehicleCategories');
+
+
 //location routes
 require __DIR__ .  '/admin.php';

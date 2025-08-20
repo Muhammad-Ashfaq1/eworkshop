@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             DefaultUsersSeeder::class,
             VehicleCategorySeeder::class,
+            LocationSeeder::class,
         ]);
     }
 }

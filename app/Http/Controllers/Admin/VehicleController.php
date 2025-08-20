@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VehicleRequest;
-
+use App\Models\Vehicle;
 
 class VehicleController extends Controller
 {
     public function index()
     {
-        return view('admin.vehicle.index');
+        $vehicles = Vehicle::with(['location', 'category'])->latest()->get();
+        return view('admin.vehicle.index', compact('vehicles'));
     }
     public function store(VehicleRequest $request)
     {

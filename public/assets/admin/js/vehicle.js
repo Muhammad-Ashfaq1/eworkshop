@@ -1,5 +1,5 @@
 // Vehicle CRUD functionality
-$(document).ready(function() {
+console.log('Vehicle CRUD functionality');
     // Initialize DataTable
     $('#js-vehicle-table').DataTable();
 
@@ -200,4 +200,4 @@ $(document).ready(function() {
         // Reset validation
         $('#js-add-vehicle-form').validate().resetForm();
     });
-});
+
