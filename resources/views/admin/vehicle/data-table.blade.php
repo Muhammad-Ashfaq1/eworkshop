@@ -13,9 +13,6 @@
     <td>
         status
     </td>
-
-    <td>2023-10-01</td>
-    <td>2023-10-01</td>
     <td>
         <div class="dropdown d-inline-block">
             <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
