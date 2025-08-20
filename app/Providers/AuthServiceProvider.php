@@ -118,6 +118,74 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('export_data');
         });
 
+        // Fleet Manager gates
+        Gate::define('create_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('create_fleet_manager');
+        });
+
+        Gate::define('read_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('read_fleet_manager');
+        });
+
+        Gate::define('update_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('update_fleet_manager');
+        });
+
+        Gate::define('delete_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('delete_fleet_manager');
+        });
+
+        // MVI gates
+        Gate::define('create_mvi', function ($user) {
+            return $user->hasPermissionTo('create_mvi');
+        });
+
+        Gate::define('read_mvi', function ($user) {
+            return $user->hasPermissionTo('read_mvi');
+        });
+
+        Gate::define('update_mvi', function ($user) {
+            return $user->hasPermissionTo('update_mvi');
+        });
+
+        Gate::define('delete_mvi', function ($user) {
+            return $user->hasPermissionTo('delete_mvi');
+        });
+
+        // Fleet management gates
+        Gate::define('manage_fleet', function ($user) {
+            return $user->hasPermissionTo('manage_fleet');
+        });
+
+        Gate::define('view_fleet_reports', function ($user) {
+            return $user->hasPermissionTo('view_fleet_reports');
+        });
+
+        Gate::define('track_vehicles', function ($user) {
+            return $user->hasPermissionTo('track_vehicles');
+        });
+
+        Gate::define('assign_vehicles', function ($user) {
+            return $user->hasPermissionTo('assign_vehicles');
+        });
+
+        // Vehicle inspection gates
+        Gate::define('conduct_inspections', function ($user) {
+            return $user->hasPermissionTo('conduct_inspections');
+        });
+
+        Gate::define('approve_inspections', function ($user) {
+            return $user->hasPermissionTo('approve_inspections');
+        });
+
+        Gate::define('reject_inspections', function ($user) {
+            return $user->hasPermissionTo('reject_inspections');
+        });
+
+        Gate::define('view_inspection_reports', function ($user) {
+            return $user->hasPermissionTo('view_inspection_reports');
+        });
+
         // Super admin gate - has all permissions
         Gate::define('super_admin', function ($user) {
             return $user->hasRole('super_admin');

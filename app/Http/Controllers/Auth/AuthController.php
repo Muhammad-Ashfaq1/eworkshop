@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Constants\UserRoles;
 use App\Http\Controllers\Controller;
 use App\Mail\ActiveUserMail;
 use App\Models\User;
@@ -31,7 +32,9 @@ class AuthController extends Controller
             {
                 return redirect()->back()->with(['error' => 'Please verify your email to login'])->withInput($request->only('email'));
             }
-            return redirect()->route('home');
+
+            // Redirect to role-specific dashboard
+            return $this->redirectToRoleDashboard($user);
         }
         return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput($request->only('email'));
     }
@@ -57,6 +60,23 @@ class AuthController extends Controller
     public function logout()
     {
         auth::check() ? auth::logout() : '';
+        return redirect()->route('home');
+    }
+
+        /**
+     * Redirect user to role-specific dashboard
+     */
+    private function redirectToRoleDashboard($user)
+    {
+        $dashboardRoutes = UserRoles::getDashboardRoutes();
+
+        foreach ($dashboardRoutes as $role => $routeName) {
+            if ($user->hasRole($role)) {
+                return redirect()->route($routeName);
+            }
+        }
+
+        // Default fallback
         return redirect()->route('home');
     }
     public function updatePassword(Request $request, string $id)

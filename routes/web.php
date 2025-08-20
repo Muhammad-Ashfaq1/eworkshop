@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DropdownController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,14 @@ Route::get('/verify-user/{id}',[AuthController::class, 'verifyUser'])->name('ver
 Route::get('get-towns', [DropdownController::class, 'getTowns'])->name('dropdown.getTowns');
 Route::get('get-vehicle-categories', [DropdownController::class, 'getVehicleCategories'])->name('dropdown.getVehicleCategories');
 
+// Role-specific dashboard routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard/super-admin', [DashboardController::class, 'superAdmin'])->name('dashboard.super_admin');
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
+    Route::get('/dashboard/deo', [DashboardController::class, 'deo'])->name('dashboard.deo');
+    Route::get('/dashboard/fleet-manager', [DashboardController::class, 'fleetManager'])->name('dashboard.fleet_manager');
+    Route::get('/dashboard/mvi', [DashboardController::class, 'mvi'])->name('dashboard.mvi');
+});
 
 //location routes
 require __DIR__ .  '/admin.php';
