@@ -8,8 +8,8 @@
                     <div class="card-header">
                         <h5 class="card-title mb-0">Vehicles</h5>
                         <div class="float-end">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-vehicle-modal">
-                                Add New Vehicles
+                            <button type="button" class="btn btn-primary" id="js-add-vehicle-button">
+                                Add New Vehicle
                             </button>
                         </div>
                     </div>
@@ -24,8 +24,9 @@
                                     </th>
                                     <th data-ordering="false">SR No.</th>
                                     <th>Location</th>
-                                    <th>Slug</th>
-                                    <th>Type</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Category</th>
+                                    <th>Condition</th>
                                     <th>Status</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
@@ -50,7 +51,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="js-model-title">Add Vehicle</h5>
-                            <button type="button" class="btn-close" id="js-add-vehicle-button" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form action="{{ route('admin.vehicle.store') }}" id="js-add-vehicle-form" method="POST">

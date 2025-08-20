@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Location;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -48,6 +49,7 @@ class LocationSeeder extends Seeder
             ], [
                 'location_type' => Location::LOCATION_TYPE_WORKSHOP,
                 'is_active' => Location::IS_ACTIVE,
+                'slug' => Str::slug($workshop),
             ]);
         }
         foreach ($towns as $town) {
@@ -56,6 +58,7 @@ class LocationSeeder extends Seeder
             ], [
                 'location_type' => Location::LOCATION_TYPE_TOWN,
                 'is_active' => Location::IS_ACTIVE,
+                'slug' => Str::slug($town),
             ]);
         }
     }

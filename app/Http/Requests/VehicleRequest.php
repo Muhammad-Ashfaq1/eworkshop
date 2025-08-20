@@ -23,7 +23,7 @@ class VehicleRequest extends FormRequest
     {
         return [
         'vehicle_number' => 'required|string|max:255',
-        'town' => 'required|in:town,workshop',
+        'town' => 'required|exists:locations,id',
         'category' => 'required|string|max:255',
         'condition' => 'required|string|max:255',
         'is_active' => 'required|boolean',

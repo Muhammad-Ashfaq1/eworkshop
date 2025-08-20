@@ -1,7 +1,14 @@
 // Vehicle CRUD functionality
 console.log('Vehicle CRUD functionality');
-    // Initialize DataTable
-    $('#js-vehicle-table').DataTable();
+
+// Initialize DataTable
+if (!$.fn.DataTable.isDataTable('#js-vehicle-table')) {
+    $('#js-vehicle-table').DataTable({
+        responsive: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
+    });
+}
 
     // Add new vehicle form submission with validation
     $('#js-add-vehicle-form').validate({
@@ -147,7 +154,7 @@ console.log('Vehicle CRUD functionality');
     });
 
     // Delete Vehicle functionality
-    $(document).on('click', '#vehicle-delete-btn', function(e) {
+    $(document).on('click', '.vehicle-delete-btn', function(e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('href');
 
@@ -187,15 +194,20 @@ console.log('Vehicle CRUD functionality');
     });
 
     // Add new vehicle button click handler
-    $('#js-add-vehicle-button').on('click', function() {
-        $('#js-add-vehicle-modal').modal('show');
+    $(document).on('click', '#js-add-vehicle-button', function() {
         $('#js-add-vehicle-form')[0].reset();
         $('#js-model-title').text('Add Vehicle');
         $('#js-vehicle-id').val('');
+        $('#js-add-vehicle-submit').text('Add');
 
-        // Populate dropdowns
+        // Populate dropdowns first
         getDynamicDropdownData('/get-towns', '#js-town');
         getDynamicDropdownData('/get-vehicle-categories', '#js-category');
+
+        // Show modal after dropdowns are populated
+        setTimeout(function() {
+            $('#js-add-vehicle-modal').modal('show');
+        }, 300);
 
         // Reset validation
         $('#js-add-vehicle-form').validate().resetForm();
