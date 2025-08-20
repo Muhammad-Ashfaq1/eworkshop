@@ -56,6 +56,15 @@
                     </div>
                     <ul class="navbar-nav" id="navbar-nav">
                         <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+
+                        @role('super_admin')
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ route('admin.user.index') }}">
+                                <i class="ri-user-settings-line"></i> <span data-key="t-user-management">User Management</span>
+                            </a>
+                        </li>
+                        @endrole
+
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                                 <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Master Data</span>
