@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DropdownController;
+use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\VehiclePartController;
-use App\Http\Controllers\Admin\VehicleController;
-use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
@@ -29,8 +30,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
     Route::controller(VehicleController::class)->prefix('vehicles')
     ->name('vehicle.')->group(function(){
         Route::get('/' ,  'index')->name('index');
-
+        Route::post('store' ,  'store')->name('store');
+        Route::get('edit/{id}','edit')->name('edit');
+        Route::delete('destroy/{id}', 'destroy')->name('destroy');
     });
+
+
 
 });
 

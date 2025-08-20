@@ -137,8 +137,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 
-
-
+<script src="{{ asset('assets/admin/js/custom.js') }}"></script>
     @yield('scripts')
 </body>
 </html>
