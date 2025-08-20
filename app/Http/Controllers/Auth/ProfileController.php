@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\FileUploadManager;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,20 +30,37 @@ class ProfileController extends Controller
         $this->authorize('update_profile');
 
         $request->validate([
-                    "first_name"=>"required|string",
-                    "last_name"=>"sometimes|string",
-                    "phone_number"=>"sometimes|min:6|max:12",
-                ]);
-        $user=User::findOrFail($id);
-        if(!empty($user))
-        {
-            $user->update([
-                'first_name'=>$request->first_name,
-                'last_name'=>$request->last_name,
-                'email'=>$request->email,
-                'phone_number'=>$request->phone_number]);
-                return redirect()->back()->with('success','Profile updated successfully');
+            "first_name" => "required|string",
+            "last_name" => "sometimes|string",
+            "phone_number" => "sometimes|min:6|max:12",
+            "image_url" => "sometimes|image|mimes:jpeg,png,jpg,gif|max:2048",
+        ]);
+
+        $user = User::findOrFail($id);
+
+        if (!empty($user)) {
+            $data = [
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+            ];
+
+            // Handle image upload
+            if ($request->hasFile('image_url')) {
+                // Delete old image if exists
+                if ($user->getRawOriginal('image_url')) {
+                    $user->deleteImage();
+                }
+
+                $file = FileUploadManager::uploadFile($request->file('image_url'), 'users/profiles/');
+                $data['image_url'] = $file['path'];
+            }
+
+            $user->update($data);
+            return redirect()->back()->with('success', 'Profile updated successfully');
         }
+
         return redirect()->back()->withErrors(['message' => 'You are not authorized to update this profile']);
     }
 

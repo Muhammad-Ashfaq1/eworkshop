@@ -28,9 +28,13 @@
                         <div class="ribbon-two ribbon-two-primary"><span>{{ ucfirst(auth()->user()->getRoleNames()->first()) }}</span></div>
                         <div class="mt-3">
                             <div class="avatar-lg mx-auto">
-                                <div class="avatar-title bg-primary-subtle text-primary rounded-circle fs-20">
-                                    {{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}{{ strtoupper(substr(auth()->user()->last_name ?? '', 0, 1)) }}
-                                </div>
+                                @if(auth()->user()->image_url)
+                                    <img src="{{ auth()->user()->image_url }}" alt="Profile Image" class="avatar-lg rounded-circle img-thumbnail">
+                                @else
+                                    <div class="avatar-title bg-primary-subtle text-primary rounded-circle fs-20">
+                                        {{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}{{ strtoupper(substr(auth()->user()->last_name ?? '', 0, 1)) }}
+                                    </div>
+                                @endif
                             </div>
                             <h5 class="mt-3 mb-1">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</h5>
                             <p class="text-muted mb-0">{{ auth()->user()->email }}</p>
@@ -58,7 +62,7 @@
             <div class="card-body p-4">
                 <div class="tab-content">
                     <div class="tab-pane active" id="personalDetails" role="tabpanel">
-                        <form id="ajaxform"action="{{ route('update.user',$user->id) }}" method="POST">
+                        <form id="ajaxform" action="{{ route('update.user',$user->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-lg-6">
@@ -122,6 +126,28 @@
                                            value="{{  $user->email}}">
                                     </div>
                                     @error('email')
+                                        <div class="alert alert-danger mt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!--end col-->
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label for="imageInput" class="form-label">Profile Image</label>
+                                        <input type="file" class="form-control" id="imageInput"
+                                               name="image_url"
+                                               accept="image/*">
+                                        <div class="form-text">Choose an image file (JPEG, PNG, JPG, GIF). Max size: 2MB</div>
+                                        @if($user->image_url)
+                                            <div class="mt-2">
+                                                <small class="text-muted">Current image:</small>
+                                                <img src="{{ $user->image_url }}" alt="Current Profile" class="img-thumbnail mt-1" style="max-width: 100px;">
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @error('image_url')
                                         <div class="alert alert-danger mt-2">
                                             {{ $message }}
                                         </div>

@@ -151,16 +151,24 @@
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
+                            @if(auth()->user()->image_url)
+                                <img class="rounded-circle header-profile-user" src="{{ auth()->user()->image_url }}" alt="Header Avatar">
+                            @else
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-primary text-white">
+                                        {{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}{{ strtoupper(substr(auth()->user()->last_name ?? '', 0, 1)) }}
+                                    </div>
+                                </div>
+                            @endif
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">Anna Adame</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
+                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</span>
+                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ ucfirst(auth()->user()->getRoleNames()->first()) }}</span>
                             </span>
                         </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <h6 class="dropdown-header">Welcome Anna!</h6>
+                        <h6 class="dropdown-header">Welcome {{ auth()->user()->first_name }}!</h6>
                         <a class="dropdown-item" href="{{ route('profile') }}"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
                         <a class="dropdown-item" href="apps-chat.html"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span></a>
                         <a class="dropdown-item" href="apps-tasks-kanban.html"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
