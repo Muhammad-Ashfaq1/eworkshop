@@ -23,7 +23,7 @@ class VehicleController extends Controller
             $location_id = $request->town;
             $vehicle_category_id = $request->category;
             $condition = $request->condition;
-            $is_active = $request->is_active;
+            $is_active = $request->is_active ? 1 : 0;
 
             Vehicle::updateOrCreate(
                 ['id' => $vehicle_id],

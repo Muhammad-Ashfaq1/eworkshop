@@ -101,7 +101,7 @@ $(document).ready(function() {
     $(document).on('click', '.edit-item-btn', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        
+
         $.ajax({
             url: url,
             type: 'GET',
@@ -109,24 +109,24 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     var vehicle = response.vehicle;
-                    
+
                     // Populate form fields
                     $('#vehicleNumber').val(vehicle.vehicle_number);
                     $('#js-category').val(vehicle.vehicle_category_id);
                     $('#js-condition').val(vehicle.condition);
                     $('#js-town').val(vehicle.location_id);
-                    $('#js-is-active').val(vehicle.is_active);
+                    $('#js-is-active').val(vehicle.is_active ? 1 : 0);
                     $('#js-vehicle-id').val(vehicle.id);
-                    
+
                     // Show modal
                     $('#js-add-vehicle-modal').modal('show');
                     $('#js-add-vehicle-submit').text('Update');
                     $('#js-model-title').text('Edit Vehicle');
-                    
+
                     // Populate dropdowns
                     getDynamicDropdownData('/get-towns', '#js-town');
                     getDynamicDropdownData('/get-vehicle-categories', '#js-category');
-                    
+
                     // Set selected values after dropdowns are populated
                     setTimeout(function() {
                         $('#js-category').val(vehicle.vehicle_category_id);
@@ -150,7 +150,7 @@ $(document).ready(function() {
     $(document).on('click', '#vehicle-delete-btn', function(e) {
         e.preventDefault();
         var deleteUrl = $(this).attr('href');
-        
+
         Swal.fire({
             title: "Are you sure?",
             text: "You want to delete this vehicle?",
@@ -162,7 +162,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 showLoading("Deleting vehicle...");
-                
+
                 $.ajax({
                     url: deleteUrl,
                     type: "DELETE",
@@ -192,12 +192,12 @@ $(document).ready(function() {
         $('#js-add-vehicle-form')[0].reset();
         $('#js-model-title').text('Add Vehicle');
         $('#js-vehicle-id').val('');
-        
+
         // Populate dropdowns
         getDynamicDropdownData('/get-towns', '#js-town');
         getDynamicDropdownData('/get-vehicle-categories', '#js-category');
-        
+
         // Reset validation
         $('#js-add-vehicle-form').validate().resetForm();
     });
-}); 
+});

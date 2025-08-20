@@ -18,8 +18,6 @@
             <span class="badge bg-danger">Inactive</span>
         @endif
     </td>
-    <td>{{ $vehicle->created_at ? $vehicle->created_at->format('Y-m-d') : 'N/A' }}</td>
-    <td>{{ $vehicle->updated_at ? $vehicle->updated_at->format('Y-m-d') : 'N/A' }}</td>
     <td>
         <div class="dropdown d-inline-block">
             <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">

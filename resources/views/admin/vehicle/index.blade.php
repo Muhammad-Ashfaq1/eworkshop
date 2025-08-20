@@ -26,8 +26,6 @@
                                     <th>Category</th>
                                     <th>Condition</th>
                                     <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -91,7 +89,7 @@
                                         <div>
                                             <label for="status" class="form-label">Status <x-req /></label>
                                             <select name="is_active" id="js-is-active" class="form-control">
-                                                <option value="" selected disabled>Select Status</option>
+                                                <option value="" selected disabled >Select Status</option>
                                                 <option value="1">Active</option>
                                                 <option value="0">InActive</option>
                                             </select>
