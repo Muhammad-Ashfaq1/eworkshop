@@ -11,6 +11,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-vehicle-modal">
                                 Add New Vehicles
                             </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -26,6 +27,8 @@
                                     <th>Slug</th>
                                     <th>Type</th>
                                     <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -42,15 +45,13 @@
 
         <!-- Modal starts here-->
         <div class="live-preview">
-
-                            <div class="modal fade" id="js-add-vehicle-modal" tabindex="-1" aria-labelledby="exampleModalgridLabel">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="js-model-title">Add Vehicle</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
+            <div class="modal fade" id="js-add-vehicle-modal" tabindex="-1" aria-labelledby="exampleModalgridLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="js-model-title">Add Vehicle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
                         <div class="modal-body">
                             <form action="{{ route('admin.vehicle.store') }}" id="js-add-vehicle-form" method="POST">
                                 @csrf
@@ -104,11 +105,16 @@
                                             <button type="submit" class="btn btn-primary" id="js-add-vehicle-submit">Add</button>
                                         </div>
                                     </div>
+                                    <!--end row-->
                                 </div>
-                            </div>
+                                <!--end col-->
+                            </form>
                         </div>
-
-                    <!-- Modal ends here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal ends here -->
     </div>
 @endsection
 
