@@ -37,6 +37,7 @@ class LocationSeeder extends Seeder
             'TR-Saggian',
             'TR-Valencia',
             'Pool Vehicle',
+            'Pole Vehicle'
         ];
         $workshops = [
             'Children Workshop',

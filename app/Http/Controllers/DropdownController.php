@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Location;
+use App\Models\User;
+use App\Models\Vehicle;
 use App\Models\VehicleCategory;
+use Illuminate\Http\Request;
 
 class DropdownController extends Controller
 {
@@ -32,14 +35,14 @@ class DropdownController extends Controller
 
     public function getVehicles(Request $request)
     {
-        $vehicles = \App\Models\Vehicle::with('vehicle_category')
+        $vehicles = Vehicle::with('category')
             ->where('is_active', 1)
             ->get(['id', 'vehicle_number', 'vehicle_category_id']);
 
         $formattedVehicles = $vehicles->map(function($vehicle) {
             return [
                 'id' => $vehicle->id,
-                'name' => $vehicle->vehicle_number . ' - ' . ($vehicle->vehicle_category->name ?? 'N/A')
+                'name' => $vehicle->vehicle_number . ' - ' . ($vehicle->category->name ?? 'N/A')
             ];
         });
 

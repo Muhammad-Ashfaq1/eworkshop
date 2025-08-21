@@ -15,14 +15,14 @@ class VehicleCategorySeeder extends Seeder
     {
         $options = [
             'Arm Roll',
-            'Chain Arm Roll',
+            'Chain Arm Roll',   
             'Compactor',
             'Dumper',
             'Gully Sucker',
             'Loader',
             'Mech Washer',
             'Mini Dumper',
-            'Miscellaneous',
+            'Miscelleneous',
             'Pickup',
             'Rikshaw',
             'Sweeper',
@@ -41,13 +41,15 @@ class VehicleCategorySeeder extends Seeder
             'Tractor Loadery',
             'Toyota Bus',
             'Mini Van',
-            'Jimny',
+            'Jimmy',
             'Honda City',
             'Corolla Altis',
             'Toyota Vigo',
             'Toyota Yaris',
             'Toyota Fortuner',
             'Vacuum Sweeper',
+            'Pole Vehicle',
+            'Other',
         ];
 
         foreach ($options as $option) {

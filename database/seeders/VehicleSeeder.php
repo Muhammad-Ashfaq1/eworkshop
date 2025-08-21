@@ -30,7 +30,13 @@ class VehicleSeeder extends Seeder
         foreach ($csvData as $row) {
             $row = array_combine($header, $row);
 
+
             $category_id = VehicleCategory::whereRaw('LOWER(name) = ?', [strtolower($row['category'])])->value('id');
+
+            if(empty($category_id) && $row['category'] == 'Tracker not Installe')
+            {
+                $category_id = VehicleCategory::whereRaw('LOWER(name) = ?', [strtolower('Tracker not Installed')])->value('id');
+            }
 
             if (!$category_id) {
                 $this->command->error("Category not found for vehicle: {$row['category']}");
@@ -47,7 +53,7 @@ class VehicleSeeder extends Seeder
 
             Vehicle::updateOrCreate(
                 [
-                    'e_id' => (int)$row['id'],
+                    'vehicle_number' => $row['number'],
                 ],
                 [
                     'vehicle_number' => $row['number'],
