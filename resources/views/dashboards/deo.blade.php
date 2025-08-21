@@ -46,26 +46,26 @@
                         </div>
                     </div>
 
-                    <!-- Statistics Cards -->
+                    <!-- Defect Reports Statistics -->
                     <div class="row">
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-3 col-md-6">
                             <div class="card card-animate">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Today's Entries</p>
+                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Today's Reports</p>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                <span class="counter-value" data-target="{{ $stats['entries_today'] }}">{{ $stats['entries_today'] }}</span>
+                                                <span class="counter-value" data-target="{{ $defectStats['today'] }}">{{ $defectStats['today'] }}</span>
                                             </h4>
                                             <span class="badge bg-primary-subtle text-primary mb-0">Today</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-primary-subtle rounded fs-3">
-                                                <i class="bx bx-edit text-primary"></i>
+                                                <i class="ri-file-damage-line text-primary"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -73,26 +73,49 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-3 col-md-6">
                             <div class="card card-animate">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Total Entries</p>
+                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">This Week</p>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                <span class="counter-value" data-target="{{ $stats['total_entries'] }}">{{ $stats['total_entries'] }}</span>
+                                                <span class="counter-value" data-target="{{ $defectStats['this_week'] }}">{{ $defectStats['this_week'] }}</span>
                                             </h4>
-                                            <span class="badge bg-success-subtle text-success mb-0">
-                                                <i class="ri-arrow-up-line align-middle"></i> All Time
+                                            <span class="badge bg-info-subtle text-info mb-0">This Week</span>
+                                        </div>
+                                        <div class="avatar-sm flex-shrink-0">
+                                            <span class="avatar-title bg-info-subtle rounded fs-3">
+                                                <i class="ri-calendar-week-line text-info"></i>
                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-animate">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">This Month</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-end justify-content-between mt-4">
+                                        <div>
+                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4">
+                                                <span class="counter-value" data-target="{{ $defectStats['this_month'] }}">{{ $defectStats['this_month'] }}</span>
+                                            </h4>
+                                            <span class="badge bg-success-subtle text-success mb-0">This Month</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-success-subtle rounded fs-3">
-                                                <i class="bx bx-data text-success"></i>
+                                                <i class="ri-calendar-month-line text-success"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -100,24 +123,24 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-md-6">
+                        <div class="col-xl-3 col-md-6">
                             <div class="card card-animate">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Pending Tasks</p>
+                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Total Reports</p>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-end justify-content-between mt-4">
                                         <div>
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
-                                                <span class="counter-value" data-target="{{ $stats['pending_tasks'] }}">{{ $stats['pending_tasks'] }}</span>
+                                                <span class="counter-value" data-target="{{ $defectStats['total'] }}">{{ $defectStats['total'] }}</span>
                                             </h4>
-                                            <span class="badge bg-warning-subtle text-warning mb-0">Pending</span>
+                                            <span class="badge bg-warning-subtle text-warning mb-0">All Time</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-warning-subtle rounded fs-3">
-                                                <i class="bx bx-task text-warning"></i>
+                                                <i class="ri-file-chart-line text-warning"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -136,22 +159,22 @@
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-md-3">
-                                            <a href="{{ route('admin.location.index') }}" class="btn btn-primary w-100">
-                                                <i class="ri-map-pin-line me-1"></i> Manage Locations
+                                            <a href="{{ route('defect-reports.index') }}" class="btn btn-primary w-100">
+                                                <i class="ri-file-damage-line me-1"></i> Defect Reports
                                             </a>
                                         </div>
                                         <div class="col-md-3">
-                                            <a href="#" class="btn btn-secondary w-100">
-                                                <i class="ri-add-line me-1"></i> New Data Entry
+                                            <a href="{{ route('defect-reports.index') }}" class="btn btn-success w-100">
+                                                <i class="ri-add-line me-1"></i> New Defect Report
                                             </a>
                                         </div>
                                         <div class="col-md-3">
-                                            <a href="#" class="btn btn-info w-100">
-                                                <i class="ri-file-chart-line me-1"></i> View Reports
+                                            <a href="#" class="btn btn-info w-100" onclick="showPurchaseOrderInfo()">
+                                                <i class="ri-shopping-cart-line me-1"></i> Purchase Orders
                                             </a>
                                         </div>
                                         <div class="col-md-3">
-                                            <a href="{{ route('profile') }}" class="btn btn-success w-100">
+                                            <a href="{{ route('profile') }}" class="btn btn-secondary w-100">
                                                 <i class="ri-user-line me-1"></i> My Profile
                                             </a>
                                         </div>
@@ -161,22 +184,109 @@
                         </div>
                     </div>
 
-                    <!-- Recent Work -->
+                    <!-- Recent Defect Reports -->
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header align-items-center d-flex">
-                                    <h4 class="card-title mb-0 flex-grow-1">Recent Data Entries</h4>
+                                    <h4 class="card-title mb-0 flex-grow-1">Recent Defect Reports</h4>
                                     <div class="flex-shrink-0">
-                                        <button type="button" class="btn btn-soft-info btn-sm">
-                                            <i class="ri-refresh-line align-middle"></i> Refresh
-                                        </button>
+                                        <a href="{{ route('defect-reports.index') }}" class="btn btn-soft-info btn-sm">
+                                            <i class="ri-eye-line align-middle"></i> View All
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="alert alert-info" role="alert">
-                                        <i class="ri-information-line me-2"></i>
-                                        Recent entries will be displayed here once data entry functionality is implemented.
+                                    @if($recentReports->count() > 0)
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless table-centered align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Report ID</th>
+                                                        <th>Vehicle</th>
+                                                        <th>Location</th>
+                                                        <th>Driver</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($recentReports as $report)
+                                                    <tr>
+                                                        <td>
+                                                            <span class="fw-semibold">#{{ $report->id }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-muted">{{ $report->vehicle->vehicle_number ?? 'N/A' }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-muted">{{ $report->location->name ?? 'N/A' }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-muted">{{ $report->driver_name }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-muted">{{ $report->created_at->format('d/m/Y') }}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge bg-success-subtle text-success">Completed</span>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="text-center text-muted py-4">
+                                            <i class="ri-inbox-line fs-1"></i>
+                                            <p class="mt-2">No defect reports found yet.</p>
+                                            <a href="{{ route('defect-reports.index') }}" class="btn btn-primary btn-sm">
+                                                <i class="ri-add-line me-1"></i> Create First Report
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Future Features Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title mb-0">Upcoming Features</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <div class="avatar-sm me-3">
+                                                    <div class="avatar-title bg-info-subtle text-info rounded-circle fs-16">
+                                                        <i class="ri-shopping-cart-line"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">Purchase Order Reports</h6>
+                                                    <p class="text-muted mb-2">Create and manage purchase orders for vehicle parts and supplies.</p>
+                                                    <span class="badge bg-warning-subtle text-warning">Coming Soon</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <div class="avatar-sm me-3">
+                                                    <div class="avatar-title bg-success-subtle text-success rounded-circle fs-16">
+                                                        <i class="ri-bar-chart-line"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">Advanced Analytics</h6>
+                                                    <p class="text-muted mb-2">Detailed reports and analytics for better decision making.</p>
+                                                    <span class="badge bg-info-subtle text-info">Planned</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -187,4 +297,69 @@
         </div>
     </div>
 </div>
+
+<!-- Purchase Order Info Modal -->
+<div class="modal fade" id="purchaseOrderInfoModal" tabindex="-1" aria-labelledby="purchaseOrderInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="purchaseOrderInfoModalLabel">Purchase Order Reports</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="ri-shopping-cart-line text-info" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="text-center mb-3">Feature Coming Soon!</h6>
+                <p class="text-muted text-center">
+                    Purchase Order Reports functionality is currently under development. 
+                    This feature will allow you to create and manage purchase orders for vehicle parts and supplies.
+                </p>
+                <div class="alert alert-info" role="alert">
+                    <i class="ri-information-line me-2"></i>
+                    <strong>Expected Features:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Create purchase orders for vehicle parts</li>
+                        <li>Track order status and delivery</li>
+                        <li>Manage supplier information</li>
+                        <li>Generate purchase order reports</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+function showPurchaseOrderInfo() {
+    $('#purchaseOrderInfoModal').modal('show');
+}
+
+// Counter animation
+$(document).ready(function() {
+    $('.counter-value').each(function() {
+        const $this = $(this);
+        const countTo = $this.attr('data-target');
+        
+        $({ countNum: 0 }).animate({
+            countNum: countTo
+        }, {
+            duration: 2000,
+            easing: 'swing',
+            step: function() {
+                $this.text(Math.floor(this.countNum));
+            },
+            complete: function() {
+                $this.text(this.countNum);
+            }
+        });
+    });
+});
+</script>
 @endsection

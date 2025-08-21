@@ -106,13 +106,41 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        // Get defect report statistics for the current DEO
+        $today = now()->startOfDay();
+        $weekStart = now()->startOfWeek();
+        $monthStart = now()->startOfMonth();
+
+        $defectStats = [
+            'today' => \App\Models\DefectReport::where('created_by', $user->id)
+                ->where('created_at', '>=', $today)
+                ->count(),
+            'this_week' => \App\Models\DefectReport::where('created_by', $user->id)
+                ->where('created_at', '>=', $weekStart)
+                ->count(),
+            'this_month' => \App\Models\DefectReport::where('created_by', $user->id)
+                ->where('created_at', '>=', $monthStart)
+                ->count(),
+            'total' => \App\Models\DefectReport::where('created_by', $user->id)->count(),
+        ];
+
+        // Get recent defect reports
+        $recentReports = \App\Models\DefectReport::where('created_by', $user->id)
+            ->with(['vehicle', 'location', 'fleetManager', 'mvi'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         $data = [
             'title' => 'Data Entry Operator Dashboard',
             'user' => $user,
+            'defectStats' => $defectStats,
+            'recentReports' => $recentReports,
             'stats' => [
-                'entries_today' => 0, // Add actual count when data entry tracking is available
-                'total_entries' => 0, // Add actual count
-                'pending_tasks' => 0, // Add actual count
+                'defect_reports_today' => $defectStats['today'],
+                'defect_reports_week' => $defectStats['this_week'],
+                'defect_reports_month' => $defectStats['this_month'],
+                'total_defect_reports' => $defectStats['total'],
             ]
         ];
 
