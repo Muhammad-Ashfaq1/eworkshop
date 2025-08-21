@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DefectReportController;
 use App\Http\Controllers\DropdownController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,13 @@ Route::get('/verify-user/{id}',[AuthController::class, 'verifyUser'])->name('ver
 
 Route::get('get-towns', [DropdownController::class, 'getTowns'])->name('dropdown.getTowns');
 Route::get('get-vehicle-categories', [DropdownController::class, 'getVehicleCategories'])->name('dropdown.getVehicleCategories');
+Route::get('get-vehicles', [DropdownController::class, 'getVehicles'])->name('dropdown.getVehicles');
+Route::get('get-locations', [DropdownController::class, 'getLocations'])->name('dropdown.getLocations');
+Route::get('get-fleet-managers', [DropdownController::class, 'getFleetManagers'])->name('dropdown.getFleetManagers');
+Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.getMvis');
+
+// Defect Reports routes
+Route::resource('defect-reports', DefectReportController::class)->except(['create', 'edit', 'show']);
 
 // Role-specific dashboard routes
 Route::middleware(['auth'])->group(function () {

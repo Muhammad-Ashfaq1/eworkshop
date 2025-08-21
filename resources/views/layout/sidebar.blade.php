@@ -112,6 +112,22 @@
                         </li>
                         @endrole
 
+                        @role('super_admin|admin')
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}" href="{{ route('defect-reports.index') }}">
+                                <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Defect Reports</span>
+                            </a>
+                        </li>
+                        @endrole
+
+                        @role('deo')
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}" href="{{ route('defect-reports.index') }}">
+                                <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Defect Reports</span>
+                            </a>
+                        </li>
+                        @endrole
+
                         @role('fleet_manager')
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#sidebarFleetManagement" data-bs-toggle="collapse" role="button"
@@ -120,6 +136,11 @@
                             </a>
                             <div class="collapse menu-dropdown" id="sidebarFleetManagement">
                                 <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ route('defect-reports.index') }}" class="nav-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}">
+                                            <i class="ri-file-damage-line me-2"></i>Defect Reports
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="#" class="nav-link" data-key="t-vehicle-tracking">
                                             <i class="ri-map-2-line me-2"></i>Vehicle Tracking
@@ -148,6 +169,11 @@
                             </a>
                             <div class="collapse menu-dropdown" id="sidebarInspections">
                                 <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item">
+                                        <a href="{{ route('defect-reports.index') }}" class="nav-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}">
+                                            <i class="ri-file-damage-line me-2"></i>Defect Reports
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="#" class="nav-link" data-key="t-new-inspection">
                                             <i class="ri-add-line me-2"></i>New Inspection
