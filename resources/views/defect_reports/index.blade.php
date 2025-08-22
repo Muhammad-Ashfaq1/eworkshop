@@ -202,19 +202,19 @@
     function applyDefectReportsDatatable() {
         var table = $('#js-defect-report-table').DataTable({
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
-            buttons: [
-                {
-                    text: '<i class="fas fa-plus me-2"></i>Add New',
-                    className: 'btn btn-primary',
-                    action: function (e, dt, node, config) {
-                        resetForm();
-                        $('#defectReportModalLabel').text('Add Defect Report');
-                        $('#defectReportSubmit').text('Create Defect Report');
-                        $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
-                        $('#defectReportModal').modal('show');
-                    }
-                }
-            ],
+            // buttons: [
+            //     {
+            //         text: '<i class="fas fa-plus me-2"></i>Add New',
+            //         className: 'btn btn-primary',
+            //         action: function (e, dt, node, config) {
+            //             resetForm();
+            //             $('#defectReportModalLabel').text('Add Defect Report');
+            //             $('#defectReportSubmit').text('Create Defect Report');
+            //             $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+            //             $('#defectReportModal').modal('show');
+            //         }
+            //     }
+            // ],
             pageLength: 20,
             searching: true,
             lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
