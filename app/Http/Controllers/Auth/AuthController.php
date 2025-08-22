@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Constants\UserRoles;
-use App\Http\Controllers\Controller;
-use App\Mail\ActiveUserMail;
 use App\Models\User;
+use App\Jobs\UserSignupJob;
+use App\Constants\UserRoles;
+use App\Mail\ActiveUserMail;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -53,8 +54,8 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
         $user = User::create($validated);
-        Mail::to($user->email)->send(new ActiveUserMail($user));
 
+        UserSignupJob::dispatch($user);
         return redirect()->route('login')->with('success', 'Please verify the email.');
 
     }
