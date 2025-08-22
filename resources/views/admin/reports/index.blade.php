@@ -128,6 +128,8 @@
         
         // Show empty state initially (no DataTable initialization)
         showEmptyState();
+        
+        // Show welcome message
     }
 
     function setupEventListeners() {
@@ -136,15 +138,40 @@
             currentReportType = $(this).val();
             loadDynamicFilters();
             resetToEmptyState();
+            
+            // Show info message
+            const reportTypeNames = {
+                'vehicles': 'Vehicles Report',
+                'defect_reports': 'Defect Reports',
+                'vehicle_parts': 'Vehicle Parts',
+                'locations': 'Locations'
+            };
         });
 
         // Date range change
         $('#dateRange').on('change', function() {
             handleDateRangeChange();
+            
+            // Show info message
+            const range = $(this).val();
+            if (range) {
+                const rangeNames = {
+                    'today': 'Today',
+                    'yesterday': 'Yesterday',
+                    'last_7_days': 'Last 7 Days',
+                    'last_30_days': 'Last 30 Days',
+                    'this_month': 'This Month',
+                    'last_month': 'Last Month',
+                    'custom': 'Custom Range'
+                };
+            }
         });
 
         // Generate report button
         $('#js-generate-report-btn').on('click', function() {
+            // Check if any filters are applied
+            const filters = collectFilters();
+            const hasFilters = Object.values(filters).some(value => value !== '' && value !== null);
             refreshDataTable();
         });
 
@@ -195,50 +222,90 @@
     }
 
     function refreshDataTable() {
-        // Destroy existing DataTable if it exists
-        if (reportsDataTable) {
-            reportsDataTable.destroy();
-        }
-        
-        // Clear the table body first
-        $('#js-reports-table tbody').empty();
-        
-        const columns = getDataTableColumns();
-        
-        reportsDataTable = $('#js-reports-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: getDataTableUrl(),
-                type: 'GET',
-                data: function(d) {
-                    // Add custom filters to DataTables request
-                    const filters = collectFilters();
-                    Object.keys(filters).forEach(key => {
-                        if (filters[key] !== '' && filters[key] !== null) {
-                            d[key] = filters[key];
-                        }
-                    });
-                    return d;
+        try {
+            // Show loading toastr
+            toastr.info('Generating report...', 'Please wait');
+            
+            // Check if table element exists
+            const tableElement = $('#js-reports-table');
+            if (tableElement.length === 0) {
+                console.error('Table element not found');
+                toastr.error('Table element not found', 'Error');
+                return;
+            }
+
+            // Destroy existing DataTable if it exists
+            if (reportsDataTable) {
+                try {
+                    reportsDataTable.destroy();
+                } catch (e) {
+                    console.warn('Error destroying existing DataTable:', e);
                 }
-            },
-            columns: columns,
-            pageLength: 10,
-            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            }
+            
+            // Update table headers based on report type
+            updateTableHeaders();
+            
+            // Clear the table body and add loading row
+            tableElement.find('tbody').html('<tr><td colspan="2" class="text-center"><i class="ri-loader-4-line me-1"></i>Loading...</td></tr>');
+            
+            const columns = getDataTableColumns();
+            
+            // Initialize DataTable with error handling
+            reportsDataTable = tableElement.DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: getDataTableUrl(),
+                    type: 'GET',
+                    data: function(d) {
+                        // Add custom filters to DataTables request
+                        const filters = collectFilters();
+                        Object.keys(filters).forEach(key => {
+                            if (filters[key] !== '' && filters[key] !== null) {
+                                d[key] = filters[key];
+                            }
+                        });
+                        return d;
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTables AJAX error:', error);
+                        tableElement.find('tbody').html('<tr><td colspan="2" class="text-center text-danger">Error loading data. Please try again.</td></tr>');
+                        toastr.error('Failed to load report data', 'Error');
+                    }
+                },
+                columns: columns,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                 order: [[0, 'asc']],
-                responsive: true,
+                responsive: false, // Disable responsive to avoid DOM manipulation issues
                 language: {
                     processing: '<i class="ri-loader-4-line me-1"></i>Loading...',
                     emptyTable: 'No data available',
                     zeroRecords: 'No matching records found'
+                },
+                drawCallback: function(settings) {
+                    // Safe way to update results count
+                    try {
+                        const count = this.api().page.info().recordsDisplay;
+                        updateResultsCount(count);
+                        
+                        // Show success message
+                        if (count > 0) {
+                            toastr.success(`Report generated successfully with ${count} records`, 'Success');
+                        } else {
+                            toastr.warning('Report generated but no data found for current filters', 'Warning');
+                        }
+                    } catch (e) {
+                        console.warn('Error updating results count:', e);
+                    }
                 }
             });
 
-            // Update results count
-            reportsDataTable.on('draw', function() {
-                const count = reportsDataTable.page.info().recordsDisplay;
-                updateResultsCount(count);
-            });
+        } catch (error) {
+            console.error('Error initializing DataTable:', error);
+            $('#js-reports-table tbody').html('<tr><td colspan="2" class="text-center text-danger">Error initializing table. Please refresh the page.</td></tr>');
+            toastr.error('Failed to initialize report table', 'Error');
         }
     }
 
@@ -250,6 +317,76 @@
             'locations': "{{ route('admin.reports.locations.listing') }}"
         };
         return endpoints[currentReportType] || endpoints.vehicles;
+    }
+
+    function updateTableHeaders() {
+        const thead = $('#js-reports-table thead tr');
+        let headers = '';
+        
+        switch(currentReportType) {
+            case 'vehicles':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Vehicle Number</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Condition</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                `;
+                break;
+            case 'defect_reports':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Driver Name</th>
+                    <th>Type</th>
+                    <th>Vehicle</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Created By</th>
+                `;
+                break;
+            case 'vehicle_parts':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                `;
+                break;
+            case 'locations':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                `;
+                break;
+            default:
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Report Data</th>
+                `;
+        }
+        
+        thead.html(headers);
+    }
+
+    function getColumnCount() {
+        switch(currentReportType) {
+            case 'vehicles':
+                return 7;
+            case 'defect_reports':
+                return 7;
+            case 'vehicle_parts':
+                return 5;
+            case 'locations':
+                return 5;
+            default:
+                return 2;
+        }
     }
 
     function getDataTableColumns() {
@@ -360,10 +497,18 @@
                         }
                     },
                     {
-                        data: 'creator.full_name',
+                        data: 'creator',
                         name: 'creator',
                         render: function(data, type, row) {
-                            return data || 'N/A';
+                            if (data && data.full_name) {
+                                return data.full_name;
+                            } else if (data && data.first_name && data.last_name) {
+                                return data.first_name + ' ' + data.last_name;
+                            } else if (data && data.name) {
+                                return data.name;
+                            } else {
+                                return 'N/A';
+                            }
                         }
                     }
                 ];
@@ -634,12 +779,6 @@
         return filters;
     }
 
-
-
-
-
-
-
     function updateResultsCount(count) {
         if (count > 0) {
             $('#resultsCount').text(count + ' results').removeClass('bg-secondary').addClass('bg-success');
@@ -652,8 +791,11 @@
         // Show empty state message
         $('#resultsCount').text('No report generated').removeClass('bg-info bg-success').addClass('bg-secondary');
         
+        // Get the correct colspan based on current report type
+        const columnCount = getColumnCount();
+        
         // Show empty table with message
-        $('#js-reports-table tbody').html('<tr><td colspan="2" class="text-center text-muted py-4">Select report type and click "Generate Report" to view data</td></tr>');
+        $('#js-reports-table tbody').html(`<tr><td colspan="${columnCount}" class="text-center text-muted py-4">Select report type and click "Generate Report" to view data</td></tr>`);
     }
 
     function resetToEmptyState() {
@@ -662,6 +804,9 @@
             reportsDataTable.destroy();
             reportsDataTable = null;
         }
+        
+        // Update headers for new report type
+        updateTableHeaders();
         
         // Show empty state
         showEmptyState();
@@ -677,6 +822,9 @@
         
         // Reset to empty state
         resetToEmptyState();
+        
+        // Show success message
+        toastr.success('All filters have been cleared', 'Filters Reset');
     }
 
     function setDefaultDateRange() {
@@ -732,9 +880,14 @@
     function exportReport() {
         const filters = collectFilters();
         
+        // Show loading message
+        toastr.info('Preparing export...', 'Please wait');
+        
         // For now, just show a success message
         // In the future, this could download a file
-        toastr.success('Export functionality will be implemented soon!');
+        setTimeout(() => {
+            toastr.success('Export functionality will be implemented soon!', 'Export');
+        }, 1000);
         
         // You could also make an AJAX call to the export endpoint
         // $.post("{{ route('admin.reports.export') }}", filters)
