@@ -41,6 +41,7 @@ Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.g
 
 // Defect Reports routes
 Route::resource('defect-reports', DefectReportController::class)->except(['create', 'edit', 'show']);
+Route::get('defect-reports/export', [DefectReportController::class, 'exportReports'])->middleware('auth')->name('defect-reports.export');
 
 // Role-specific dashboard routes
 Route::middleware(['auth'])->group(function () {

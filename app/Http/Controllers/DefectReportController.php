@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DefectReportExport;
 use App\Helpers\FileUploadManager;
-use App\Http\Requests\DefectReportRequest;
 use App\Models\DefectReport;
 use App\Models\User;
 use App\Models\Work;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DefectReportController extends Controller
 {
@@ -231,5 +232,10 @@ class DefectReportController extends Controller
         }
 
         return false;
+    }
+
+    public function exportReports()
+    {
+        return Excel::download(new DefectReportExport, 'defect_reports.xlsx');
     }
 }

@@ -21,6 +21,7 @@
         </div>
         <!-- End page title -->
 
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -29,13 +30,22 @@
                             <div class="col-md-6">
                                 <h4 class="card-title mb-0">Defect Reports List</h4>
                             </div>
+
                             <div class="col-md-6 text-end">
+                                 @role('deo')
+                                <button type="button" class="btn btn-primary">
+                                    <a href="{{ route('defect-reports.export') }}" class="text-white text-decoration-none">
+                                    <i class="align-bottom me-1"></i>Export Defect Report
+                                    </a>
+                                </button>
+                                @endrole
                                 @role('deo')
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDefectReportModal">
                                     <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
                                 </button>
                                 @endrole
                             </div>
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -91,20 +101,20 @@
                                         <td>{{ $report->creator->first_name }} {{ $report->creator->last_name }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <button type="button" class="btn btn-sm btn-info" 
-                                                        data-bs-toggle="modal" 
+                                                <button type="button" class="btn btn-sm btn-info"
+                                                        data-bs-toggle="modal"
                                                         data-bs-target="#viewDefectReportModal{{ $report->id }}">
                                                     <i class="ri-eye-line"></i>
                                                 </button>
-                                                
+
                                                 @role('super_admin|admin')
-                                                <button type="button" class="btn btn-sm btn-warning" 
-                                                        data-bs-toggle="modal" 
+                                                <button type="button" class="btn btn-sm btn-warning"
+                                                        data-bs-toggle="modal"
                                                         data-bs-target="#editDefectReportModal{{ $report->id }}">
                                                     <i class="ri-edit-line"></i>
                                                 </button>
-                                                
-                                                <button type="button" class="btn btn-sm btn-danger" 
+
+                                                <button type="button" class="btn btn-sm btn-danger"
                                                         onclick="deleteDefectReport({{ $report->id }})">
                                                     <i class="ri-delete-bin-line"></i>
                                                 </button>
@@ -153,7 +163,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="location_id" class="form-label">Office/Town <x-req /></label>
@@ -168,15 +178,15 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="driver_name" class="form-label">Driver Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control required" id="driver_name" name="driver_name" 
+                                <input type="text" class="form-control required" id="driver_name" name="driver_name"
                                        placeholder="Enter driver name" required>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control required" id="date" name="date" 
+                                <input type="date" class="form-control required" id="date" name="date"
                                        value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
@@ -191,7 +201,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="mvi_id" class="form-label">MVI <x-req /></label>
@@ -210,11 +220,11 @@
                                 <input type="hidden" name="type" value="defect_report">
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="attach_file" class="form-label">Attach File <x-req /></label>
-                                <input type="file" class="form-control required" id="attach_file" name="attach_file" 
+                                <input type="file" class="form-control required" id="attach_file" name="attach_file"
                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
                                 <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB</div>
                             </div>
@@ -222,7 +232,7 @@
                     </div>
 
                     <hr class="my-4">
-                    
+
                     <div class="row">
                         <div class="col-12">
                             <h6 class="mb-3">Work Items</h6>
@@ -230,7 +240,7 @@
                                 <div class="work-item row mb-3">
                                     <div class="col-md-10">
                                         <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control work-description required" name="works[0][work]" 
+                                        <input type="text" class="form-control work-description required" name="works[0][work]"
                                                placeholder="Enter work description" maxlength="300" required>
                                         <input type="hidden" name="works[0][type]" value="defect">
                                     </div>
@@ -241,7 +251,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="text-center">
                                 <button type="button" class="btn btn-success btn-sm" id="add-work">
                                     <i class="ri-add-line"></i> Add Work Item
@@ -299,7 +309,7 @@
                             </tr>
                         </table>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <h6 class="text-muted mb-3">Assigned Personnel</h6>
                         <table class="table table-borderless">
@@ -342,7 +352,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h6 class="text-muted mb-3">Work Items ({{ $report->works->count() }})</h6>
-                        
+
                         @if($report->works->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -424,7 +434,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="edit_location_id_{{ $report->id }}" class="form-label">Office/Town <x-req /></label>
@@ -439,15 +449,15 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="edit_driver_name_{{ $report->id }}" class="form-label">Driver Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="edit_driver_name_{{ $report->id }}" name="driver_name" 
+                                <input type="text" class="form-control" id="edit_driver_name_{{ $report->id }}" name="driver_name"
                                        value="{{ $report->driver_name }}" placeholder="Enter driver name" required>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="edit_date_{{ $report->id }}" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="edit_date_{{ $report->id }}" name="date" 
+                                <input type="date" class="form-control" id="edit_date_{{ $report->id }}" name="date"
                                        value="{{ $report->date->format('Y-m-d') }}" required>
                             </div>
                         </div>
@@ -462,7 +472,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="edit_mvi_id_{{ $report->id }}" class="form-label">MVI <x-req /></label>
@@ -481,11 +491,11 @@
                                 <input type="hidden" name="type" value="defect_report">
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="edit_attach_file_{{ $report->id }}" class="form-label">Attach File <x-req /></label>
-                                <input type="file" class="form-control required" id="edit_attach_file_{{ $report->id }}" name="attach_file" 
+                                <input type="file" class="form-control required" id="edit_attach_file_{{ $report->id }}" name="attach_file"
                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
                                 <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB</div>
                                 @if($report->attach_file)
@@ -501,7 +511,7 @@
                     </div>
 
                     <hr class="my-4">
-                    
+
                     <div class="row">
                         <div class="col-12">
                             <h6 class="mb-3">Work Items</h6>
@@ -510,7 +520,7 @@
                                 <div class="work-item row mb-3">
                                     <div class="col-md-10">
                                         <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control work-description required" name="works[{{ $index }}][work]" 
+                                        <input type="text" class="form-control work-description required" name="works[{{ $index }}][work]"
                                                value="{{ $work->work }}" placeholder="Enter work description" maxlength="300" required>
                                         <input type="hidden" name="works[{{ $index }}][type]" value="defect">
                                     </div>
@@ -524,7 +534,7 @@
                                 </div>
                                 @endforeach
                             </div>
-                            
+
                             <div class="text-center">
                                 <button type="button" class="btn btn-success btn-sm" onclick="addEditWorkItem({{ $report->id }})">
                                     <i class="ri-add-line"></i> Add Work Item
@@ -550,17 +560,17 @@
 <script>
 $(document).ready(function() {
     let workIndex = 1;
-    
+
     // Load dropdowns on page load
     loadAddModalDropdowns();
-    
+
     // Add work item
     $('#add-work').click(function() {
         const workItem = `
             <div class="work-item row mb-3">
                 <div class="col-md-10">
                     <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control work-description required" name="works[${workIndex}][work]" 
+                    <input type="text" class="form-control work-description required" name="works[${workIndex}][work]"
                            placeholder="Enter work description" maxlength="300" required>
                     <input type="hidden" name="works[${workIndex}][type]" value="defect">
                 </div>
@@ -571,27 +581,27 @@ $(document).ready(function() {
                 </div>
             </div>
         `;
-        
+
         $('#works-container').append(workItem);
         workIndex++;
-        
+
         // Show remove buttons for all items except the first one
         $('.remove-work').show();
     });
-    
+
     // Remove work item
     $(document).on('click', '.remove-work', function() {
         $(this).closest('.work-item').remove();
-        
+
         // Hide remove button if only one item remains
         if ($('.work-item').length === 1) {
             $('.remove-work').hide();
         }
     });
-    
+
     // Initialize - hide remove button for first item
     $('.remove-work').hide();
-    
+
     // Load dropdowns for add modal
     function loadAddModalDropdowns() {
         getDynamicDropdownData('/get-vehicles', '#vehicle_id');
@@ -599,26 +609,26 @@ $(document).ready(function() {
         getDynamicDropdownData('/get-fleet-managers', '#fleet_manager_id');
         getDynamicDropdownData('/get-mvis', '#mvi_id');
     }
-    
+
     // Load dropdowns for edit modals when they open
     $('[id^="editDefectReportModal"]').on('show.bs.modal', function() {
         const reportId = $(this).attr('id').replace('editDefectReportModal', '');
         loadEditModalDropdowns(reportId);
     });
-    
+
     // Load dropdowns for edit modal
     function loadEditModalDropdowns(reportId) {
         getDynamicDropdownData('/get-vehicles', `#edit_vehicle_id_${reportId}`);
         getDynamicDropdownData('/get-locations', `#edit_location_id_${reportId}`);
         getDynamicDropdownData('/get-fleet-managers', `#edit_fleet_manager_id_${reportId}`);
         getDynamicDropdownData('/get-mvis', `#edit_mvi_id_${reportId}`);
-        
+
         // Set selected values after dropdowns are loaded
         setTimeout(() => {
             setEditModalValues(reportId);
         }, 500);
     }
-    
+
     // Set selected values in edit modal
     function setEditModalValues(reportId) {
         // This will be populated from the server data
@@ -631,13 +641,13 @@ function addEditWorkItem(reportId) {
     const container = document.getElementById(`edit-works-container-${reportId}`);
     const workItems = container.querySelectorAll('.work-item');
     const newIndex = workItems.length;
-    
+
     const workItem = document.createElement('div');
     workItem.className = 'work-item row mb-3';
     workItem.innerHTML = `
         <div class="col-md-10">
             <label class="form-label">Work Description <span class="text-danger">*</span></label>
-            <input type="text" class="form-control work-description required" name="works[${newIndex}][work]" 
+            <input type="text" class="form-control work-description required" name="works[${newIndex}][work]"
                    placeholder="Enter work description" maxlength="300" required>
             <input type="hidden" name="works[${newIndex}][type]" value="defect">
         </div>
@@ -647,9 +657,9 @@ function addEditWorkItem(reportId) {
             </button>
         </div>
     `;
-    
+
     container.appendChild(workItem);
-    
+
     // Show remove buttons for all items except the first one
     const removeButtons = container.querySelectorAll('.remove-work');
     removeButtons.forEach(btn => btn.style.display = 'block');
@@ -661,17 +671,17 @@ function deleteDefectReport(reportId) {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = `/defect-reports/${reportId}`;
-        
+
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';
         csrfToken.name = '_token';
         csrfToken.value = '{{ csrf_token() }}';
-        
+
         const methodField = document.createElement('input');
         methodField.type = 'hidden';
         methodField.name = '_method';
         methodField.value = 'DELETE';
-        
+
         form.appendChild(csrfToken);
         form.appendChild(methodField);
         document.body.appendChild(form);
@@ -682,15 +692,15 @@ function deleteDefectReport(reportId) {
     // Handle form submission for add modal
     $('#addDefectReportForm').on('submit', function(e) {
         e.preventDefault();
-        
+
         // Clear previous validation errors
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').remove();
-        
+
         // Basic validation
         let isValid = true;
         const requiredFields = ['vehicle_id', 'location_id', 'driver_name', 'date', 'fleet_manager_id', 'mvi_id', 'attach_file'];
-        
+
         requiredFields.forEach(field => {
             const value = $(`[name="${field}"]`).val();
             if (!value || value === '') {
@@ -699,7 +709,7 @@ function deleteDefectReport(reportId) {
                 isValid = false;
             }
         });
-        
+
         // Validate work items
         const workItems = $('.work-description');
         workItems.each(function(index) {
@@ -710,14 +720,14 @@ function deleteDefectReport(reportId) {
                 isValid = false;
             }
         });
-        
+
         if (!isValid) {
             toastr.error('Please fill in all required fields.');
             return;
         }
-        
+
         const formData = new FormData(this);
-        
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
@@ -751,17 +761,17 @@ function deleteDefectReport(reportId) {
             }
         });
     });
-    
+
     // Real-time validation
     $('input, select').on('blur', function() {
         const field = $(this);
         const value = field.val().trim();
         const fieldName = field.attr('name');
-        
+
         // Remove previous validation
         field.removeClass('is-invalid');
         field.siblings('.invalid-feedback').remove();
-        
+
         // Validate required fields
         if (field.hasClass('required') || field.prop('required')) {
             if (!value) {
@@ -769,13 +779,13 @@ function deleteDefectReport(reportId) {
                 field.after(`<div class="invalid-feedback">This field is required.</div>`);
             }
         }
-        
+
         // Validate specific fields
         if (fieldName === 'driver_name' && value && value.length < 2) {
             field.addClass('is-invalid');
             field.after(`<div class="invalid-feedback">Driver name must be at least 2 characters.</div>`);
         }
-        
+
         if (fieldName === 'date' && value) {
             const selectedDate = new Date(value);
             const today = new Date();
@@ -784,7 +794,7 @@ function deleteDefectReport(reportId) {
                 field.after(`<div class="invalid-feedback">Date cannot be in the future.</div>`);
             }
         }
-        
+
         // Validate dropdown fields
         if (['vehicle_id', 'location_id', 'fleet_manager_id', 'mvi_id'].includes(fieldName)) {
             if (!value || value === '') {
@@ -793,15 +803,15 @@ function deleteDefectReport(reportId) {
             }
         }
     });
-    
+
     // Work description validation
     $(document).on('blur', '.work-description', function() {
         const field = $(this);
         const value = field.val().trim();
-        
+
         field.removeClass('is-invalid');
         field.siblings('.invalid-feedback').remove();
-        
+
         if (!value) {
             field.addClass('is-invalid');
             field.after(`<div class="invalid-feedback">Work description is required.</div>`);
