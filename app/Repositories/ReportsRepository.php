@@ -190,8 +190,11 @@ class ReportsRepository implements ReportsRepositoryInterface
         try {
             $query = Vehicle::with(['location', 'category']);
 
-            // Get total count before applying pagination
-            $totalRecords = $query->count();
+            // Get total count before applying any filters
+            $totalRecords = Vehicle::count();
+
+            // Apply custom filters first
+            $this->applyVehicleFilters($query, $data);
 
             // Apply search
             if (!empty($data['search']['value'])) {
@@ -250,8 +253,11 @@ class ReportsRepository implements ReportsRepositoryInterface
         try {
             $query = DefectReport::with(['vehicle', 'location', 'creator']);
 
-            // Get total count before applying pagination
-            $totalRecords = $query->count();
+            // Get total count before applying any filters
+            $totalRecords = DefectReport::count();
+
+            // Apply custom filters first
+            $this->applyDefectReportFilters($query, $data);
 
             // Apply search
             if (!empty($data['search']['value'])) {
@@ -310,8 +316,11 @@ class ReportsRepository implements ReportsRepositoryInterface
         try {
             $query = VehiclePart::query();
 
-            // Get total count before applying pagination
-            $totalRecords = $query->count();
+            // Get total count before applying any filters
+            $totalRecords = VehiclePart::count();
+
+            // Apply custom filters first
+            $this->applyVehiclePartFilters($query, $data);
 
             // Apply search
             if (!empty($data['search']['value'])) {
@@ -364,8 +373,14 @@ class ReportsRepository implements ReportsRepositoryInterface
         try {
             $query = Location::query();
 
-            // Get total count before applying pagination
-            $totalRecords = $query->count();
+            // Debug: Log the received data
+            \Log::info('Locations Report Listing - Received data:', $data);
+
+            // Get total count before applying any filters
+            $totalRecords = Location::count();
+
+            // Apply custom filters first
+            $this->applyLocationFilters($query, $data);
 
             // Apply search
             if (!empty($data['search']['value'])) {
@@ -515,7 +530,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     }
 
     private function applyLocationFilters($query, array $filters): void
-    {
+    {        
         if (!empty($filters['location_type'])) {
             $query->where('location_type', $filters['location_type']);
         }

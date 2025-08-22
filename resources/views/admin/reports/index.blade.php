@@ -266,6 +266,10 @@
                                 d[key] = filters[key];
                             }
                         });
+                        
+                        // Debug: Log filters being sent
+                        console.log('Applied filters:', filters);
+                        
                         return d;
                     },
                     error: function(xhr, error, thrown) {
