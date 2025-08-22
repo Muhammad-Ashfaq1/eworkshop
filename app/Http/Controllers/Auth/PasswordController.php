@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use dispatchable;
+use App\Jobs\ForgetPasswordJob;
 
 class PasswordController extends Controller
 {
@@ -45,7 +47,7 @@ class PasswordController extends Controller
         ]);
 
         try {
-            Mail::to($user->email)->send(new ForgetPasswordMail($user, $token));
+            ForgetPasswordJob::dispatch($user, $token);
 
             return response()->json(['success' => 'Password reset link sent to your email']);
         } catch (\Exception $e) {
