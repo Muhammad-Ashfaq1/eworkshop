@@ -63,6 +63,42 @@ class ReportsController extends Controller
     }
 
     /**
+     * Get vehicles report with DataTables pagination
+     */
+    public function getVehiclesReportListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getVehiclesReportListing($request->all());
+    }
+
+    /**
+     * Get defect reports with DataTables pagination
+     */
+    public function getDefectReportsReportListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getDefectReportsReportListing($request->all());
+    }
+
+    /**
+     * Get vehicle parts report with DataTables pagination
+     */
+    public function getVehiclePartsReportListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getVehiclePartsReportListing($request->all());
+    }
+
+    /**
+     * Get locations report with DataTables pagination
+     */
+    public function getLocationsReportListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getLocationsReportListing($request->all());
+    }
+
+    /**
      * Export report data
      */
     public function exportReport(Request $request): JsonResponse

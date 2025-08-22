@@ -58,6 +58,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/defect-reports', 'getDefectReportsReport')->name('defect-reports');
             Route::get('/vehicle-parts', 'getVehiclePartsReport')->name('vehicle-parts');
             Route::get('/locations', 'getLocationsReport')->name('locations');
+            Route::get('/vehicles/listing', 'getVehiclesReportListing')->name('vehicles.listing');
+            Route::get('/defect-reports/listing', 'getDefectReportsReportListing')->name('defect-reports.listing');
+            Route::get('/vehicle-parts/listing', 'getVehiclePartsReportListing')->name('vehicle-parts.listing');
+            Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::post('/export', 'exportReport')->name('export');
         });
 

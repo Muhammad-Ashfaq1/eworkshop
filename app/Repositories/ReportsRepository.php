@@ -182,6 +182,235 @@ class ReportsRepository implements ReportsRepositoryInterface
         }
     }
 
+    /**
+     * Get vehicles report with DataTables pagination
+     */
+    public function getVehiclesReportListing(array $data): JsonResponse
+    {
+        try {
+            $query = Vehicle::with(['location', 'category']);
+
+            // Get total count before applying pagination
+            $totalRecords = $query->count();
+
+            // Apply search
+            if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('vehicle_number', 'like', "%{$searchValue}%")
+                      ->orWhere('condition', 'like', "%{$searchValue}%")
+                      ->orWhereHas('location', function($locQ) use ($searchValue) {
+                          $locQ->where('name', 'like', "%{$searchValue}%");
+                      })
+                      ->orWhereHas('category', function($catQ) use ($searchValue) {
+                          $catQ->where('name', 'like', "%{$searchValue}%");
+                      });
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+                
+                $columns = ['id', 'vehicle_number', 'condition', 'is_active', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate vehicles report listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get defect reports with DataTables pagination
+     */
+    public function getDefectReportsReportListing(array $data): JsonResponse
+    {
+        try {
+            $query = DefectReport::with(['vehicle', 'location', 'creator']);
+
+            // Get total count before applying pagination
+            $totalRecords = $query->count();
+
+            // Apply search
+            if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('driver_name', 'like', "%{$searchValue}%")
+                      ->orWhere('type', 'like', "%{$searchValue}%")
+                      ->orWhereHas('vehicle', function($vehQ) use ($searchValue) {
+                          $vehQ->where('vehicle_number', 'like', "%{$searchValue}%");
+                      })
+                      ->orWhereHas('location', function($locQ) use ($searchValue) {
+                          $locQ->where('name', 'like', "%{$searchValue}%");
+                      });
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+                
+                $columns = ['id', 'driver_name', 'type', 'date', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate defect reports listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get vehicle parts report with DataTables pagination
+     */
+    public function getVehiclePartsReportListing(array $data): JsonResponse
+    {
+        try {
+            $query = VehiclePart::query();
+
+            // Get total count before applying pagination
+            $totalRecords = $query->count();
+
+            // Apply search
+            if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('name', 'like', "%{$searchValue}%")
+                      ->orWhere('slug', 'like', "%{$searchValue}%");
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+                
+                $columns = ['id', 'name', 'slug', 'is_active', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate vehicle parts listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get locations report with DataTables pagination
+     */
+    public function getLocationsReportListing(array $data): JsonResponse
+    {
+        try {
+            $query = Location::query();
+
+            // Get total count before applying pagination
+            $totalRecords = $query->count();
+
+            // Apply search
+            if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('name', 'like', "%{$searchValue}%")
+                      ->orWhere('slug', 'like', "%{$searchValue}%")
+                      ->orWhere('location_type', 'like', "%{$searchValue}%");
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+                
+                $columns = ['id', 'name', 'location_type', 'is_active', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate locations listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function exportReport(array $filters): JsonResponse
     {
         try {

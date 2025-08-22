@@ -76,17 +76,24 @@
                                 <div class="card-header">
                                     <h6 class="card-title mb-0">Report Results</h6>
                                     <div class="float-end">
-                                        <span class="badge bg-info" id="resultsCount">0 results</span>
+                                        <span class="badge bg-secondary" id="resultsCount">No report generated</span>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table id="js-reports-table" class="table table-bordered table-striped">
-                                            <thead id="reportsTableHead">
-                                                <!-- Table headers will be dynamically generated -->
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 50px;">#</th>
+                                                    <th>Report Data</th>
+                                                </tr>
                                             </thead>
-                                            <tbody id="reportsTableBody">
-                                                <!-- Table data will be loaded here -->
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted py-4">
+                                                        Select report type and click "Generate Report" to view data
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -103,20 +110,24 @@
 @section('scripts')
 <script>
     $(document).ready(function(){
-        initializeReports();
-        setupEventListeners();
-        loadFilterOptions();
+        // Add a small delay to ensure DOM is fully ready
+        setTimeout(function() {
+            initializeReports();
+            setupEventListeners();
+            loadFilterOptions();
+        }, 100);
     });
 
     let currentReportType = 'vehicles';
     let filterOptions = {};
+    let reportsDataTable = null;
 
     function initializeReports() {
         // Set default date range
         setDefaultDateRange();
         
-        // Generate initial report
-        generateReport();
+        // Show empty state initially (no DataTable initialization)
+        showEmptyState();
     }
 
     function setupEventListeners() {
@@ -124,7 +135,7 @@
         $('#reportType').on('change', function() {
             currentReportType = $(this).val();
             loadDynamicFilters();
-            generateReport();
+            resetToEmptyState();
         });
 
         // Date range change
@@ -134,7 +145,7 @@
 
         // Generate report button
         $('#js-generate-report-btn').on('click', function() {
-            generateReport();
+            refreshDataTable();
         });
 
         // Clear filters button
@@ -151,6 +162,304 @@
     function loadFilterOptions() {
         // Filter options are loaded from the controller
         filterOptions = @json($filterOptions);
+    }
+
+    function initializeDataTable() {
+        if (reportsDataTable) {
+            reportsDataTable.destroy();
+        }
+
+        const columns = getDataTableColumns();
+        
+        reportsDataTable = $('#js-reports-table').DataTable({
+            processing: false,
+            serverSide: false, // Start with client-side to show empty state
+            data: [], // Start with empty data
+            columns: columns,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            order: [[0, 'asc']],
+            responsive: true,
+            language: {
+                processing: '<i class="ri-loader-4-line me-1"></i>Loading...',
+                emptyTable: 'No report data available. Please select filters and click "Generate Report" to view data.',
+                zeroRecords: 'No matching records found'
+            }
+        });
+
+        // Update results count
+        reportsDataTable.on('draw', function() {
+            const count = reportsDataTable.page.info().recordsDisplay;
+            updateResultsCount(count);
+        });
+    }
+
+    function refreshDataTable() {
+        // Destroy existing DataTable if it exists
+        if (reportsDataTable) {
+            reportsDataTable.destroy();
+        }
+        
+        // Clear the table body first
+        $('#js-reports-table tbody').empty();
+        
+        const columns = getDataTableColumns();
+        
+        reportsDataTable = $('#js-reports-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: getDataTableUrl(),
+                type: 'GET',
+                data: function(d) {
+                    // Add custom filters to DataTables request
+                    const filters = collectFilters();
+                    Object.keys(filters).forEach(key => {
+                        if (filters[key] !== '' && filters[key] !== null) {
+                            d[key] = filters[key];
+                        }
+                    });
+                    return d;
+                }
+            },
+            columns: columns,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [[0, 'asc']],
+                responsive: true,
+                language: {
+                    processing: '<i class="ri-loader-4-line me-1"></i>Loading...',
+                    emptyTable: 'No data available',
+                    zeroRecords: 'No matching records found'
+                }
+            });
+
+            // Update results count
+            reportsDataTable.on('draw', function() {
+                const count = reportsDataTable.page.info().recordsDisplay;
+                updateResultsCount(count);
+            });
+        }
+    }
+
+    function getDataTableUrl() {
+        const endpoints = {
+            'vehicles': "{{ route('admin.reports.vehicles.listing') }}",
+            'defect_reports': "{{ route('admin.reports.defect-reports.listing') }}",
+            'vehicle_parts': "{{ route('admin.reports.vehicle-parts.listing') }}",
+            'locations': "{{ route('admin.reports.locations.listing') }}"
+        };
+        return endpoints[currentReportType] || endpoints.vehicles;
+    }
+
+    function getDataTableColumns() {
+        switch(currentReportType) {
+            case 'vehicles':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'vehicle_number',
+                        name: 'vehicle_number',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'category.name',
+                        name: 'category',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'location.name',
+                        name: 'location',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'condition',
+                        name: 'condition',
+                        render: function(data, type, row) {
+                            if (!data) return 'N/A';
+                            const badgeClass = data === 'new' ? 'success' : 'warning';
+                            return `<span class="badge bg-${badgeClass}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        name: 'is_active',
+                        render: function(data, type, row) {
+                            const badgeClass = data ? 'success' : 'danger';
+                            const text = data ? 'Active' : 'Inactive';
+                            return `<span class="badge bg-${badgeClass}">${text}</span>`;
+                        }
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    }
+                ];
+            case 'defect_reports':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'driver_name',
+                        name: 'driver_name',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'type',
+                        name: 'type',
+                        render: function(data, type, row) {
+                            if (!data) return 'N/A';
+                            return `<span class="badge bg-info">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                        }
+                    },
+                    {
+                        data: 'vehicle.vehicle_number',
+                        name: 'vehicle',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'location.name',
+                        name: 'location',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'date',
+                        name: 'date',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'creator.full_name',
+                        name: 'creator',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    }
+                ];
+            case 'vehicle_parts':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'slug',
+                        name: 'slug',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        name: 'is_active',
+                        render: function(data, type, row) {
+                            const badgeClass = data ? 'success' : 'danger';
+                            const text = data ? 'Active' : 'Inactive';
+                            return `<span class="badge bg-${badgeClass}">${text}</span>`;
+                        }
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    }
+                ];
+            case 'locations':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'location_type',
+                        name: 'location_type',
+                        render: function(data, type, row) {
+                            if (!data) return 'N/A';
+                            const badgeClass = data === 'town' ? 'info' : 'warning';
+                            return `<span class="badge bg-${badgeClass}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        name: 'is_active',
+                        render: function(data, type, row) {
+                            const badgeClass = data ? 'success' : 'danger';
+                            const text = data ? 'Active' : 'Inactive';
+                            return `<span class="badge bg-${badgeClass}">${text}</span>`;
+                        }
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    }
+                ];
+            default:
+                return [
+                    { data: null, name: '#', orderable: false, searchable: false },
+                    { data: null, name: 'Report Data', orderable: false, searchable: false, 
+                      render: function() { return 'Select report type and click "Generate Report" to view data'; } }
+                ];
+        }
     }
 
     function loadDynamicFilters() {
@@ -289,41 +598,7 @@
         return '';
     }
 
-    function generateReport() {
-        const filters = collectFilters();
-        
-        // Show loading state
-        $('#js-generate-report-btn').prop('disabled', true).html('<i class="ri-loader-4-line me-1"></i>Generating...');
-        
-        // Make AJAX request based on report type
-        const endpoint = getReportEndpoint(currentReportType);
-        
-        $.get(endpoint, filters)
-            .done(function(response) {
-                if (response.success) {
-                    displayReportResults(response.data);
-                    updateResultsCount(response.total);
-                } else {
-                    toastr.error(response.message || 'Failed to generate report');
-                }
-            })
-            .fail(function(xhr) {
-                toastr.error('Failed to generate report. Please try again.');
-            })
-            .always(function() {
-                $('#js-generate-report-btn').prop('disabled', false).html('<i class="ri-file-chart-line me-1"></i>Generate Report');
-            });
-    }
 
-    function getReportEndpoint(reportType) {
-        const endpoints = {
-            'vehicles': "{{ route('admin.reports.vehicles') }}",
-            'defect_reports': "{{ route('admin.reports.defect-reports') }}",
-            'vehicle_parts': "{{ route('admin.reports.vehicle-parts') }}",
-            'locations': "{{ route('admin.reports.locations') }}"
-        };
-        return endpoints[reportType] || endpoints.vehicles;
-    }
 
     function collectFilters() {
         const filters = {
@@ -359,126 +634,37 @@
         return filters;
     }
 
-    function displayReportResults(data) {
-        if (!data || data.length === 0) {
-            $('#reportsTableHead').html('<tr><th colspan="5" class="text-center">No data found</th></tr>');
-            $('#reportsTableBody').html('');
-            return;
-        }
 
-        // Generate table headers based on report type
-        const headers = generateTableHeaders();
-        $('#reportsTableHead').html(headers);
 
-        // Generate table rows
-        const rows = data.map(item => generateTableRow(item)).join('');
-        $('#reportsTableBody').html(rows);
-    }
 
-    function generateTableHeaders() {
-        switch(currentReportType) {
-            case 'vehicles':
-                return `
-                    <tr>
-                        <th>#</th>
-                        <th>Vehicle Number</th>
-                        <th>Category</th>
-                        <th>Location</th>
-                        <th>Condition</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                    </tr>
-                `;
-            case 'defect_reports':
-                return `
-                    <tr>
-                        <th>#</th>
-                        <th>Driver Name</th>
-                        <th>Type</th>
-                        <th>Vehicle</th>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Created By</th>
-                    </tr>
-                `;
-            case 'vehicle_parts':
-                return `
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Slug</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                    </tr>
-                `;
-            case 'locations':
-                return `
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                    </tr>
-                `;
-            default:
-                return '<tr><th>Data</th></tr>';
-        }
-    }
 
-    function generateTableRow(item) {
-        switch(currentReportType) {
-            case 'vehicles':
-                return `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.vehicle_number || 'N/A'}</td>
-                        <td>${item.category?.name || 'N/A'}</td>
-                        <td>${item.location?.name || 'N/A'}</td>
-                        <td><span class="badge bg-${item.condition === 'new' ? 'success' : 'warning'}">${item.condition?.charAt(0).toUpperCase() + item.condition?.slice(1) || 'N/A'}</span></td>
-                        <td><span class="badge bg-${item.is_active ? 'success' : 'danger'}">${item.is_active ? 'Active' : 'Inactive'}</span></td>
-                        <td>${item.created_at ? moment(item.created_at).format('MMM DD, YYYY') : 'N/A'}</td>
-                    </tr>
-                `;
-            case 'defect_reports':
-                return `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.driver_name || 'N/A'}</td>
-                        <td><span class="badge bg-info">${item.type?.charAt(0).toUpperCase() + item.type?.slice(1) || 'N/A'}</span></td>
-                        <td>${item.vehicle?.vehicle_number || 'N/A'}</td>
-                        <td>${item.location?.name || 'N/A'}</td>
-                        <td>${item.date ? moment(item.date).format('MMM DD, YYYY') : 'N/A'}</td>
-                        <td>${item.creator?.name || 'N/A'}</td>
-                    </tr>
-                `;
-            case 'vehicle_parts':
-                return `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.name || 'N/A'}</td>
-                        <td>${item.slug || 'N/A'}</td>
-                        <td><span class="badge bg-${item.is_active ? 'success' : 'danger'}">${item.is_active ? 'Active' : 'Inactive'}</span></td>
-                        <td>${item.created_at ? moment(item.created_at).format('MMM DD, YYYY') : 'N/A'}</td>
-                    </tr>
-                `;
-            case 'locations':
-                return `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.name || 'N/A'}</td>
-                        <td><span class="badge bg-${item.location_type === 'town' ? 'info' : 'warning'}">${item.location_type?.charAt(0).toUpperCase() + item.location_type?.slice(1) || 'N/A'}</span></td>
-                        <td><span class="badge bg-${item.is_active ? 'success' : 'danger'}">${item.is_active ? 'Active' : 'Inactive'}</span></td>
-                        <td>${item.created_at ? moment(item.created_at).format('MMM DD, YYYY') : 'N/A'}</td>
-                    </tr>
-                `;
-            default:
-                return '<tr><td>No data</td></tr>';
-        }
-    }
+
 
     function updateResultsCount(count) {
-        $('#resultsCount').text(count + ' results');
+        if (count > 0) {
+            $('#resultsCount').text(count + ' results').removeClass('bg-secondary').addClass('bg-success');
+        } else {
+            $('#resultsCount').text('No data found').removeClass('bg-secondary bg-success').addClass('bg-warning');
+        }
+    }
+
+    function showEmptyState() {
+        // Show empty state message
+        $('#resultsCount').text('No report generated').removeClass('bg-info bg-success').addClass('bg-secondary');
+        
+        // Show empty table with message
+        $('#js-reports-table tbody').html('<tr><td colspan="2" class="text-center text-muted py-4">Select report type and click "Generate Report" to view data</td></tr>');
+    }
+
+    function resetToEmptyState() {
+        // Destroy DataTable if it exists
+        if (reportsDataTable) {
+            reportsDataTable.destroy();
+            reportsDataTable = null;
+        }
+        
+        // Show empty state
+        showEmptyState();
     }
 
     function clearFilters() {
@@ -489,8 +675,8 @@
         // Set default date range
         setDefaultDateRange();
         
-        // Generate report with cleared filters
-        generateReport();
+        // Reset to empty state
+        resetToEmptyState();
     }
 
     function setDefaultDateRange() {
