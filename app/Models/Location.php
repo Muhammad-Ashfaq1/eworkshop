@@ -8,5 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Location extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name','slug','is_active','location_type'];
+
+    protected $fillable = ['name', 'slug', 'is_active', 'location_type'];
+
+    const LOCATION_TYPE_TOWN = 'town';
+
+    const LOCATION_TYPE_WORKSHOP = 'workshop';
+
+    const IS_ACTIVE = 1;
+
+    const IS_INACTIVE = 0;
 }

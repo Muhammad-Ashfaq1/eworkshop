@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Constants\UserRoles;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DefaultUsersSeeder extends Seeder
@@ -26,7 +26,7 @@ class DefaultUsersSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $superAdmin->assignRole('super_admin');
+        $superAdmin->assignRole(UserRoles::SUPER_ADMIN);
 
         // Create Admin user
         $admin = User::firstOrCreate(
@@ -40,7 +40,7 @@ class DefaultUsersSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $admin->assignRole('admin');
+        $admin->assignRole(UserRoles::ADMIN);
 
         // Create DEO user
         $deo = User::firstOrCreate(
@@ -54,6 +54,34 @@ class DefaultUsersSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $deo->assignRole('deo');
+        $deo->assignRole(UserRoles::DEO);
+
+        // Create Fleet Manager user
+        $fleetManager = User::firstOrCreate(
+            ['email' => 'fleetmanager@example.com'],
+            [
+                'first_name' => 'Fleet',
+                'last_name' => 'Manager',
+                'password' => Hash::make('password123'),
+                'phone_number' => '+1234567893',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+        $fleetManager->assignRole(UserRoles::FLEET_MANAGER);
+
+        // Create MVI user
+        $mvi = User::firstOrCreate(
+            ['email' => 'mvi@example.com'],
+            [
+                'first_name' => 'Motor Vehicle',
+                'last_name' => 'Inspector',
+                'password' => Hash::make('password123'),
+                'phone_number' => '+1234567894',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+        $mvi->assignRole(UserRoles::MVI);
     }
 }

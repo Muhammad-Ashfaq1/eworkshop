@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Constants\UserPermissions;
+use App\Constants\UserRoles;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -15,45 +16,7 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         // Create permissions
-        $permissions = [
-            // User management permissions
-            'create_users',
-            'read_users',
-            'update_users',
-            'delete_users',
-
-            // Admin management permissions
-            'create_admin',
-            'read_admin',
-            'update_admin',
-            'delete_admin',
-
-            // DEO management permissions
-            'create_deo',
-            'read_deo',
-            'update_deo',
-            'delete_deo',
-
-            // Location management permissions
-            'create_locations',
-            'read_locations',
-            'update_locations',
-            'delete_locations',
-
-            // Profile management permissions
-            'update_profile',
-            'read_profile',
-
-            // System management permissions
-            'access_admin_panel',
-            'manage_roles',
-            'manage_permissions',
-
-            // Data entry permissions
-            'data_entry',
-            'view_reports',
-            'export_data',
-        ];
+        $permissions = UserPermissions::getAllPermissions();
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -62,41 +25,69 @@ class RolePermissionSeeder extends Seeder
         // Create roles and assign permissions
 
         // Super Admin - has all permissions
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
+        $superAdmin = Role::firstOrCreate(['name' => UserRoles::SUPER_ADMIN]);
         $superAdmin->syncPermissions(Permission::all());
 
         // Admin - can manage users, locations, and some system functions
-        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $admin = Role::firstOrCreate(['name' => UserRoles::ADMIN]);
         $admin->syncPermissions([
-            'create_users',
-            'read_users',
-            'update_users',
-            'delete_users',
-            'create_deo',
-            'read_deo',
-            'update_deo',
-            'delete_deo',
-            'create_locations',
-            'read_locations',
-            'update_locations',
-            'delete_locations',
-            'update_profile',
-            'read_profile',
-            'access_admin_panel',
-            'view_reports',
-            'export_data',
+            UserPermissions::CREATE_USERS,
+            UserPermissions::READ_USERS,
+            UserPermissions::UPDATE_USERS,
+            UserPermissions::DELETE_USERS,
+            UserPermissions::CREATE_DEO,
+            UserPermissions::READ_DEO,
+            UserPermissions::UPDATE_DEO,
+            UserPermissions::DELETE_DEO,
+            UserPermissions::CREATE_LOCATIONS,
+            UserPermissions::READ_LOCATIONS,
+            UserPermissions::UPDATE_LOCATIONS,
+            UserPermissions::DELETE_LOCATIONS,
+            UserPermissions::UPDATE_PROFILE,
+            UserPermissions::READ_PROFILE,
+            UserPermissions::ACCESS_ADMIN_PANEL,
+            UserPermissions::VIEW_REPORTS,
+            UserPermissions::EXPORT_DATA,
         ]);
 
         // DEO (Data Entry Operator) - limited to data entry and viewing
-        $deo = Role::firstOrCreate(['name' => 'deo']);
+        $deo = Role::firstOrCreate(['name' => UserRoles::DEO]);
         $deo->syncPermissions([
-            'data_entry',
-            'read_locations',
-            'create_locations',
-            'update_locations',
-            'update_profile',
-            'read_profile',
-            'view_reports',
+            UserPermissions::DATA_ENTRY,
+            UserPermissions::READ_LOCATIONS,
+            UserPermissions::CREATE_LOCATIONS,
+            UserPermissions::UPDATE_LOCATIONS,
+            UserPermissions::UPDATE_PROFILE,
+            UserPermissions::READ_PROFILE,
+            UserPermissions::VIEW_REPORTS,
+        ]);
+
+        // Fleet Manager - manages fleet operations and vehicles
+        $fleetManager = Role::firstOrCreate(['name' => UserRoles::FLEET_MANAGER]);
+        $fleetManager->syncPermissions([
+            UserPermissions::MANAGE_FLEET,
+            UserPermissions::VIEW_FLEET_REPORTS,
+            UserPermissions::TRACK_VEHICLES,
+            UserPermissions::ASSIGN_VEHICLES,
+            UserPermissions::READ_LOCATIONS,
+            UserPermissions::UPDATE_LOCATIONS,
+            UserPermissions::UPDATE_PROFILE,
+            UserPermissions::READ_PROFILE,
+            UserPermissions::VIEW_REPORTS,
+            UserPermissions::EXPORT_DATA,
+        ]);
+
+        // MVI (Motor Vehicle Inspector) - vehicle inspections and approvals
+        $mvi = Role::firstOrCreate(['name' => UserRoles::MVI]);
+        $mvi->syncPermissions([
+            UserPermissions::CONDUCT_INSPECTIONS,
+            UserPermissions::APPROVE_INSPECTIONS,
+            UserPermissions::REJECT_INSPECTIONS,
+            UserPermissions::VIEW_INSPECTION_REPORTS,
+            UserPermissions::READ_LOCATIONS,
+            UserPermissions::UPDATE_PROFILE,
+            UserPermissions::READ_PROFILE,
+            UserPermissions::VIEW_REPORTS,
         ]);
     }
 }

@@ -22,11 +22,11 @@ class VehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'vehicle_number' => 'required|string|max:255',
-        'town' => 'required|in:town,workshop',
-        'category' => 'required|string|max:255',
-        'condition' => 'required|string|max:255',
-        'is_active' => 'required|boolean',
+            'vehicle_number' => 'required|string|max:255',
+            'town' => 'required|exists:locations,id',
+            'category' => 'required|string|max:255',
+            'condition' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
 
         ];
     }

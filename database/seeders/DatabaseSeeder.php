@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\VehicleCategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             DefaultUsersSeeder::class,
+            VehicleCategorySeeder::class,
+            LocationSeeder::class,
+            VehiclePartSeeder::class,
+            VehicleSeeder::class,
         ]);
     }
 }
