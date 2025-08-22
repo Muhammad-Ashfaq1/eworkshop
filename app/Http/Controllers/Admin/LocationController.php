@@ -46,20 +46,8 @@ class LocationController extends Controller
     {
         try {
             $this->authorize('read_locations');
-            
-            \Log::info('Location listing request received:', [
-                'request_data' => $request->all(),
-                'user' => auth()->user() ? auth()->user()->id : 'not authenticated',
-                'permissions' => auth()->user() ? auth()->user()->getAllPermissions()->pluck('name') : []
-            ]);
-            
             return $this->locationRepository->getLocationListing($request->all());
         } catch (\Exception $e) {
-            \Log::error('Location listing error:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load locations: ' . $e->getMessage()

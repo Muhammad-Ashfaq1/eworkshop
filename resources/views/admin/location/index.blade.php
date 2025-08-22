@@ -124,8 +124,8 @@
             lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
             processing: true,
             serverSide: true,
-            ajax: {
-                url: "{{ route('admin.location.listing') }}",
+                        ajax: {
+                url: "/admin/location/listing",
                 type: "GET"
             },
             columns: [

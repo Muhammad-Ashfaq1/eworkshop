@@ -12,8 +12,6 @@ class LocationRepository implements LocationRepositoryInterface
     public function getLocationListing($data): JsonResponse
     {
         try {
-            \Log::info('LocationRepository: Starting getLocationListing', ['data' => $data]);
-            
             $search = $data;
             $pageLength = $search['length'] ?? 10;
             $start = $search['start'] ?? 0;
@@ -21,40 +19,39 @@ class LocationRepository implements LocationRepositoryInterface
             
             $query = Location::query();
             
-            // Apply search filter
-            if (!empty($search['search'])) {
-                $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search['search'] . '%')
-                      ->orWhere('slug', 'like', '%' . $search['search'] . '%')
-                      ->orWhere('location_type', 'like', '%' . $search['search'] . '%');
-                });
+                                // Apply search filter
+            if (isset($search['search']) && is_array($search['search']) && isset($search['search']['value'])) {
+                $searchValue = $search['search']['value'];
+                
+                if (!empty($searchValue) && is_string($searchValue)) {
+                    $query->where(function($q) use ($searchValue) {
+                        $q->where('name', 'like', '%' . $searchValue . '%')
+                          ->orWhere('slug', 'like', '%' . $searchValue . '%')
+                          ->orWhere('location_type', 'like', '%' . $searchValue . '%');
+                    });
+                }
             }
 
-            // Apply ordering
-            if (isset($search['column_name']) && isset($search['direction'])) {
-                $query->orderBy($search['column_name'], $search['direction']);
-            } else {
-                $query->orderBy('id', 'desc');
+        // Apply ordering
+        if (isset($search['order']) && is_array($search['order']) && !empty($search['order'])) {
+            $order = $search['order'][0];
+            if (isset($order['column']) && isset($order['dir'])) {
+                $columns = ['id', 'name', 'slug', 'location_type', 'is_active', 'created_at', 'updated_at'];
+                $columnIndex = (int)$order['column'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $order['dir']);
+                }
             }
+        } else {
+            $query->orderBy('id', 'desc');
+        }
 
             $recordsFiltered = $recordsTotal = $query->count();
             
-            \Log::info('LocationRepository: Query results', [
-                'total' => $recordsTotal,
-                'filtered' => $recordsFiltered,
-                'sql' => $query->toSql(),
-                'bindings' => $query->getBindings()
-            ]);
-            
             $response['draw'] = $data['draw'];
             $response['recordsTotal'] = $recordsTotal;
-            $response['recordsFiltered'] = $recordsFiltered;
+            $response['recordsFiltered'] = $recordsTotal;
             $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
-            
-            \Log::info('LocationRepository: Response prepared', [
-                'data_count' => count($response['data']),
-                'sample_data' => !empty($response['data']) ? $response['data'][0] : 'No data'
-            ]);
             
             return response()->json($response, Response::HTTP_OK);
         } catch (\Exception $e) {
