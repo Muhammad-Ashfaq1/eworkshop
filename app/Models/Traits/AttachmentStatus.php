@@ -73,6 +73,6 @@ trait AttachmentStatus
     // Common helper method
     protected function getImageUrl($value)
     {
-        return $value ? asset('storage/'.$value) : null;
+        return $value ? asset('storage/' . $value) : null;
     }
 }
