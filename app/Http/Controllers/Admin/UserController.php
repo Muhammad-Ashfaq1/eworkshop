@@ -10,7 +10,6 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-
     /**
      * Display a listing of users.
      */
@@ -69,7 +68,7 @@ class UserController extends Controller
                 'email' => $validated['email'],
                 'phone_number' => $validated['phone_number'] ?? null,
                 'password' => Hash::make($validated['password']),
-                'is_active' => $request->has('is_active') ? (bool)$validated['is_active'] : true,
+                'is_active' => $request->has('is_active') ? (bool) $validated['is_active'] : true,
                 'email_verified_at' => now(),
             ]);
 
@@ -80,33 +79,36 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => ucfirst($validated['role']) . ' user created successfully.',
-                'user' => $user->load('roles')
+                'message' => ucfirst($validated['role']).' user created successfully.',
+                'user' => $user->load('roles'),
             ], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation failed:', $e->errors());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             \Log::error('Authorization failed:', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to perform this action.'
+                'message' => 'You are not authorized to perform this action.',
             ], 403);
         } catch (\Exception $e) {
             \Log::error('Error creating user:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while creating the user: ' . $e->getMessage()
+                'message' => 'An error occurred while creating the user: '.$e->getMessage(),
             ], 500);
         }
     }
 
-        /**
+    /**
      * Show the specified user.
      */
     public function show(User $user)
@@ -118,18 +120,19 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'user' => $user->load('roles')
+                'user' => $user->load('roles'),
             ]);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to view this user.'
+                'message' => 'You are not authorized to view this user.',
             ], 403);
         } catch (\Exception $e) {
             \Log::error('Error fetching user:', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error fetching user data.'
+                'message' => 'Error fetching user data.',
             ], 500);
         }
     }
@@ -150,7 +153,7 @@ class UserController extends Controller
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $user->id,
+                'email' => 'required|email|unique:users,email,'.$user->id,
                 'phone_number' => 'nullable|string|max:15',
                 'role' => 'required|in:admin,deo',
                 'is_active' => 'boolean',
@@ -165,26 +168,26 @@ class UserController extends Controller
             ]);
 
             // Update role if changed
-            if (!$user->hasRole($validated['role'])) {
+            if (! $user->hasRole($validated['role'])) {
                 $user->syncRoles([$validated['role']]);
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User updated successfully.',
-                'user' => $user->fresh()->load('roles')
+                'user' => $user->fresh()->load('roles'),
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while updating the user.'
+                'message' => 'An error occurred while updating the user.',
             ], 500);
         }
     }
@@ -205,7 +208,7 @@ class UserController extends Controller
         if ($user->hasRole('super_admin')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Super admin cannot be deleted.'
+                'message' => 'Super admin cannot be deleted.',
             ], 403);
         }
 
@@ -213,7 +216,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User deleted successfully.'
+            'message' => 'User deleted successfully.',
         ]);
     }
 
@@ -235,24 +238,24 @@ class UserController extends Controller
             ]);
 
             $user->update([
-                'password' => Hash::make($validated['password'])
+                'password' => Hash::make($validated['password']),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Password reset successfully.'
+                'message' => 'Password reset successfully.',
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while resetting the password.'
+                'message' => 'An error occurred while resetting the password.',
             ], 500);
         }
     }
@@ -270,13 +273,13 @@ class UserController extends Controller
         }
 
         $user->update([
-            'is_active' => !$user->is_active
+            'is_active' => ! $user->is_active,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'User status updated successfully.',
-            'is_active' => $user->is_active
+            'is_active' => $user->is_active,
         ]);
     }
 }

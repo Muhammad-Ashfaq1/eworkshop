@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Constants\UserRoles;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -15,7 +14,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return route('login');
         }
 
@@ -37,7 +36,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return 'login';
         }
 
@@ -51,6 +50,7 @@ class DashboardController extends Controller
 
         return 'home';
     }
+
     /**
      * Super Admin Dashboard
      */
@@ -67,7 +67,7 @@ class DashboardController extends Controller
                 'active_users' => \App\Models\User::where('is_active', true)->count(),
                 'total_roles' => \Spatie\Permission\Models\Role::count(),
                 'total_permissions' => \Spatie\Permission\Models\Permission::count(),
-            ]
+            ],
         ];
 
         return view('dashboards.super_admin', $data);
@@ -79,7 +79,7 @@ class DashboardController extends Controller
     public function admin()
     {
         $user = Auth::user();
-        if (!$user->hasRole(UserRoles::ADMIN)) {
+        if (! $user->hasRole(UserRoles::ADMIN)) {
             abort(403, 'Unauthorized access');
         }
 
@@ -90,7 +90,7 @@ class DashboardController extends Controller
                 'total_locations' => 0, // Add actual count when location model is available
                 'active_deos' => \App\Models\User::role(UserRoles::DEO)->where('is_active', true)->count(),
                 'pending_reports' => 0, // Add actual count when reports are available
-            ]
+            ],
         ];
 
         return view('dashboards.admin', $data);
@@ -102,7 +102,7 @@ class DashboardController extends Controller
     public function deo()
     {
         $user = Auth::user();
-        if (!$user->hasRole(UserRoles::DEO)) {
+        if (! $user->hasRole(UserRoles::DEO)) {
             abort(403, 'Unauthorized access');
         }
 
@@ -141,7 +141,7 @@ class DashboardController extends Controller
                 'defect_reports_week' => $defectStats['this_week'],
                 'defect_reports_month' => $defectStats['this_month'],
                 'total_defect_reports' => $defectStats['total'],
-            ]
+            ],
         ];
 
         return view('dashboards.deo', $data);
@@ -153,7 +153,7 @@ class DashboardController extends Controller
     public function fleetManager()
     {
         $user = Auth::user();
-        if (!$user->hasRole(UserRoles::FLEET_MANAGER)) {
+        if (! $user->hasRole(UserRoles::FLEET_MANAGER)) {
             abort(403, 'Unauthorized access');
         }
 
@@ -165,7 +165,7 @@ class DashboardController extends Controller
                 'active_vehicles' => 0, // Add actual count
                 'maintenance_due' => 0, // Add actual count
                 'fuel_consumption' => 0, // Add actual metric
-            ]
+            ],
         ];
 
         return view('dashboards.fleet_manager', $data);
@@ -177,7 +177,7 @@ class DashboardController extends Controller
     public function mvi()
     {
         $user = Auth::user();
-        if (!$user->hasRole(UserRoles::MVI)) {
+        if (! $user->hasRole(UserRoles::MVI)) {
             abort(403, 'Unauthorized access');
         }
 
@@ -189,7 +189,7 @@ class DashboardController extends Controller
                 'completed_today' => 0, // Add actual count
                 'rejected_inspections' => 0, // Add actual count
                 'approved_inspections' => 0, // Add actual count
-            ]
+            ],
         ];
 
         return view('dashboards.mvi', $data);

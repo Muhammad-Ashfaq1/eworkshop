@@ -6,64 +6,93 @@ class UserPermissions
 {
     // User management permissions
     const CREATE_USERS = 'create_users';
+
     const READ_USERS = 'read_users';
+
     const UPDATE_USERS = 'update_users';
+
     const DELETE_USERS = 'delete_users';
 
     // Admin management permissions
     const CREATE_ADMIN = 'create_admin';
+
     const READ_ADMIN = 'read_admin';
+
     const UPDATE_ADMIN = 'update_admin';
+
     const DELETE_ADMIN = 'delete_admin';
 
     // DEO management permissions
     const CREATE_DEO = 'create_deo';
+
     const READ_DEO = 'read_deo';
+
     const UPDATE_DEO = 'update_deo';
+
     const DELETE_DEO = 'delete_deo';
 
     // Fleet Manager management permissions
     const CREATE_FLEET_MANAGER = 'create_fleet_manager';
+
     const READ_FLEET_MANAGER = 'read_fleet_manager';
+
     const UPDATE_FLEET_MANAGER = 'update_fleet_manager';
+
     const DELETE_FLEET_MANAGER = 'delete_fleet_manager';
 
     // MVI management permissions
     const CREATE_MVI = 'create_mvi';
+
     const READ_MVI = 'read_mvi';
+
     const UPDATE_MVI = 'update_mvi';
+
     const DELETE_MVI = 'delete_mvi';
 
     // Location management permissions
     const CREATE_LOCATIONS = 'create_locations';
+
     const READ_LOCATIONS = 'read_locations';
+
     const UPDATE_LOCATIONS = 'update_locations';
+
     const DELETE_LOCATIONS = 'delete_locations';
 
     // Fleet management permissions
     const MANAGE_FLEET = 'manage_fleet';
+
     const VIEW_FLEET_REPORTS = 'view_fleet_reports';
+
     const TRACK_VEHICLES = 'track_vehicles';
+
     const ASSIGN_VEHICLES = 'assign_vehicles';
 
     // Vehicle inspection permissions
     const CONDUCT_INSPECTIONS = 'conduct_inspections';
+
     const APPROVE_INSPECTIONS = 'approve_inspections';
+
     const REJECT_INSPECTIONS = 'reject_inspections';
+
     const VIEW_INSPECTION_REPORTS = 'view_inspection_reports';
 
     // Profile management permissions
     const UPDATE_PROFILE = 'update_profile';
+
     const READ_PROFILE = 'read_profile';
 
     // System management permissions
     const ACCESS_ADMIN_PANEL = 'access_admin_panel';
+
     const MANAGE_ROLES = 'manage_roles';
+
     const MANAGE_PERMISSIONS = 'manage_permissions';
 
     // Data entry permissions
     const DATA_ENTRY = 'data_entry';
+
     const VIEW_REPORTS = 'view_reports';
+
     const EXPORT_DATA = 'export_data';
 
     /**

@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Constants\UserRoles;
 use App\Constants\UserPermissions;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Constants\UserRoles;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {

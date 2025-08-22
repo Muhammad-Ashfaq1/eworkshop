@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Location;
-use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use Illuminate\Http\Request;
@@ -19,7 +17,7 @@ class DropdownController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $towns
+            'data' => $towns,
         ]);
     }
 
@@ -29,7 +27,7 @@ class DropdownController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $categories
+            'data' => $categories,
         ]);
     }
 
@@ -39,16 +37,16 @@ class DropdownController extends Controller
             ->where('is_active', 1)
             ->get(['id', 'vehicle_number', 'vehicle_category_id']);
 
-        $formattedVehicles = $vehicles->map(function($vehicle) {
+        $formattedVehicles = $vehicles->map(function ($vehicle) {
             return [
                 'id' => $vehicle->id,
-                'name' => $vehicle->vehicle_number . ' - ' . ($vehicle->category->name ?? 'N/A')
+                'name' => $vehicle->vehicle_number.' - '.($vehicle->category->name ?? 'N/A'),
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data' => $formattedVehicles
+            'data' => $formattedVehicles,
         ]);
     }
 
@@ -58,7 +56,7 @@ class DropdownController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $locations
+            'data' => $locations,
         ]);
     }
 
@@ -68,16 +66,16 @@ class DropdownController extends Controller
             ->where('is_active', 1)
             ->get(['id', 'first_name', 'last_name']);
 
-        $formattedManagers = $managers->map(function($manager) {
+        $formattedManagers = $managers->map(function ($manager) {
             return [
                 'id' => $manager->id,
-                'name' => $manager->first_name . ' ' . $manager->last_name
+                'name' => $manager->first_name.' '.$manager->last_name,
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data' => $formattedManagers
+            'data' => $formattedManagers,
         ]);
     }
 
@@ -87,16 +85,16 @@ class DropdownController extends Controller
             ->where('is_active', 1)
             ->get(['id', 'first_name', 'last_name']);
 
-        $formattedMvis = $mvis->map(function($mvi) {
+        $formattedMvis = $mvis->map(function ($mvi) {
             return [
                 'id' => $mvi->id,
-                'name' => $mvi->first_name . ' ' . $mvi->last_name
+                'name' => $mvi->first_name.' '.$mvi->last_name,
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data' => $formattedMvis
+            'data' => $formattedMvis,
         ]);
     }
 }

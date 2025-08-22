@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VehiclePart extends Model
 {
-     use SoftDeletes;
-    protected $fillable = ['name','slug','is_active', 'e_id'];
+    use SoftDeletes;
+
+    protected $fillable = ['name', 'slug', 'is_active', 'e_id'];
 }

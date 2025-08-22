@@ -7,6 +7,7 @@ use App\Helpers\FileUploadManager;
 trait AttachmentStatus
 {
     const ACTIVE_STATUS = 1;
+
     const INACTIVE_STATUS = 0;
 
     public function scopeActive($query)
@@ -68,6 +69,7 @@ trait AttachmentStatus
     {
         return $this->getImageUrl($value);
     }
+
     // Common helper method
     protected function getImageUrl($value)
     {

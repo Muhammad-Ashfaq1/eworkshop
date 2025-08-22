@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\AttachmentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DefectReport extends Model
 {
-    use HasFactory, SoftDeletes;
+    use AttachmentStatus, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'vehicle_id',
@@ -17,9 +18,9 @@ class DefectReport extends Model
         'fleet_manager_id',
         'mvi_id',
         'date',
-        'attach_file',
+        'attachment_url',
         'type',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [
@@ -28,13 +29,25 @@ class DefectReport extends Model
 
     // Constants for report types
     const TYPE_DEFECT_REPORT = 'defect_report';
+
     const TYPE_PURCHASE_ORDER = 'purchase_order';
+
+    // constants for roles
+    const ROLE_SUPER_ADMIN = 'super_admin';
+
+    const ROLE_ADMIN = 'admin';
+
+    const ROLE_FLEET_MANAGER = 'fleet_manager';
+
+    const ROLE_MVI = 'mvi';
+
+    const ROLE_DEO = 'deo';
 
     public static function getTypes()
     {
         return [
             self::TYPE_DEFECT_REPORT => 'Defect Report',
-            self::TYPE_PURCHASE_ORDER => 'Purchase Order'
+            self::TYPE_PURCHASE_ORDER => 'Purchase Order',
         ];
     }
 
@@ -83,7 +96,7 @@ class DefectReport extends Model
     public function scopeForUser($query, $user)
     {
         if ($user->hasRole('super_admin') || $user->hasRole('admin')) {
-            return $query; // Can see all
+            return $query;
         } elseif ($user->hasRole('deo')) {
             return $query->where('created_by', $user->id); // Only their own reports
         } elseif ($user->hasRole('fleet_manager')) {
@@ -91,7 +104,7 @@ class DefectReport extends Model
         } elseif ($user->hasRole('mvi')) {
             return $query->where('mvi_id', $user->id);
         }
-        
+
         return $query->where('id', 0); // No access for other roles
     }
 

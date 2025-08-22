@@ -11,8 +11,10 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::with(['location', 'category'])->latest()->get();
+
         return view('admin.vehicle.index', compact('vehicles'));
     }
+
     public function store(VehicleRequest $request)
     {
         try {
@@ -38,7 +40,7 @@ class VehicleController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save vehicle: ' . $e->getMessage()
+                'message' => 'Failed to save vehicle: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -46,6 +48,7 @@ class VehicleController extends Controller
     public function edit($id)
     {
         $vehicle = Vehicle::with(['location', 'category'])->findOrFail($id);
+
         return response()->json([
             'success' => true,
             'vehicle' => $vehicle,
@@ -57,11 +60,12 @@ class VehicleController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->delete();
+
             return $this->getLatestRecords(true, 'Vehicle deleted successfully.');
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete vehicle: ' . $e->getMessage()
+                'message' => 'Failed to delete vehicle: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -70,6 +74,7 @@ class VehicleController extends Controller
     {
         $vehicles = Vehicle::with(['location', 'category'])->latest()->get();
         $html = view('admin.vehicle.data-table', compact('vehicles'))->render();
+
         return response()->json([
             'success' => $success,
             'message' => $message,

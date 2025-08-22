@@ -15,7 +15,7 @@ class Work extends Model
         'work',
         'type',
         'quantity',
-        'vehicle_part_id'
+        'vehicle_part_id',
     ];
 
     // Relationships
@@ -31,13 +31,14 @@ class Work extends Model
 
     // Constants for work types
     const TYPE_DEFECT = 'defect';
+
     const TYPE_PURCHASE_ORDER = 'purchase_order';
 
     public static function getTypes()
     {
         return [
             self::TYPE_DEFECT => 'Defect',
-            self::TYPE_PURCHASE_ORDER => 'Purchase Order'
+            self::TYPE_PURCHASE_ORDER => 'Purchase Order',
         ];
     }
 
@@ -56,9 +57,9 @@ class Work extends Model
     public function getWorkDisplayAttribute()
     {
         if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
-            return $this->vehiclePart->name . ($this->quantity ? " (Qty: {$this->quantity})" : '');
+            return $this->vehiclePart->name.($this->quantity ? " (Qty: {$this->quantity})" : '');
         }
-        
+
         return $this->work ?? 'N/A';
     }
 }

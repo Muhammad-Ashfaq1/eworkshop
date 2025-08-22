@@ -22,11 +22,11 @@ class Vehicle extends Model
     ];
 
     const IS_ACTIVE = 1;
+
     const IS_INACTIVE = 0;
 
-
-
     const CONDITION_NEW = 'new';
+
     const CONDITION_OLD = 'old';
 
     // Relationships

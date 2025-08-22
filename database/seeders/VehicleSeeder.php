@@ -2,13 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Vehicle;
 use App\Models\Location;
-use Illuminate\Support\Str;
+use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class VehicleSeeder extends Seeder
 {
@@ -17,10 +15,11 @@ class VehicleSeeder extends Seeder
      */
     public function run(): void
     {
-           $path = database_path('data/vehicles.csv');
+        $path = database_path('data/vehicles.csv');
 
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             $this->command->error("CSV file not found at: {$path}");
+
             return;
         }
 
@@ -30,26 +29,25 @@ class VehicleSeeder extends Seeder
         foreach ($csvData as $row) {
             $row = array_combine($header, $row);
 
-
             $category_id = VehicleCategory::whereRaw('LOWER(name) = ?', [strtolower($row['category'])])->value('id');
 
-            if(empty($category_id) && $row['category'] == 'Tracker not Installe')
-            {
+            if (empty($category_id) && $row['category'] == 'Tracker not Installe') {
                 $category_id = VehicleCategory::whereRaw('LOWER(name) = ?', [strtolower('Tracker not Installed')])->value('id');
             }
 
-            if (!$category_id) {
+            if (! $category_id) {
                 $this->command->error("Category not found for vehicle: {$row['category']}");
+
                 continue;
             }
 
             $location_id = Location::whereRaw('LOWER(name) = ?', [strtolower($row['vtown'])])->where('location_type', Location::LOCATION_TYPE_TOWN)->value('id');
 
-            if (!$location_id) {
+            if (! $location_id) {
                 $this->command->error("Location not found for vehicle: {$row['vtown']}");
+
                 continue;
             }
-
 
             Vehicle::updateOrCreate(
                 [
@@ -61,12 +59,12 @@ class VehicleSeeder extends Seeder
                     'location_id' => $location_id,
                     'vehicle_category_id' => $category_id,
                     'condition' => $row['condition'] === 'Old' || $row['condition'] === 'old' ? Vehicle::CONDITION_OLD : Vehicle::CONDITION_NEW,
-                    'e_id' => isset($row['id']) ? (int)$row['id'] : null,
+                    'e_id' => isset($row['id']) ? (int) $row['id'] : null,
                 ]
             );
         }
 
-        $this->command->info("Vehicle parts seeded successfully!");
+        $this->command->info('Vehicle parts seeded successfully!');
 
     }
 }

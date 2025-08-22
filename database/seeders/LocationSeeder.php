@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Location;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 
 class LocationSeeder extends Seeder
 {
@@ -37,7 +36,7 @@ class LocationSeeder extends Seeder
             'TR-Saggian',
             'TR-Valencia',
             'Pool Vehicle',
-            'Pole Vehicle'
+            'Pole Vehicle',
         ];
         $workshops = [
             'Children Workshop',

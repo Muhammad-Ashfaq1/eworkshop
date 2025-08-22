@@ -16,8 +16,9 @@ class VehiclePartSeeder extends Seeder
     {
         $path = database_path('data/parts.csv');
 
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             $this->command->error("CSV file not found at: {$path}");
+
             return;
         }
 
@@ -30,14 +31,14 @@ class VehiclePartSeeder extends Seeder
             VehiclePart::updateOrCreate(
                 ['slug' => Str::slug($row['part'])],
                 [
-                    'name'      => $row['part'],
-                    'slug'      => Str::slug($row['part']),
+                    'name' => $row['part'],
+                    'slug' => Str::slug($row['part']),
                     'is_active' => 1,
-                    'e_id'      => isset($row['id']) ? (int)$row['id'] : null,
+                    'e_id' => isset($row['id']) ? (int) $row['id'] : null,
                 ]
             );
         }
 
-        $this->command->info("Vehicle parts seeded successfully!");
+        $this->command->info('Vehicle parts seeded successfully!');
     }
 }

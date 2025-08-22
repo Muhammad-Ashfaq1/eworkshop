@@ -323,13 +323,13 @@
                     </div>
                 </div>
 
-                @if($report->attach_file)
+                @if($report->attachment_url)
                 <div class="row mt-4">
                     <div class="col-12">
                         <h6 class="text-muted mb-3">Attached File</h6>
                         <div class="d-flex align-items-center">
                             <i class="ri-file-line me-2 fs-4"></i>
-                            <a href="{{ asset('storage/' . $report->attach_file) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ $report->attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                 View Attachment
                             </a>
                         </div>

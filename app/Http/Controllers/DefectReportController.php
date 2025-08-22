@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DefectReport;
-use App\Models\Work;
-use App\Models\User;
-use App\Models\Vehicle;
-use App\Models\Location;
-use App\Http\Requests\DefectReportRequest;
 use App\Helpers\FileUploadManager;
-use Illuminate\Http\Request;
+use App\Http\Requests\DefectReportRequest;
+use App\Models\DefectReport;
+use App\Models\User;
+use App\Models\Work;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +18,7 @@ class DefectReportController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         // Get defect reports based on user role
         $defectReports = DefectReport::forUser($user)
             ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi'])
@@ -31,15 +28,13 @@ class DefectReportController extends Controller
         return view('defect_reports.index', compact('defectReports'));
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(DefectReportRequest $request)
     {
         // Only DEO can create defect reports
-        if (!Auth::user()->hasRole('deo')) {
+        if (! Auth::user()->hasRole('deo')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -55,14 +50,14 @@ class DefectReportController extends Controller
                 'mvi_id' => $request->mvi_id,
                 'date' => $request->date,
                 'type' => $request->type ?? DefectReport::TYPE_DEFECT_REPORT,
-                'attach_file' => null,
-                'created_by' => Auth::id()
+                'attachment_url' => null,
+                'created_by' => Auth::id(),
             ]);
 
             // Handle file upload
-            if ($request->hasFile('attach_file')) {
-                $file = FileUploadManager::uploadFile($request->file('attach_file'), 'defect_reports/');
-                $defectReport->update(['attach_file' => $file['path']]);
+            if ($request->hasFile('attachment_url')) {
+                $file = FileUploadManager::uploadFile($request->file('attachment_url'), 'defect_reports/');
+                $defectReport->update(['attachment_url' => $file['path']]);
             }
 
             // Create works
@@ -72,7 +67,7 @@ class DefectReportController extends Controller
                     'work' => $workData['work'],
                     'type' => $workData['type'],
                     'quantity' => $workData['quantity'] ?? null,
-                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null
+                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
                 ]);
             }
 
@@ -81,7 +76,7 @@ class DefectReportController extends Controller
             if (request()->ajax()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Defect report created successfully.'
+                    'message' => 'Defect report created successfully.',
                 ]);
             }
 
@@ -90,21 +85,17 @@ class DefectReportController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             if (request()->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to create defect report. ' . $e->getMessage()
+                    'message' => 'Failed to create defect report. '.$e->getMessage(),
                 ], 422);
             }
-            
-            return back()->withInput()->withErrors(['error' => 'Failed to create defect report. ' . $e->getMessage()]);
+
+            return back()->withInput()->withErrors(['error' => 'Failed to create defect report. '.$e->getMessage()]);
         }
     }
-
-
-
-
 
     /**
      * Update the specified resource in storage.
@@ -112,9 +103,9 @@ class DefectReportController extends Controller
     public function update(DefectReportRequest $request, DefectReport $defectReport)
     {
         $user = Auth::user();
-        
+
         // Only super admin and admin can update
-        if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
+        if (! $user->hasRole('super_admin') && ! $user->hasRole('admin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -129,7 +120,7 @@ class DefectReportController extends Controller
                 'fleet_manager_id' => $request->fleet_manager_id,
                 'mvi_id' => $request->mvi_id,
                 'date' => $request->date,
-                'type' => $request->type
+                'type' => $request->type,
             ]);
 
             // Handle file upload
@@ -138,21 +129,21 @@ class DefectReportController extends Controller
                 if ($defectReport->attach_file) {
                     FileUploadManager::deleteFile($defectReport->attach_file);
                 }
-                
+
                 $file = FileUploadManager::uploadFile($request->file('attach_file'), 'defect_reports/');
                 $defectReport->update(['attach_file' => $file['path']]);
             }
 
             // Delete existing works and create new ones
             $defectReport->works()->delete();
-            
+
             foreach ($request->works as $workData) {
                 Work::create([
                     'defect_report_id' => $defectReport->id,
                     'work' => $workData['work'],
                     'type' => $workData['type'],
                     'quantity' => $workData['quantity'] ?? null,
-                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null
+                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
                 ]);
             }
 
@@ -161,7 +152,7 @@ class DefectReportController extends Controller
             if (request()->ajax()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Defect report updated successfully.'
+                    'message' => 'Defect report updated successfully.',
                 ]);
             }
 
@@ -170,15 +161,15 @@ class DefectReportController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             if (request()->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to update defect report. ' . $e->getMessage()
+                    'message' => 'Failed to update defect report. '.$e->getMessage(),
                 ], 422);
             }
-            
-            return back()->withInput()->withErrors(['error' => 'Failed to update defect report. ' . $e->getMessage()]);
+
+            return back()->withInput()->withErrors(['error' => 'Failed to update defect report. '.$e->getMessage()]);
         }
     }
 
@@ -188,9 +179,9 @@ class DefectReportController extends Controller
     public function destroy(DefectReport $defectReport)
     {
         $user = Auth::user();
-        
+
         // Only super admin and admin can delete
-        if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
+        if (! $user->hasRole('super_admin') && ! $user->hasRole('admin')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -205,7 +196,7 @@ class DefectReportController extends Controller
             if (request()->ajax()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Defect report deleted successfully.'
+                    'message' => 'Defect report deleted successfully.',
                 ]);
             }
 
@@ -216,11 +207,11 @@ class DefectReportController extends Controller
             if (request()->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to delete defect report. ' . $e->getMessage()
+                    'message' => 'Failed to delete defect report. '.$e->getMessage(),
                 ], 422);
             }
-            
-            return back()->withErrors(['error' => 'Failed to delete defect report. ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Failed to delete defect report. '.$e->getMessage()]);
         }
     }
 
@@ -238,7 +229,7 @@ class DefectReportController extends Controller
         } elseif ($user->hasRole('mvi')) {
             return $defectReport->mvi_id == $user->id;
         }
-        
+
         return false;
     }
 }

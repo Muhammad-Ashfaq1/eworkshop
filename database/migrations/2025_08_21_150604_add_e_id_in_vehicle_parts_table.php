@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('vehicle_parts', function (Blueprint $table) {
-            if(!Schema::hasColumn('vehicle_parts', 'e_id')) {
+            if (! Schema::hasColumn('vehicle_parts', 'e_id')) {
                 $table->integer('e_id')->nullable()->after('id');
             }
         });
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('vehicle_parts', function (Blueprint $table) {
-            if(Schema::hasColumn('vehicle_parts', 'e_id')) {
+            if (Schema::hasColumn('vehicle_parts', 'e_id')) {
                 $table->dropColumn('e_id');
             }
         });

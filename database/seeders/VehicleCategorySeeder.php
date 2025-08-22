@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class VehicleCategorySeeder extends Seeder
     {
         $options = [
             'Arm Roll',
-            'Chain Arm Roll',   
+            'Chain Arm Roll',
             'Compactor',
             'Dumper',
             'Gully Sucker',

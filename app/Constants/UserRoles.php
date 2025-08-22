@@ -5,9 +5,13 @@ namespace App\Constants;
 class UserRoles
 {
     const SUPER_ADMIN = 'super_admin';
+
     const ADMIN = 'admin';
+
     const DEO = 'deo';
+
     const FLEET_MANAGER = 'fleet_manager';
+
     const MVI = 'mvi';
 
     /**

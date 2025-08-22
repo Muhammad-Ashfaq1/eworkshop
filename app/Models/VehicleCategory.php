@@ -12,7 +12,7 @@ class VehicleCategory extends Model
 
     protected $fillable = [
         'name',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -20,10 +20,11 @@ class VehicleCategory extends Model
     ];
 
     const IS_ACTIVE = 1;
+
     const IS_INACTIVE = 0;
 
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class, 'vehicle_category_id');
     }
-} 
+}

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLocationRequest;
 use App\Models\Location;
-use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
@@ -13,9 +12,11 @@ class LocationController extends Controller
     {
         $this->authorize('read_locations');
 
-        $locations=Location::latest()->get();
-        return view('admin.location.index',compact('locations'));
+        $locations = Location::latest()->get();
+
+        return view('admin.location.index', compact('locations'));
     }
+
     public function store(StoreLocationRequest $request)
     {
         $this->authorize('create_locations');
@@ -24,7 +25,7 @@ class LocationController extends Controller
         $name = $request->name;
         $slug = $request->slug;
         $location_type = $request->location_type;
-        if (!$slug) {
+        if (! $slug) {
             $slug = str($name)->slug();
         }
         $is_active = $request->is_active;
@@ -46,13 +47,13 @@ class LocationController extends Controller
     {
         $this->authorize('update_locations');
 
-        $location=Location::findOrFail($id);
+        $location = Location::findOrFail($id);
+
         return response()->json([
-            'success'=>true,
+            'success' => true,
             'location' => $location,
         ]);
     }
-
 
     public function destroy($id)
     {
@@ -60,13 +61,15 @@ class LocationController extends Controller
 
         $location = Location::findOrFail($id);
         $location->delete();
+
         return $this->getLatestRecords(true, 'Location deleted successfully.');
     }
 
-    private function getLatestRecords($success = true , $message = 'Location created successfully.')
+    private function getLatestRecords($success = true, $message = 'Location created successfully.')
     {
         $locations = Location::latest()->get();
         $html = view('admin.location.data-table', compact('locations'))->render();
+
         return response()->json([
             'success' => $success,
             'message' => $message,
@@ -74,4 +77,3 @@ class LocationController extends Controller
         ]);
     }
 }
-

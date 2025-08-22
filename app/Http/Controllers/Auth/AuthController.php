@@ -20,36 +20,37 @@ class AuthController extends Controller
 
     public function loginAction(Request $request)
     {
-        $validated=$request->validate([
-            "password"=>"required",
-            "email"=>"required",
+        $validated = $request->validate([
+            'password' => 'required',
+            'email' => 'required',
         ]);
 
-        if(Auth::attempt($validated, !empty($request->remember_me)))
-        {
+        if (Auth::attempt($validated, ! empty($request->remember_me))) {
             $user = Auth::user();
-            if(!$user->is_active)
-            {
+            if (! $user->is_active) {
                 return redirect()->back()->with(['error' => 'Please verify your email to login'])->withInput($request->only('email'));
             }
 
             // Redirect to role-specific dashboard
             return $this->redirectToRoleDashboard($user);
         }
+
         return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput($request->only('email'));
     }
+
     public function register()
     {
         return view('auth.register');
     }
+
     public function registerUser(Request $request)
     {
         $validated = $request->validate([
-                    "first_name"=>"required",
-                    "last_name"=>"nullable|string",
-                    "email"=>"required|email|unique:users,email",
-                    "phone_number"=>"nullable|min:6|max:12",
-                    "password"=>"required|confirmed|min:8",
+            'first_name' => 'required',
+            'last_name' => 'nullable|string',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'nullable|min:6|max:12',
+            'password' => 'required|confirmed|min:8',
         ]);
         $user = User::create($validated);
         Mail::to($user->email)->send(new ActiveUserMail($user));
@@ -57,13 +58,15 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'Please verify the email.');
 
     }
+
     public function logout()
     {
         auth::check() ? auth::logout() : '';
+
         return redirect()->route('home');
     }
 
-        /**
+    /**
      * Redirect user to role-specific dashboard
      */
     private function redirectToRoleDashboard($user)
@@ -79,6 +82,7 @@ class AuthController extends Controller
         // Default fallback
         return redirect()->route('home');
     }
+
     public function updatePassword(Request $request, string $id)
     {
         $validated = $request->validate([
@@ -92,24 +96,24 @@ class AuthController extends Controller
 
         $user = User::findOrFail($id);
 
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
         }
 
         $user->update([
-            'password'=> Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
-
 
         return redirect()->back()->with('status', 'Password updated successfully.');
     }
-    public function verifyUser(String $id)
-    {
-        $user=User::find($id);
-        $user->update([
-            'is_active'=>true
-        ]);
-        return redirect()->route('login')->with(['success'=>'Email verified successfully']);
-    }
 
+    public function verifyUser(string $id)
+    {
+        $user = User::find($id);
+        $user->update([
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('login')->with(['success' => 'Email verified successfully']);
+    }
 }
