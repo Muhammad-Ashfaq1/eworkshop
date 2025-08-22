@@ -21,7 +21,6 @@
         </div>
         <!-- End page title -->
 
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -30,48 +29,25 @@
                             <div class="col-md-6">
                                 <h4 class="card-title mb-0">Defect Reports List</h4>
                             </div>
-
                             <div class="col-md-6 text-end">
-                                 @role('deo')
-                                <button type="button" class="btn btn-primary">
-                                    <a href="{{ route('defect-reports.export') }}" class="text-white text-decoration-none">
-                                    <i class="align-bottom me-1"></i>Export Defect Report
-                                    </a>
-                                </button>
-                                @endrole
                                 @role('deo')
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDefectReportModal">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#defectReportModal">
                                     <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
                                 </button>
                                 @endrole
                             </div>
-
                         </div>
                     </div>
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                        <div class="masters-datatable">
+                            <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Vehicle</th>
                                         <th>Office/Town</th>
                                         <th>Driver Name</th>
-                                        <th>Manager Fleet</th>
+                                        <th>Fleet Manager</th>
                                         <th>MVI</th>
                                         <th>Date</th>
                                         <th>Type</th>
@@ -81,61 +57,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($defectReports as $report)
-                                    <tr>
-                                        <td>{{ $report->id }}</td>
-                                        <td>{{ $report->vehicle->vehicle_number ?? 'N/A' }}</td>
-                                        <td>{{ $report->location->name ?? 'N/A' }}</td>
-                                        <td>{{ $report->driver_name }}</td>
-                                        <td>{{ $report->fleetManager->first_name ?? 'N/A' }} {{ $report->fleetManager->last_name ?? '' }}</td>
-                                        <td>{{ $report->mvi->first_name ?? 'N/A' }} {{ $report->mvi->last_name ?? '' }}</td>
-                                        <td>{{ $report->date->format('d/m/Y') }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ $report->type === 'defect_report' ? 'warning' : 'info' }}">
-                                                {{ ucfirst(str_replace('_', ' ', $report->type)) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info">{{ $report->works->count() }}</span>
-                                        </td>
-                                        <td>{{ $report->creator->first_name }} {{ $report->creator->last_name }}</td>
-                                        <td>
-                                            <div class="d-flex gap-2">
-                                                <button type="button" class="btn btn-sm btn-info"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#viewDefectReportModal{{ $report->id }}">
-                                                    <i class="ri-eye-line"></i>
-                                                </button>
-
-                                                @role('super_admin|admin')
-                                                <button type="button" class="btn btn-sm btn-warning"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editDefectReportModal{{ $report->id }}">
-                                                    <i class="ri-edit-line"></i>
-                                                </button>
-
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                        onclick="deleteDefectReport({{ $report->id }})">
-                                                    <i class="ri-delete-bin-line"></i>
-                                                </button>
-                                                @endrole
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="11" class="text-center">No defect reports found.</td>
-                                    </tr>
-                                    @endforelse
+                                    <!-- Data will be loaded via AJAX -->
                                 </tbody>
                             </table>
                         </div>
-
-                        @if($defectReports->hasPages())
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ $defectReports->links() }}
-                        </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -143,31 +68,31 @@
     </div>
 </div>
 
-<!-- Add Defect Report Modal -->
-<div class="modal fade" id="addDefectReportModal" tabindex="-1" aria-labelledby="addDefectReportModalLabel" aria-hidden="true">
+<!-- Unified Defect Report Modal -->
+<div class="modal fade" id="defectReportModal" tabindex="-1" aria-labelledby="defectReportModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addDefectReportModalLabel">Add Defect Report</h5>
+                <h5 class="modal-title" id="defectReportModalLabel">Add Defect Report</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="addDefectReportForm" action="{{ route('defect-reports.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="defectReportForm" action="{{ route('defect-reports.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" id="defect_report_id" name="defect_report_id" value="">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="vehicle_id" class="form-label">Vehicle <x-req /></label>
-                                <select class="form-select required" id="vehicle_id" name="vehicle_id" required>
+                                <select class="form-select" id="vehicle_id" name="vehicle_id" required>
                                     <option value="" selected disabled>Select Vehicle</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="location_id" class="form-label">Office/Town <x-req /></label>
-                                <select class="form-select required" id="location_id" name="location_id" required>
+                                <select class="form-select" id="location_id" name="location_id" required>
                                     <option value="" selected disabled>Select Office/Town</option>
                                 </select>
                             </div>
@@ -177,17 +102,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="driver_name" class="form-label">Driver Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control required" id="driver_name" name="driver_name"
-                                       placeholder="Enter driver name" required>
+                                <label for="driver_name" class="form-label">Driver Name <x-req /></label>
+                                <input type="text" class="form-control" id="driver_name" name="driver_name" placeholder="Enter driver name" required>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control required" id="date" name="date"
-                                       value="{{ date('Y-m-d') }}" required>
+                                <label for="date" class="form-label">Date <x-req /></label>
+                                <input type="date" class="form-control" id="date" name="date" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
                     </div>
@@ -196,16 +118,15 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="fleet_manager_id" class="form-label">Fleet Manager <x-req /></label>
-                                <select class="form-select required" id="fleet_manager_id" name="fleet_manager_id" required>
+                                <select class="form-select" id="fleet_manager_id" name="fleet_manager_id" required>
                                     <option value="" selected disabled>Select Fleet Manager</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="mvi_id" class="form-label">MVI <x-req /></label>
-                                <select class="form-select" id="mvi_id" name="mvi_id" required>
+                                <label for="mvi_id" class="form-label">MVI</label>
+                                <select class="form-select" id="mvi_id" name="mvi_id">
                                     <option value="" selected disabled>Select MVI</option>
                                 </select>
                             </div>
@@ -216,16 +137,16 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="type" class="form-label">Report Type</label>
-                                <input type="text" class="form-control" id="type" name="type" value="defect_report" readonly>
-                                <input type="hidden" name="type" value="defect_report">
+                                <select class="form-select" id="type" name="type">
+                                    <option value="defect_report">Defect Report</option>
+                                    <option value="purchase_order">Purchase Order</option>
+                                </select>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="attach_file" class="form-label">Attach File <x-req /></label>
-                                <input type="file" class="form-control required" id="attach_file" name="attach_file"
-                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                                <label for="attachment_url" class="form-label">Attach File</label>
+                                <input type="file" class="form-control" id="attachment_url" name="attachment_url" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                 <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB</div>
                             </div>
                         </div>
@@ -239,9 +160,8 @@
                             <div id="works-container">
                                 <div class="work-item row mb-3">
                                     <div class="col-md-10">
-                                        <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control work-description required" name="works[0][work]"
-                                               placeholder="Enter work description" maxlength="300" required>
+                                        <label class="form-label">Work Description <x-req /></label>
+                                        <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                                         <input type="hidden" name="works[0][type]" value="defect">
                                     </div>
                                     <div class="col-md-2 d-flex align-items-end">
@@ -261,564 +181,423 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Defect Report</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="defectReportSubmit">Create Defect Report</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<!-- View Defect Report Modals -->
-@foreach($defectReports as $report)
-<div class="modal fade" id="viewDefectReportModal{{ $report->id }}" tabindex="-1" aria-labelledby="viewDefectReportModalLabel{{ $report->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewDefectReportModalLabel{{ $report->id }}">View Defect Report #{{ $report->id }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-muted mb-3">Basic Information</h6>
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="fw-bold" style="width: 150px;">Report Type:</td>
-                                <td>
-                                    <span class="badge bg-{{ $report->type === 'defect_report' ? 'warning' : 'info' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $report->type)) }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Vehicle:</td>
-                                <td>{{ $report->vehicle->vehicle_number ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Office/Town:</td>
-                                <td>{{ $report->location->name ?? 'N/A' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Driver Name:</td>
-                                <td>{{ $report->driver_name }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Date:</td>
-                                <td>{{ $report->date->format('d/m/Y') }}</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="col-md-6">
-                        <h6 class="text-muted mb-3">Assigned Personnel</h6>
-                        <table class="table table-borderless">
-                            <tr>
-                                <td class="fw-bold" style="width: 150px;">Fleet Manager:</td>
-                                <td>{{ $report->fleetManager->first_name ?? 'N/A' }} {{ $report->fleetManager->last_name ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">MVI:</td>
-                                <td>{{ $report->mvi->first_name ?? 'N/A' }} {{ $report->mvi->last_name ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Created By:</td>
-                                <td>{{ $report->creator->first_name }} {{ $report->creator->last_name }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Created On:</td>
-                                <td>{{ $report->created_at->format('d/m/Y H:i') }}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                @if($report->attachment_url)
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <h6 class="text-muted mb-3">Attached File</h6>
-                        <div class="d-flex align-items-center">
-                            <i class="ri-file-line me-2 fs-4"></i>
-                            <a href="{{ $report->attachment_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                View Attachment
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                <hr class="my-4">
-
-                <div class="row">
-                    <div class="col-12">
-                        <h6 class="text-muted mb-3">Work Items ({{ $report->works->count() }})</h6>
-
-                        @if($report->works->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 50px;">#</th>
-                                        <th>Work Description</th>
-                                        <th style="width: 120px;">Type</th>
-                                        <th style="width: 100px;">Quantity</th>
-                                        <th style="width: 150px;">Vehicle Part</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($report->works as $index => $work)
-                                    <tr>
-                                        <td class="text-center">{{ $index + 1 }}</td>
-                                        <td>{{ $work->work ?? 'N/A' }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ $work->type === 'defect' ? 'danger' : 'success' }}">
-                                                {{ ucfirst(str_replace('_', ' ', $work->type)) }}
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            @if($work->type === 'purchase_order' && $work->quantity)
-                                                {{ $work->quantity }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($work->type === 'purchase_order' && $work->vehiclePart)
-                                                {{ $work->vehiclePart->name }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        @else
-                        <div class="text-center text-muted py-4">
-                            <i class="ri-inbox-line fs-1"></i>
-                            <p class="mt-2">No work items found for this report.</p>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
-
-<!-- Edit Defect Report Modals -->
-@foreach($defectReports as $report)
-@role('super_admin|admin')
-<div class="modal fade" id="editDefectReportModal{{ $report->id }}" tabindex="-1" aria-labelledby="editDefectReportModalLabel{{ $report->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editDefectReportModalLabel{{ $report->id }}">Edit Defect Report #{{ $report->id }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('defect-reports.update', $report->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_vehicle_id_{{ $report->id }}" class="form-label">Vehicle <x-req /></label>
-                                <select class="form-select required" id="edit_vehicle_id_{{ $report->id }}" name="vehicle_id" required>
-                                    <option value="" selected disabled>Select Vehicle</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_location_id_{{ $report->id }}" class="form-label">Office/Town <x-req /></label>
-                                <select class="form-select required" id="edit_location_id_{{ $report->id }}" name="location_id" required>
-                                    <option value="" selected disabled>Select Office/Town</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_driver_name_{{ $report->id }}" class="form-label">Driver Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="edit_driver_name_{{ $report->id }}" name="driver_name"
-                                       value="{{ $report->driver_name }}" placeholder="Enter driver name" required>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_date_{{ $report->id }}" class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="edit_date_{{ $report->id }}" name="date"
-                                       value="{{ $report->date->format('Y-m-d') }}" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_fleet_manager_id_{{ $report->id }}" class="form-label">Fleet Manager <x-req /></label>
-                                <select class="form-select required" id="edit_fleet_manager_id_{{ $report->id }}" name="fleet_manager_id" required>
-                                    <option value="" selected disabled>Select Fleet Manager</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_mvi_id_{{ $report->id }}" class="form-label">MVI <x-req /></label>
-                                <select class="form-select required" id="edit_mvi_id_{{ $report->id }}" name="mvi_id" required>
-                                    <option value="" selected disabled>Select MVI</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_type_{{ $report->id }}" class="form-label">Report Type</label>
-                                <input type="text" class="form-control" id="edit_type_{{ $report->id }}" value="defect_report" readonly>
-                                <input type="hidden" name="type" value="defect_report">
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="edit_attach_file_{{ $report->id }}" class="form-label">Attach File <x-req /></label>
-                                <input type="file" class="form-control required" id="edit_attach_file_{{ $report->id }}" name="attach_file"
-                                       accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-                                <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB</div>
-                                @if($report->attach_file)
-                                    <div class="mt-2">
-                                        <small class="form-text text-muted">Current file:</small>
-                                        <a href="{{ asset('storage/' . $report->attach_file) }}" target="_blank" class="btn btn-sm btn-outline-primary ms-2">
-                                            View Current File
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="row">
-                        <div class="col-12">
-                            <h6 class="mb-3">Work Items</h6>
-                            <div id="edit-works-container-{{ $report->id }}">
-                                @foreach($report->works as $index => $work)
-                                <div class="work-item row mb-3">
-                                    <div class="col-md-10">
-                                        <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control work-description required" name="works[{{ $index }}][work]"
-                                               value="{{ $work->work }}" placeholder="Enter work description" maxlength="300" required>
-                                        <input type="hidden" name="works[{{ $index }}][type]" value="defect">
-                                    </div>
-                                    <div class="col-md-2 d-flex align-items-end">
-                                        @if($index > 0)
-                                        <button type="button" class="btn btn-danger btn-sm remove-work">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>
-                                        @endif
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-
-                            <div class="text-center">
-                                <button type="button" class="btn btn-success btn-sm" onclick="addEditWorkItem({{ $report->id }})">
-                                    <i class="ri-add-line"></i> Add Work Item
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Defect Report</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endrole
-@endforeach
-
 @endsection
 
 @section('scripts')
 <script>
-$(document).ready(function() {
-    let workIndex = 1;
+    $(document).ready(function(){
+        applyDefectReportsDatatable();
+        loadDropdownData();
+        setupWorkItems();
+        setupFormValidation();
+    });
 
-    // Load dropdowns on page load
-    loadAddModalDropdowns();
+    function applyDefectReportsDatatable() {
+        var table = $('#js-defect-report-table').DataTable({
+            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+            buttons: [
+                {
+                    text: '<i class="fas fa-plus me-2"></i>Add New',
+                    className: 'btn btn-primary',
+                    action: function (e, dt, node, config) {
+                        resetForm();
+                        $('#defectReportModalLabel').text('Add Defect Report');
+                        $('#defectReportSubmit').text('Create Defect Report');
+                        $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+                        $('#defectReportModal').modal('show');
+                    }
+                }
+            ],
+            pageLength: 20,
+            searching: true,
+            lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('defect-reports.listing') }}",
+                type: "GET"
+            },
+            columns: [
+                {
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        const start = meta.settings._iDisplayStart;
+                        const pageLength = meta.settings._iDisplayLength;
+                        const pageNumber = (start / pageLength) + 1;
+                        return pageLength * (pageNumber - 1) + (meta.row + 1);
+                    },
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: "vehicle",
+                    render: function (data, type, row) {
+                        return data ? data.vehicle_number : 'N/A';
+                    }
+                },
+                {
+                    data: "location",
+                    render: function (data, type, row) {
+                        return data ? data.name : 'N/A';
+                    }
+                },
+                {
+                    data: "driver_name",
+                    render: function (data, type, row) {
+                        return data || 'N/A';
+                    }
+                },
+                {
+                    data: "fleet_manager",
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                        }
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "mvi",
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                        }
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "date",
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('DD/MM/YYYY') : 'N/A';
+                    }
+                },
+                {
+                    data: "type",
+                    render: function (data, type, row) {
+                        const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
+                        const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A';
+                        return `<span class="badge ${badgeClass}">${displayText}</span>`;
+                    }
+                },
+                {
+                    data: "works",
+                    render: function (data, type, row) {
+                        return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
+                    }
+                },
+                {
+                    data: "creator",
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                        }
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    render: function (data, type, row) {
+                        let buttons = `
+                            <div class="dropdown">
+                                <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-more-fill align-middle"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item view-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>`;
+                        
+                        if (row.can_edit) {
+                            buttons += `<li><a class="dropdown-item edit-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
+                        }
+                        
+                        if (row.can_delete) {
+                            buttons += `<li><a class="dropdown-item delete-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>`;
+                        }
+                        
+                        buttons += `</ul></div>`;
+                        return buttons;
+                    }
+                }
+            ],
+            order: [[6, 'desc']]
+        });
 
-    // Add work item
-    $('#add-work').click(function() {
-        const workItem = `
+        // Handle view action
+        $(document).on('click', '.view-defect-report-btn', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            viewDefectReport(id);
+        });
+
+        // Handle edit action
+        $(document).on('click', '.edit-defect-report-btn', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            editDefectReport(id);
+        });
+
+        // Handle delete action
+        $(document).on('click', '.delete-defect-report-btn', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+            deleteDefectReport(id);
+        });
+    }
+
+    function loadDropdownData() {
+        // Load vehicles
+        $.get("{{ route('dropdown.getVehicles') }}", function(data) {
+            let options = '<option value="" selected disabled>Select Vehicle</option>';
+            data.forEach(function(vehicle) {
+                options += `<option value="${vehicle.id}">${vehicle.vehicle_number}</option>`;
+            });
+            $('#vehicle_id').html(options);
+        });
+
+        // Load locations
+        $.get("{{ route('dropdown.getLocations') }}", function(data) {
+            let options = '<option value="" selected disabled>Select Office/Town</option>';
+            data.forEach(function(location) {
+                options += `<option value="${location.id}">${location.name}</option>`;
+            });
+            $('#location_id').html(options);
+        });
+
+        // Load fleet managers
+        $.get("{{ route('dropdown.getFleetManagers') }}", function(data) {
+            let options = '<option value="" selected disabled>Select Fleet Manager</option>';
+            data.forEach(function(manager) {
+                options += `<option value="${manager.id}">${manager.first_name} ${manager.last_name}</option>`;
+            });
+            $('#fleet_manager_id').html(options);
+        });
+
+        // Load MVIs
+        $.get("{{ route('dropdown.getMvis') }}", function(data) {
+            let options = '<option value="" selected disabled>Select MVI</option>';
+            data.forEach(function(mvi) {
+                options += `<option value="${mvi.id}">${mvi.first_name} ${mvi.last_name}</option>`;
+            });
+            $('#mvi_id').html(options);
+        });
+    }
+
+    function setupWorkItems() {
+        let workIndex = 1;
+
+        $('#add-work').click(function() {
+            const workItem = `
+                <div class="work-item row mb-3">
+                    <div class="col-md-10">
+                        <label class="form-label">Work Description <x-req /></label>
+                        <input type="text" class="form-control work-description" name="works[${workIndex}][work]" placeholder="Enter work description" maxlength="300" required>
+                        <input type="hidden" name="works[${workIndex}][type]" value="defect">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-work">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#works-container').append(workItem);
+            workIndex++;
+        });
+
+        $(document).on('click', '.remove-work', function() {
+            $(this).closest('.work-item').remove();
+        });
+    }
+
+    function setupFormValidation() {
+        $('#defectReportForm').validate({
+            rules: {
+                vehicle_id: { required: true },
+                location_id: { required: true },
+                driver_name: { required: true, minlength: 2 },
+                date: { required: true },
+                fleet_manager_id: { required: true },
+                'works[0][work]': { required: true, minlength: 5 }
+            },
+            messages: {
+                vehicle_id: { required: "Please select a vehicle" },
+                location_id: { required: "Please select a location" },
+                driver_name: { required: "Please enter driver name", minlength: "Driver name must be at least 2 characters" },
+                date: { required: "Please select a date" },
+                fleet_manager_id: { required: "Please select a fleet manager" },
+                'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" }
+            },
+            submitHandler: function(form) {
+                const formData = new FormData(form);
+                const url = $(form).attr('action');
+                const method = $('#defect_report_id').val() ? 'PUT' : 'POST';
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        $('#defectReportSubmit').prop('disabled', true).text('Saving...');
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            toastr.success(response.message);
+                            $('#defectReportModal').modal('hide');
+                            $('#js-defect-report-table').DataTable().ajax.reload();
+                            resetForm();
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value[0]);
+                            });
+                        } else {
+                            toastr.error('An error occurred. Please try again.');
+                        }
+                    },
+                    complete: function() {
+                        $('#defectReportSubmit').prop('disabled', false).text('Create Defect Report');
+                    }
+                });
+            }
+        });
+    }
+
+    function viewDefectReport(id) {
+        $.get(`/defect-reports/${id}/edit`, function(response) {
+            if(response.success) {
+                const report = response.defectReport;
+                populateForm(report, true);
+                $('#defectReportModalLabel').text(`View Defect Report #${report.id}`);
+                $('#defectReportSubmit').hide();
+                $('#defectReportModal').modal('show');
+            } else {
+                toastr.error(response.message);
+            }
+        });
+    }
+
+    function editDefectReport(id) {
+        $.get(`/defect-reports/${id}/edit`, function(response) {
+            if(response.success) {
+                const report = response.defectReport;
+                populateForm(report, false);
+                $('#defectReportModalLabel').text(`Edit Defect Report #${report.id}`);
+                $('#defectReportSubmit').text('Update Defect Report').show();
+                $('#defectReportForm').attr('action', `/defect-reports/${id}`);
+                $('#defectReportModal').modal('show');
+            } else {
+                toastr.error(response.message);
+            }
+        });
+    }
+
+    function deleteDefectReport(id) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to delete this Defect Report!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/defect-reports/${id}`,
+                    type: "DELETE",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            toastr.success(response.message);
+                            $('#js-defect-report-table').DataTable().ajax.reload();
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error("Failed to delete Defect Report. Please try again.");
+                    }
+                });
+            }
+        });
+    }
+
+    function populateForm(report, isReadOnly) {
+        $('#defect_report_id').val(report.id);
+        $('#vehicle_id').val(report.vehicle_id).prop('disabled', isReadOnly);
+        $('#location_id').val(report.location_id).prop('disabled', isReadOnly);
+        $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
+        $('#date').val(report.date).prop('readonly', isReadOnly);
+        $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', isReadOnly);
+        $('#mvi_id').val(report.mvi_id).prop('disabled', isReadOnly);
+        $('#type').val(report.type).prop('disabled', isReadOnly);
+        $('#attachment_url').prop('disabled', isReadOnly);
+
+        // Populate works
+        $('#works-container').empty();
+        if (report.works && report.works.length > 0) {
+            report.works.forEach(function(work, index) {
+                const workItem = `
+                    <div class="work-item row mb-3">
+                        <div class="col-md-10">
+                            <label class="form-label">Work Description <x-req /></label>
+                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work}" readonly="${isReadOnly}" required>
+                            <input type="hidden" name="works[${index}][type]" value="${work.type}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            ${!isReadOnly ? `<button type="button" class="btn btn-danger btn-sm remove-work"><i class="ri-delete-bin-line"></i></button>` : ''}
+                        </div>
+                    </div>
+                `;
+                $('#works-container').append(workItem);
+            });
+        }
+
+        if (isReadOnly) {
+            $('#add-work').hide();
+        } else {
+            $('#add-work').show();
+        }
+    }
+
+    function resetForm() {
+        $('#defectReportForm')[0].reset();
+        $('#defect_report_id').val('');
+        $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+        $('#works-container').html(`
             <div class="work-item row mb-3">
                 <div class="col-md-10">
-                    <label class="form-label">Work Description <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control work-description required" name="works[${workIndex}][work]"
-                           placeholder="Enter work description" maxlength="300" required>
-                    <input type="hidden" name="works[${workIndex}][type]" value="defect">
+                    <label class="form-label">Work Description <x-req /></label>
+                    <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
+                    <input type="hidden" name="works[0][type]" value="defect">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger btn-sm remove-work">
+                    <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
                         <i class="ri-delete-bin-line"></i>
                     </button>
                 </div>
             </div>
-        `;
-
-        $('#works-container').append(workItem);
-        workIndex++;
-
-        // Show remove buttons for all items except the first one
-        $('.remove-work').show();
-    });
-
-    // Remove work item
-    $(document).on('click', '.remove-work', function() {
-        $(this).closest('.work-item').remove();
-
-        // Hide remove button if only one item remains
-        if ($('.work-item').length === 1) {
-            $('.remove-work').hide();
-        }
-    });
-
-    // Initialize - hide remove button for first item
-    $('.remove-work').hide();
-
-    // Load dropdowns for add modal
-    function loadAddModalDropdowns() {
-        getDynamicDropdownData('/get-vehicles', '#vehicle_id');
-        getDynamicDropdownData('/get-locations', '#location_id');
-        getDynamicDropdownData('/get-fleet-managers', '#fleet_manager_id');
-        getDynamicDropdownData('/get-mvis', '#mvi_id');
+        `);
+        $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
+        $('#add-work').show();
+        $('#defectReportSubmit').show();
     }
-
-    // Load dropdowns for edit modals when they open
-    $('[id^="editDefectReportModal"]').on('show.bs.modal', function() {
-        const reportId = $(this).attr('id').replace('editDefectReportModal', '');
-        loadEditModalDropdowns(reportId);
-    });
-
-    // Load dropdowns for edit modal
-    function loadEditModalDropdowns(reportId) {
-        getDynamicDropdownData('/get-vehicles', `#edit_vehicle_id_${reportId}`);
-        getDynamicDropdownData('/get-locations', `#edit_location_id_${reportId}`);
-        getDynamicDropdownData('/get-fleet-managers', `#edit_fleet_manager_id_${reportId}`);
-        getDynamicDropdownData('/get-mvis', `#edit_mvi_id_${reportId}`);
-
-        // Set selected values after dropdowns are loaded
-        setTimeout(() => {
-            setEditModalValues(reportId);
-        }, 500);
-    }
-
-    // Set selected values in edit modal
-    function setEditModalValues(reportId) {
-        // This will be populated from the server data
-        // The values are already set in the HTML when the modal is rendered
-    }
-});
-
-// Function to add work item in edit modals
-function addEditWorkItem(reportId) {
-    const container = document.getElementById(`edit-works-container-${reportId}`);
-    const workItems = container.querySelectorAll('.work-item');
-    const newIndex = workItems.length;
-
-    const workItem = document.createElement('div');
-    workItem.className = 'work-item row mb-3';
-    workItem.innerHTML = `
-        <div class="col-md-10">
-            <label class="form-label">Work Description <span class="text-danger">*</span></label>
-            <input type="text" class="form-control work-description required" name="works[${newIndex}][work]"
-                   placeholder="Enter work description" maxlength="300" required>
-            <input type="hidden" name="works[${newIndex}][type]" value="defect">
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="button" class="btn btn-danger btn-sm remove-work">
-                <i class="ri-delete-bin-line"></i>
-            </button>
-        </div>
-    `;
-
-    container.appendChild(workItem);
-
-    // Show remove buttons for all items except the first one
-    const removeButtons = container.querySelectorAll('.remove-work');
-    removeButtons.forEach(btn => btn.style.display = 'block');
-}
-
-// Function to delete defect report
-function deleteDefectReport(reportId) {
-    if (confirm('Are you sure you want to delete this defect report?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/defect-reports/${reportId}`;
-
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-
-        form.appendChild(csrfToken);
-        form.appendChild(methodField);
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-    // Handle form submission for add modal
-    $('#addDefectReportForm').on('submit', function(e) {
-        e.preventDefault();
-
-        // Clear previous validation errors
-        $('.is-invalid').removeClass('is-invalid');
-        $('.invalid-feedback').remove();
-
-        // Basic validation
-        let isValid = true;
-        const requiredFields = ['vehicle_id', 'location_id', 'driver_name', 'date', 'fleet_manager_id', 'mvi_id', 'attach_file'];
-
-        requiredFields.forEach(field => {
-            const value = $(`[name="${field}"]`).val();
-            if (!value || value === '') {
-                $(`[name="${field}"]`).addClass('is-invalid');
-                $(`[name="${field}"]`).after(`<div class="invalid-feedback">This field is required.</div>`);
-                isValid = false;
-            }
-        });
-
-        // Validate work items
-        const workItems = $('.work-description');
-        workItems.each(function(index) {
-            const value = $(this).val().trim();
-            if (!value) {
-                $(this).addClass('is-invalid');
-                $(this).after(`<div class="invalid-feedback">Work description is required.</div>`);
-                isValid = false;
-            }
-        });
-
-        if (!isValid) {
-            toastr.error('Please fill in all required fields.');
-            return;
-        }
-
-        const formData = new FormData(this);
-
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    toastr.success(response.message || 'Defect report created successfully!');
-                    $('#addDefectReportModal').modal('hide');
-                    location.reload();
-                } else {
-                    toastr.error(response.message || 'Failed to create defect report.');
-                }
-            },
-            error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    Object.keys(errors).forEach(key => {
-                        const field = $(`[name="${key}"]`);
-                        if (field.length) {
-                            field.addClass('is-invalid');
-                            field.after(`<div class="invalid-feedback">${errors[key][0]}</div>`);
-                        } else {
-                            toastr.error(errors[key][0]);
-                        }
-                    });
-                } else {
-                    toastr.error('An error occurred while creating the defect report.');
-                }
-            }
-        });
-    });
-
-    // Real-time validation
-    $('input, select').on('blur', function() {
-        const field = $(this);
-        const value = field.val().trim();
-        const fieldName = field.attr('name');
-
-        // Remove previous validation
-        field.removeClass('is-invalid');
-        field.siblings('.invalid-feedback').remove();
-
-        // Validate required fields
-        if (field.hasClass('required') || field.prop('required')) {
-            if (!value) {
-                field.addClass('is-invalid');
-                field.after(`<div class="invalid-feedback">This field is required.</div>`);
-            }
-        }
-
-        // Validate specific fields
-        if (fieldName === 'driver_name' && value && value.length < 2) {
-            field.addClass('is-invalid');
-            field.after(`<div class="invalid-feedback">Driver name must be at least 2 characters.</div>`);
-        }
-
-        if (fieldName === 'date' && value) {
-            const selectedDate = new Date(value);
-            const today = new Date();
-            if (selectedDate > today) {
-                field.addClass('is-invalid');
-                field.after(`<div class="invalid-feedback">Date cannot be in the future.</div>`);
-            }
-        }
-
-        // Validate dropdown fields
-        if (['vehicle_id', 'location_id', 'fleet_manager_id', 'mvi_id'].includes(fieldName)) {
-            if (!value || value === '') {
-                field.addClass('is-invalid');
-                field.after(`<div class="invalid-feedback">Please select a valid option.</div>`);
-            }
-        }
-    });
-
-    // Work description validation
-    $(document).on('blur', '.work-description', function() {
-        const field = $(this);
-        const value = field.val().trim();
-
-        field.removeClass('is-invalid');
-        field.siblings('.invalid-feedback').remove();
-
-        if (!value) {
-            field.addClass('is-invalid');
-            field.after(`<div class="invalid-feedback">Work description is required.</div>`);
-        } else if (value.length < 3) {
-            field.addClass('is-invalid');
-            field.after(`<div class="invalid-feedback">Work description must be at least 3 characters.</div>`);
-        }
-    });
 </script>
 @endsection

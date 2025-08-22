@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DefectReportExport;
-use App\Helpers\FileUploadManager;
-use App\Models\DefectReport;
-use App\Models\User;
-use App\Models\Work;
+use App\Interfaces\DefectReportRepositoryInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DefectReportController extends Controller
 {
+    private $defectReportRepository;
+
+    public function __construct(DefectReportRepositoryInterface $defectReportRepository)
+    {
+        $this->defectReportRepository = $defectReportRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,12 +26,20 @@ class DefectReportController extends Controller
         $user = Auth::user();
 
         // Get defect reports based on user role
-        $defectReports = DefectReport::forUser($user)
-            ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $defectReports = $this->defectReportRepository->getDefectReportsForUser($user, 15);
 
         return view('defect_reports.index', compact('defectReports'));
+    }
+
+    /**
+     * Get defect reports listing for datatable
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getDefectReportListing(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        return $this->defectReportRepository->getDefectReportListing($request->all(), $user);
     }
 
     /**
@@ -39,63 +52,27 @@ class DefectReportController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
-            DB::beginTransaction();
+        return $this->defectReportRepository->createDefectReport($request->all());
+    }
 
-            // Create defect report
-            $defectReport = DefectReport::create([
-                'vehicle_id' => $request->vehicle_id,
-                'location_id' => $request->location_id,
-                'driver_name' => $request->driver_name,
-                'fleet_manager_id' => $request->fleet_manager_id,
-                'mvi_id' => $request->mvi_id,
-                'date' => $request->date,
-                'type' => $request->type ?? DefectReport::TYPE_DEFECT_REPORT,
-                'attachment_url' => null,
-                'created_by' => Auth::id(),
-            ]);
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $defectReport = $this->defectReportRepository->getDefectReportById($id);
 
-            // Handle file upload
-            if ($request->hasFile('attachment_url')) {
-                $file = FileUploadManager::uploadFile($request->file('attachment_url'), 'defect_reports/');
-                $defectReport->update(['attachment_url' => $file['path']]);
-            }
-
-            // Create works
-            foreach ($request->works as $workData) {
-                Work::create([
-                    'defect_report_id' => $defectReport->id,
-                    'work' => $workData['work'],
-                    'type' => $workData['type'],
-                    'quantity' => $workData['quantity'] ?? null,
-                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
-                ]);
-            }
-
-            DB::commit();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Defect report created successfully.',
-                ]);
-            }
-
-            return redirect()->route('defect-reports.index')
-                ->with('success', 'Defect report created successfully.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed to create defect report. '.$e->getMessage(),
-                ], 422);
-            }
-
-            return back()->withInput()->withErrors(['error' => 'Failed to create defect report. '.$e->getMessage()]);
+        if (!$defectReport) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Defect report not found'
+            ], 404);
         }
+
+        return response()->json([
+            'success' => true,
+            'defectReport' => $defectReport,
+        ]);
     }
 
     /**
@@ -110,68 +87,7 @@ class DefectReportController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
-            DB::beginTransaction();
-
-            // Update defect report
-            $defectReport->update([
-                'vehicle_id' => $request->vehicle_id,
-                'location_id' => $request->location_id,
-                'driver_name' => $request->driver_name,
-                'fleet_manager_id' => $request->fleet_manager_id,
-                'mvi_id' => $request->mvi_id,
-                'date' => $request->date,
-                'type' => $request->type,
-            ]);
-
-            // Handle file upload
-            if ($request->hasFile('attach_file')) {
-                // Delete old file if exists
-                if ($defectReport->attach_file) {
-                    FileUploadManager::deleteFile($defectReport->attach_file);
-                }
-
-                $file = FileUploadManager::uploadFile($request->file('attach_file'), 'defect_reports/');
-                $defectReport->update(['attach_file' => $file['path']]);
-            }
-
-            // Delete existing works and create new ones
-            $defectReport->works()->delete();
-
-            foreach ($request->works as $workData) {
-                Work::create([
-                    'defect_report_id' => $defectReport->id,
-                    'work' => $workData['work'],
-                    'type' => $workData['type'],
-                    'quantity' => $workData['quantity'] ?? null,
-                    'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
-                ]);
-            }
-
-            DB::commit();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Defect report updated successfully.',
-                ]);
-            }
-
-            return redirect()->route('defect-reports.index')
-                ->with('success', 'Defect report updated successfully.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed to update defect report. '.$e->getMessage(),
-                ], 422);
-            }
-
-            return back()->withInput()->withErrors(['error' => 'Failed to update defect report. '.$e->getMessage()]);
-        }
+        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->all());
     }
 
     /**
@@ -186,34 +102,7 @@ class DefectReportController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        try {
-            // Delete attached file if exists
-            if ($defectReport->attach_file) {
-                FileUploadManager::deleteFile($defectReport->attach_file);
-            }
-
-            $defectReport->delete();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Defect report deleted successfully.',
-                ]);
-            }
-
-            return redirect()->route('defect-reports.index')
-                ->with('success', 'Defect report deleted successfully.');
-
-        } catch (\Exception $e) {
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed to delete defect report. '.$e->getMessage(),
-                ], 422);
-            }
-
-            return back()->withErrors(['error' => 'Failed to delete defect report. '.$e->getMessage()]);
-        }
+        return $this->defectReportRepository->deleteDefectReport($defectReport->id);
     }
 
     /**

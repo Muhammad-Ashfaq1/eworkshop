@@ -4,50 +4,86 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLocationRequest;
-use App\Models\Location;
+use App\Interfaces\LocationRepositoryInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+    private $locationRepository;
+
+    public function __construct(LocationRepositoryInterface $locationRepository)
+    {
+        $this->locationRepository = $locationRepository;
+    }
+
     public function index()
     {
-        $this->authorize('read_locations');
+        try {
+            $this->authorize('read_locations');
+            // Return view - DataTable will automatically load data via AJAX on initialization
+            return view('admin.location.index');
+        } catch (\Exception $e) {
+            \Log::error('Location index authorization error:', [
+                'error' => $e->getMessage(),
+                'user' => auth()->user() ? auth()->user()->id : 'not authenticated'
+            ]);
+            
+            // Return a proper error response instead of throwing
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied: ' . $e->getMessage()
+            ], 403);
+        }
+    }
 
-        $locations = Location::latest()->get();
-
-        return view('admin.location.index', compact('locations'));
+    /**
+     * Get locations listing for datatable
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getLocationListing(Request $request): JsonResponse
+    {
+        try {
+            $this->authorize('read_locations');
+            
+            \Log::info('Location listing request received:', [
+                'request_data' => $request->all(),
+                'user' => auth()->user() ? auth()->user()->id : 'not authenticated',
+                'permissions' => auth()->user() ? auth()->user()->getAllPermissions()->pluck('name') : []
+            ]);
+            
+            return $this->locationRepository->getLocationListing($request->all());
+        } catch (\Exception $e) {
+            \Log::error('Location listing error:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load locations: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(StoreLocationRequest $request)
     {
         $this->authorize('create_locations');
-
-        $location_id = $request->location_id ?? null;
-        $name = $request->name;
-        $slug = $request->slug;
-        $location_type = $request->location_type;
-        if (! $slug) {
-            $slug = str($name)->slug();
-        }
-        $is_active = $request->is_active;
-
-        Location::updateOrCreate(
-            ['id' => $location_id],
-            [
-                'name' => $name,
-                'slug' => $slug,
-                'location_type' => $location_type,
-                'is_active' => $is_active,
-            ]
-        );
-
-        return $this->getLatestRecords(true, 'Location created successfully.');
+        return $this->locationRepository->createOrUpdateLocation($request->all());
     }
 
     public function edit($id)
     {
         $this->authorize('update_locations');
+        $location = $this->locationRepository->getLocationById($id);
 
-        $location = Location::findOrFail($id);
+        if (!$location) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Location not found'
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,
@@ -58,22 +94,6 @@ class LocationController extends Controller
     public function destroy($id)
     {
         $this->authorize('delete_locations');
-
-        $location = Location::findOrFail($id);
-        $location->delete();
-
-        return $this->getLatestRecords(true, 'Location deleted successfully.');
-    }
-
-    private function getLatestRecords($success = true, $message = 'Location created successfully.')
-    {
-        $locations = Location::latest()->get();
-        $html = view('admin.location.data-table', compact('locations'))->render();
-
-        return response()->json([
-            'success' => $success,
-            'message' => $message,
-            'html' => $html,
-        ]);
+        return $this->locationRepository->deleteLocation($id);
     }
 }

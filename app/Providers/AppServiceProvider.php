@@ -3,7 +3,13 @@
 namespace App\Providers;
 
 use App\Interfaces\VehiclePartRepositoryInterface;
+use App\Interfaces\VehicleRepositoryInterface;
+use App\Interfaces\DefectReportRepositoryInterface;
+use App\Interfaces\LocationRepositoryInterface;
 use App\Repositories\VehiclePartRepository;
+use App\Repositories\VehicleRepository;
+use App\Repositories\DefectReportRepository;
+use App\Repositories\LocationRepository;
 use App\View\Components\RequiredAsterisk;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(VehiclePartRepositoryInterface::class, VehiclePartRepository::class);
+        $this->app->bind(VehicleRepositoryInterface::class, VehicleRepository::class);
+        $this->app->bind(DefectReportRepositoryInterface::class, DefectReportRepository::class);
+        $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
     }
 
     /**

@@ -23,6 +23,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::controller(LocationController::class)->prefix('location')
         ->name('location.')->middleware(['role_or_permission:super_admin|admin|read_locations'])->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/listing', 'getLocationListing')->name('listing');
             Route::post('store', 'store')->name('store')->middleware(['permission:create_locations']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_locations']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_locations']);
@@ -39,15 +40,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         });
 
     // Vehicle Routes
-    // Route::controller(VehicleController::class)->prefix('vehicles')
-    // ->name('vehicle.')->group(function(){
-    //     Route::get('/' ,  'index')->name('index');
-
-    // });
-
     Route::controller(VehicleController::class)->prefix('vehicles')
         ->name('vehicle.')->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/listing', 'getVehicleListing')->name('listing');
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::delete('destroy/{id}', 'destroy')->name('destroy');
