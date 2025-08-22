@@ -114,6 +114,14 @@
 
                         @role('super_admin|admin')
                         <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.index') }}">
+                                <i class="ri-file-chart-line"></i> <span data-key="t-reports">Reports & Analytics</span>
+                            </a>
+                        </li>
+                        @endrole
+
+                        @role('super_admin|admin')
+                        <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}" href="{{ route('defect-reports.index') }}">
                                 <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Defect Reports</span>
                             </a>

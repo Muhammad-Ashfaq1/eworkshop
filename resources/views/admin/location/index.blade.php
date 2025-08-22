@@ -4,16 +4,16 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Locations / Workshop</h5>
-                    <div class="float-end">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Locations / Workshop</h5>
+                        <div class="float-end">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-location-modal">
                             Add New Location
-                        </button>
+                            </button>
                     </div>
-                </div>
-                <div class="card-body">
+                    </div>
+                    <div class="card-body">
                     <div class="masters-datatable">
                         <table id="js-location-table" class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable" style="width:100%">
                             <thead>
@@ -36,51 +36,51 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
     <!-- Unified Location Modal -->
     <div class="modal fade" id="js-location-modal" tabindex="-1" aria-labelledby="js-location-modal-label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
                     <h5 class="modal-title" id="js-location-modal-label">Add Location</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
                 <form id="js-location-form" action="{{ route('admin.location.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="js-location-id" name="location_id" value="">
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-xxl-6">
-                                <div>
+                                        <div class="modal-body">
+                                                <div class="row g-3">
+                                                    <div class="col-xxl-6">
+                                                        <div>
                                     <label for="locationName" class="form-label">Location <x-req /></label>
                                     <input type="text" class="form-control" id="locationName" name="name" placeholder="Enter Location / Workshop Name" required>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="slug" class="form-label">Slug <x-req /></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6">
+                                                        <div>
+                                                            <label for="slug" class="form-label">Slug <x-req /></label>
                                     <input type="text" class="form-control" id="slug" name="slug" placeholder="Enter Slug" required>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6">
+                                                        <div>
                                     <label for="locationType" class="form-label">Select Location Type <x-req /></label>
                                     <select name="location_type" id="js-location-type" class="form-control" required>
                                         <option value="" selected disabled>Select Location Type</option>
-                                        <option value="town">Town</option>
-                                        <option value="workshop">Workshop</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="status" class="form-label">Status <x-req /></label>
+                                                            <option value="town">Town</option>
+                                                            <option value="workshop">Workshop</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xxl-6">
+                                                        <div>
+                                                            <label for="status" class="form-label">Status <x-req /></label>
                                     <select name="is_active" id="js-is-active" class="form-control" required>
-                                        <option value="" selected disabled>Select Status</option>
-                                        <option value="1">Active</option>
+                                                            <option value="" selected disabled>Select Status</option>
+                                                            <option value="1">Active</option>
                                         <option value="0">Inactive</option>
-                                    </select>
+                                                            </select>
                                 </div>
                             </div>
                         </div>

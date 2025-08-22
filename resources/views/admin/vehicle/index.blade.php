@@ -4,16 +4,16 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Vehicles</h5>
-                    <div class="float-end">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Vehicles</h5>
+                        <div class="float-end">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-vehicle-modal">
-                            Add New Vehicle
-                        </button>
+                                Add New Vehicle
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                    <div class="card-body">
                     <div class="masters-datatable">
                         <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable" style="width:100%">
                             <thead>
@@ -37,69 +37,69 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
     <!-- Unified Vehicle Modal -->
     <div class="modal fade" id="js-vehicle-modal" tabindex="-1" aria-labelledby="js-vehicle-modal-label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
                     <h5 class="modal-title" id="js-vehicle-modal-label">Add Vehicle</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
                 <form id="js-vehicle-form" action="{{ route('admin.vehicle.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="js-vehicle-id" name="vehicle_id" value="">
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="vehicleNumber" class="form-label">Vehicle Number <x-req /></label>
-                                    <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" placeholder="Enter Vehicle Number" required>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="category" class="form-label">Category <x-req /></label>
+                        <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-xxl-6">
+                                        <div>
+                                            <label for="vehicleNumber" class="form-label">Vehicle Number <x-req /></label>
+                                            <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" placeholder="Enter Vehicle Number" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6">
+                                        <div>
+                                            <label for="category" class="form-label">Category <x-req /></label>
                                     <select name="category" id="js-category" class="form-control" required>
-                                        <option value="" selected disabled>Select Category</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="condition" class="form-label">Condition <x-req /></label>
+                                                <option value="" selected disabled>Select Category</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6">
+                                        <div>
+                                            <label for="condition" class="form-label">Condition <x-req /></label>
                                     <select name="condition" id="js-condition" class="form-control" required>
-                                        <option value="" selected disabled>Select Condition</option>
-                                        <option value="new">New</option>
-                                        <option value="old">Old</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="town" class="form-label">Town <x-req /></label>
+                                                <option value="" selected disabled>Select Condition</option>
+                                                <option value="new">New</option>
+                                                <option value="old">Old</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6">
+                                        <div>
+                                            <label for="town" class="form-label">Town <x-req /></label>
                                     <select name="town" id="js-town" class="form-control" required>
-                                        <option value="" selected disabled>Select Town</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div>
-                                    <label for="status" class="form-label">Status <x-req /></label>
+                                                <option value="" selected disabled>Select Town</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6">
+                                        <div>
+                                            <label for="status" class="form-label">Status <x-req /></label>
                                     <select name="is_active" id="js-is-active" class="form-control" required>
                                         <option value="" selected disabled>Select Status</option>
-                                        <option value="1">Active</option>
+                                                <option value="1">Active</option>
                                         <option value="0">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
+                                            </select>
+                                        </div>
+                                    </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" id="js-vehicle-submit">Add Vehicle</button>
-                    </div>
+                </div>
                 </form>
             </div>
         </div>

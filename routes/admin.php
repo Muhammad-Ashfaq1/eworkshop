@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\VehiclePartController;
+use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
@@ -47,6 +48,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store');
             Route::get('edit/{id}', 'edit')->name('edit');
             Route::delete('destroy/{id}', 'destroy')->name('destroy');
+        });
+
+    // Reports Routes - Admin and Super Admin only
+    Route::controller(ReportsController::class)->prefix('reports')
+        ->name('reports.')->middleware(['role:super_admin|admin'])->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/vehicles', 'getVehiclesReport')->name('vehicles');
+            Route::get('/defect-reports', 'getDefectReportsReport')->name('defect-reports');
+            Route::get('/vehicle-parts', 'getVehiclePartsReport')->name('vehicle-parts');
+            Route::get('/locations', 'getLocationsReport')->name('locations');
+            Route::post('/export', 'exportReport')->name('export');
         });
 
 });
