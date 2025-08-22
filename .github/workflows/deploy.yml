@@ -1,0 +1,91 @@
+name: Deploy Laravel Application
+
+on:
+  push:
+    branches:
+      - main  # Replace with your branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up PHP 8.3
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      # Verify PHP version
+      - name: Verify PHP Version
+        run: echo "PHP version $(php -v)"
+
+      # Install Composer 2
+      - name: Install Composer 2
+        run: |
+          curl -sS https://getcomposer.org/installer | php -- --2
+          sudo mv composer.phar /usr/local/bin/composer
+          composer --version
+
+      # Install Laravel Dependencies
+      - name: Install Laravel Dependencies
+        run: |
+          composer install --no-dev --optimize-autoloader
+
+      # Install sshpass
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      # Deploy files to Hostinger
+      - name: Deploy to Hostinger
+        run: |
+          echo "Deploying files to Hostinger... ${{ secrets.SSH_PASSWORD }}"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u233315698@178.16.136.50:/home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+
+      # Run npm install
+      # - name: Run npm install and build
+      #   run: |
+      #     sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 65002 u233315698@178.16.136.50 << 'EOF'
+      #     cd /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+
+      #     # Set Node.js memory limit for build process
+      #     export NODE_OPTIONS="--max-old-space-size=2048"
+
+      #     # Clean npm cache to avoid potential issues
+      #     npm cache clean --force
+
+      #     # Install dependencies
+      #     npm install --no-audit --no-fund
+
+      #     # Run build with production mode
+      #     npm run build -- --mode production
+
+      #     # Verify build output
+      #     ls -la public/build/
+      #     EOF
+      # Run Laravel Commands
+      - name: Run Laravel Commands
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 65002 u233315698@178.16.136.50 << 'EOF'
+          cd /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+          php artisan migrate --force
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          php artisan optimize:clear
+          # Create symbolic link for storage
+          ln -sfn /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/storage/app/public /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/public/storage
+          # Set correct permissions
+          chmod -R 755 /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/storage
+          chmod -R 755 /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/public/storage
+          EOF
+
+      # Completion message
+      - name: Completion Message
+        run: echo "Laravel application deployed successfully!"
