@@ -4,17 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVehiclePartRequest;
-use App\Models\VehiclePart;
-use App\Repositories\VehiclePartRepository;
+use App\Interfaces\VehiclePartRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class VehiclePartController extends Controller
 {
     private $vehiclePartRepository;
 
-    public function __construct(VehiclePartRepository $vehiclePartRepository)
+    public function __construct(VehiclePartRepositoryInterface $vehiclePartRepository)
     {
         $this->vehiclePartRepository = $vehiclePartRepository;
     }

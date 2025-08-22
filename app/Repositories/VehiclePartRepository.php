@@ -2,11 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\VehiclePartRepositoryInterface;
 use App\Models\VehiclePart;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class VehiclePartRepository
+class VehiclePartRepository implements VehiclePartRepositoryInterface
 {
     public function getVehiclePartListing($data): JsonResponse
     {

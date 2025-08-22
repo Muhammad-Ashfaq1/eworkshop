@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Interfaces\VehiclePartRepositoryInterface;
+use App\Repositories\VehiclePartRepository;
 use App\View\Components\RequiredAsterisk;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(VehiclePartRepositoryInterface::class, VehiclePartRepository::class);
     }
 
     /**
