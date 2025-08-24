@@ -46,6 +46,24 @@
             input.error, select.error {
             border-color: #dc3545;
         }
+        
+        /* Select2 Modal Fixes */
+        .select2-container--open {
+            z-index: 9999;
+        }
+        
+        .modal .select2-container {
+            z-index: 9999;
+        }
+        
+        .select2-dropdown {
+            z-index: 9999;
+        }
+        
+        /* Ensure Select2 width matches parent */
+        .select2-container {
+            width: 100% !important;
+        }
     </style>
     @yield('styles')
 
@@ -140,6 +158,11 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    
+    <!-- Select2 CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
     <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
 
 

@@ -40,6 +40,7 @@ class DropdownController extends Controller
         $formattedVehicles = $vehicles->map(function ($vehicle) {
             return [
                 'id' => $vehicle->id,
+                'text' => $vehicle->vehicle_number.' - '.($vehicle->category->name ?? 'N/A'),
                 'name' => $vehicle->vehicle_number.' - '.($vehicle->category->name ?? 'N/A'),
             ];
         });
@@ -69,6 +70,7 @@ class DropdownController extends Controller
         $formattedManagers = $managers->map(function ($manager) {
             return [
                 'id' => $manager->id,
+                'text' => $manager->first_name.' '.$manager->last_name,
                 'name' => $manager->first_name.' '.$manager->last_name,
             ];
         });

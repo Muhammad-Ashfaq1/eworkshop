@@ -197,6 +197,11 @@
         loadDropdownData();
         setupWorkItems();
         setupFormValidation();
+        
+        // Handle modal close to reset Select2
+        $('#defectReportModal').on('hidden.bs.modal', function () {
+            resetForm();
+        });
     });
 
     function applyDefectReportsDatatable() {
@@ -517,12 +522,22 @@
 
     function populateForm(report, isReadOnly) {
         $('#defect_report_id').val(report.id);
-        $('#vehicle_id').val(report.vehicle_id).prop('disabled', isReadOnly);
-        $('#location_id').val(report.location_id).prop('disabled', isReadOnly);
+        
+        // Handle Select2 dropdowns properly
+        if (isReadOnly) {
+            $('#vehicle_id').val(report.vehicle_id).prop('disabled', true).trigger('change');
+            $('#location_id').val(report.location_id).prop('disabled', true).trigger('change');
+            $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', true).trigger('change');
+            $('#mvi_id').val(report.mvi_id).prop('disabled', true).trigger('change');
+        } else {
+            $('#vehicle_id').val(report.vehicle_id).prop('disabled', false).trigger('change');
+            $('#location_id').val(report.location_id).prop('disabled', false).trigger('change');
+            $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', false).trigger('change');
+            $('#mvi_id').val(report.mvi_id).prop('disabled', false).trigger('change');
+        }
+        
         $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
         $('#date').val(report.date).prop('readonly', isReadOnly);
-        $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', isReadOnly);
-        $('#mvi_id').val(report.mvi_id).prop('disabled', isReadOnly);
         $('#type').val(report.type).prop('disabled', isReadOnly);
         $('#attachment_url').prop('disabled', isReadOnly);
 
@@ -571,6 +586,9 @@
                 </div>
             </div>
         `);
+        
+        // Reset Select2 dropdowns
+        $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
         $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
         $('#add-work').show();
         $('#defectReportSubmit').show();
