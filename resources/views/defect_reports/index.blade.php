@@ -353,40 +353,16 @@
 
     function loadDropdownData() {
         // Load vehicles
-        $.get("{{ route('dropdown.getVehicles') }}", function(data) {
-            let options = '<option value="" selected disabled>Select Vehicle</option>';
-            data.forEach(function(vehicle) {
-                options += `<option value="${vehicle.id}">${vehicle.vehicle_number}</option>`;
-            });
-            $('#vehicle_id').html(options);
-        });
-
+        getDynamicDropdownData("{{ route('dropdown.getVehicles') }}", '#vehicle_id');
+        
         // Load locations
-        $.get("{{ route('dropdown.getLocations') }}", function(data) {
-            let options = '<option value="" selected disabled>Select Office/Town</option>';
-            data.forEach(function(location) {
-                options += `<option value="${location.id}">${location.name}</option>`;
-            });
-            $('#location_id').html(options);
-        });
-
+        getDynamicDropdownData("{{ route('dropdown.getLocations') }}", '#location_id');
+        
         // Load fleet managers
-        $.get("{{ route('dropdown.getFleetManagers') }}", function(data) {
-            let options = '<option value="" selected disabled>Select Fleet Manager</option>';
-            data.forEach(function(manager) {
-                options += `<option value="${manager.id}">${manager.first_name} ${manager.last_name}</option>`;
-            });
-            $('#fleet_manager_id').html(options);
-        });
-
+        getDynamicDropdownData("{{ route('dropdown.getFleetManagers') }}", '#fleet_manager_id');
+        
         // Load MVIs
-        $.get("{{ route('dropdown.getMvis') }}", function(data) {
-            let options = '<option value="" selected disabled>Select MVI</option>';
-            data.forEach(function(mvi) {
-                options += `<option value="${mvi.id}">${mvi.first_name} ${mvi.last_name}</option>`;
-            });
-            $('#mvi_id').html(options);
-        });
+        getDynamicDropdownData("{{ route('dropdown.getMvis') }}", '#mvi_id');
     }
 
     function setupWorkItems() {
