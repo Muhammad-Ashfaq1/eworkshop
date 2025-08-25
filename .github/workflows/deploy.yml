@@ -45,9 +45,8 @@ jobs:
       # Deploy files to Hostinger
       - name: Deploy to Hostinger
         run: |
-          echo "Deploying files to Hostinger..."
-          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc/public_html/eworkshop/
-          echo "Deployed files to Hostinger"
+          echo "Deploying files to Hostinger... ${{ secrets.ELWMC_SSH }}"
+          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz -e "ssh -o StrictHostKeyChecking=no -p 65002" ./u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
 
       # Run npm install
       # - name: Run npm install and build
@@ -81,10 +80,10 @@ jobs:
           php artisan view:cache
           php artisan optimize:clear
           # Create symbolic link for storage
-          ln -sfn /home/u617995438/domains/elwmc/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc/public_html/eworkshop/public/storage
+          ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
           # Set correct permissions
-          chmod -R 755 /home/u617995438/domains/elwmc/public_html/eworkshop/storage
-          chmod -R 755 /home/u617995438/domains/elwmc/public_html/eworkshop/public/storage
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
           EOF
 
       # Completion message
