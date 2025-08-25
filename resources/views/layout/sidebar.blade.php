@@ -202,6 +202,14 @@
                         </li>
                         @endrole
 
+                        @role('super_admin|admin')
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="{{ route('admin.fleet-manager.index') }}">
+                                <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">FleetManager/Mvi</span>
+                            </a>
+                        </li>
+                        @endrole
+
                     </ul>
                 </div>
                 <!-- Sidebar -->
