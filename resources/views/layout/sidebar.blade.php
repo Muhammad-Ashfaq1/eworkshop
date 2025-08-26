@@ -107,6 +107,14 @@
                                             <i class="ri-car-line me-2"></i>Vehicle
                                         </a>
                                     </li>
+
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.fleet-manager.index') }}"
+                                           class="nav-link {{ request()->routeIs('admin.fleet-manager.*') ? 'active' : '' }}"
+                                           data-key="t-analytics">
+                                            <i class="ri-team-line me-2"></i> Fleet Manager / MVI
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
@@ -132,80 +140,6 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}" href="{{ route('defect-reports.index') }}">
                                 <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Defect Reports</span>
-                            </a>
-                        </li>
-                        @endrole
-
-                        @role('fleet_manager')
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarFleetManagement" data-bs-toggle="collapse" role="button"
-                               aria-expanded="false" aria-controls="sidebarFleetManagement">
-                                <i class="ri-truck-line"></i> <span data-key="t-fleet-management">Fleet Management</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="sidebarFleetManagement">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ route('defect-reports.index') }}" class="nav-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}">
-                                            <i class="ri-file-damage-line me-2"></i>Defect Reports
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-vehicle-tracking">
-                                            <i class="ri-map-2-line me-2"></i>Vehicle Tracking
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-maintenance">
-                                            <i class="ri-tools-line me-2"></i>Maintenance Schedule
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-fleet-reports">
-                                            <i class="ri-file-chart-line me-2"></i>Fleet Reports
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        @endrole
-
-                        @role('mvi')
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="#sidebarInspections" data-bs-toggle="collapse" role="button"
-                               aria-expanded="false" aria-controls="sidebarInspections">
-                                <i class="ri-search-eye-line"></i> <span data-key="t-inspections">Vehicle Inspections</span>
-                            </a>
-                            <div class="collapse menu-dropdown" id="sidebarInspections">
-                                <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item">
-                                        <a href="{{ route('defect-reports.index') }}" class="nav-link {{ request()->routeIs('defect-reports.*') ? 'active' : '' }}">
-                                            <i class="ri-file-damage-line me-2"></i>Defect Reports
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-new-inspection">
-                                            <i class="ri-add-line me-2"></i>New Inspection
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-pending-approvals">
-                                            <i class="ri-time-line me-2"></i>Pending Approvals
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link" data-key="t-inspection-reports">
-                                            <i class="ri-file-list-line me-2"></i>Inspection Reports
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        @endrole
-
-                        @role('super_admin|admin')
-                        <li class="nav-item">
-                            <a class="nav-link menu-link" href="{{ route('admin.fleet-manager.index') }}">
-                                <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">FleetManager/Mvi</span>
                             </a>
                         </li>
                         @endrole
