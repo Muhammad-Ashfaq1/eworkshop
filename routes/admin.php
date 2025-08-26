@@ -67,7 +67,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         });
           Route::controller(FleetManagerController::class,)->prefix('fleet-manager')->name('fleet-manager.')->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::post('/addfleetmanager', 'addfleetmanager')->name('addfleetmanager');
+            Route::post('/store', 'addfleetmanager')->name('store');
 
 
 });

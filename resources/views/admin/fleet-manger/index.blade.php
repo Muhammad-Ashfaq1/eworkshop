@@ -28,7 +28,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Data will be loaded via AJAX -->
+                                @foreach ($fleetManagers as  $fleetManager)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $fleetManager->name }}</td>
+                                        <td>{{$fleetManager->type}}</td>
+                                        <td>
+                                            @if ($fleetManager->is_active)
+                                                <span class="badge bg-success">Active</span>
+                                            @else
+                                                <span class="badge bg-danger">Inactive</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $fleetManager->created_at->format('Y-m-d H:i') }}</td>
+                                        <td>{{ $fleetManager->updated_at->format('Y-m-d H:i') }}</td>
+                                        <td>
+                                            <!-- Action buttons (Edit, Delete) can be added here -->
+                                            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+                                            <!-- Add delete button if needed -->
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -45,7 +65,7 @@
                     <h5 class="modal-title" id="js-mvi-label">Add Location</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                <form id="js-fleet-manager-form" action="{{ route('admin.fleet-manager.addfleetmanager') }}" method="POST">
+                <form id="js-fleet-manager-form" action="{{ route('admin.fleet-manager.store') }}" method="POST">
                     @csrf
                     <input type="hidden" id="js-fleet-manager-id" name="fleet-manager_id" value="">
                                         <div class="modal-body">
@@ -54,7 +74,10 @@
                                                         <div>
                                                         <label for="fleetMangerName" class="form-label">Fleet Manger/Mvi Name <x-req /></label>
                                                         <input type="text" class="form-control" id="fleetManagerName" name="fleetManager" placeholder="Enter Fleet Manager/ Mvi Name" required>
-                                                        </div>
+                                                            @error('fleetManager')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                    </div>
                                                     </div>
 
                                                     <div class="col-xxl-6">
@@ -65,6 +88,9 @@
                                                             <option value="fleet_manager">FleetManager</option>
                                                             <option value="mvi">Mvi</option>
                                                             </select>
+                                                            @error('type')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                                         </div>
                                                     </div>
                                                     <div class="col-xxl-6">
@@ -75,6 +101,9 @@
                                                             <option value="1">Active</option>
                                                             <option value="0">Inactive</option>
                                                             </select>
+                                                            @error('is_active')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
                                 </div>
                             </div>
                         </div>
@@ -91,36 +120,81 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function(){
+$(document).ready(function () {
     $('#js-fleet-manager-table').DataTable();
-    $('#js-fleet-manager-form').on('submit', function(e) {
-        e.preventDefault();
-        var data = $(this).serialize();
-        var fleetManagerId = $('#js-fleet-manager-id').val();
-        var url = $(this).attr('action');
 
 
-        $.ajax({
-            url: url,
-            method:'POST',
-            data: data,
-            success: function(response) {
-                if(response.success) {
-                $('#js-fleet-manager-modal').modal('hide');
-                $('#js-fleet-manager-table').DataTable().ajax.reload();
-                $('#js-fleet-manager-form')[0].reset();
-                $('#js-fleet-manager-id').val('');
-                $('#js-fleet-manager-submit').text('Add FleetManager/Mvi');
+    $('#js-fleet-manager-form').validate({
+        rules: {
+            fleetManager: {
+                required: true,
+                minlength: 2
             },
-            error: function(xhr) {
-                alert('An error occurred. Please try again.');
+            type: {
+                required: true
+            },
+            is_active: {
+                required: true
             }
+        },
+        messages: {
+            fleetManager: {
+                required: "Please enter a name",
+                minlength: "Name must be at least 2 characters long"
+            },
+            type: {
+                required: "Please select a type"
+            },
+            is_active: {
+                required: "Please select a status"
+            }
+        },
+        submitHandler: function (form) {
 
-        });
+
+
+            var data = $(form).serialize();
+            var fleetManagerId = $('#js-fleet-manager-id').val();
+            var url = $(form).attr('action');
+            var method=$(form).attr('method');
+
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#js-fleet-manager-modal').modal('hide');
+                        // $('#js-fleet-manager-table').DataTable().ajax.reload();
+                        $('#js-fleet-manager-form')[0].reset();
+                        $('#js-fleet-manager-id').val('');
+                        $('#js-fleet-manager-submit').text('Add FleetManager/Mvi');
+                    toastr.success(response.message);
+                    }
+                    else  {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            toastr.error(value[0]);
+                        });
+                    } else {
+                        toastr.error('An error occurred. Please try again.');
+                    }
+
+                },
+                complete: function () {
+                    $('#js-fleet-manager-submit').prop('disabled', false).text('Add Fleet Manager/Mvi');
+                }
+            });
+            return false;
+        }
     });
-
 });
-
-
 </script>
+
 @endsection
