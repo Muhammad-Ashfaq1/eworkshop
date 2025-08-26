@@ -139,7 +139,6 @@
                 },
                 submitHandler: function(form) {
                     var data = $(form).serialize();
-                    var fleetManagerId = $('#js-fleet-manager-id').val();
                     var url = $(form).attr('action');
                     var method = $(form).attr('method');
 
