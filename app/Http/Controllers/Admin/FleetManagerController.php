@@ -11,7 +11,7 @@ class FleetManagerController extends Controller
     public function index()
     {
         $fleetManagers = FleetManager::latest()->get();
-        return view('admin.fleet-manger.index',compact('fleetManagers'));
+        return view('admin.fleet-manager.index',compact('fleetManagers'));
     }
     public function addfleetmanager(Request $request)
     {
@@ -26,7 +26,14 @@ class FleetManagerController extends Controller
             'is_active' => $request->is_active
         ]);
         //return redirect()->route('admin.fleet-manager.index')->with('success', 'Fleet Manager/Mvi added successfully.');
-        return response()->json(['success' => true, 'message' => 'Fleet Manager/Mvi added successfully.']);
+        $fleetManagers=FleetManager::latest()->get();
+        return response()->json(['success' => true,
+         'message' => 'Fleet Manager/Mvi added successfully.',
+        'html'=>view('admin.fleet-manager.data-table',compact('fleetManagers'))->render()
+
+        ]);
     }
 
-}
+    }
+
+
