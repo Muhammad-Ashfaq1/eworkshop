@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\FleetManager;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\FleetMviStoreRequest;
 
 class FleetManagerController extends Controller
 {
@@ -13,35 +14,57 @@ class FleetManagerController extends Controller
         $fleetManagers = FleetManager::latest()->get();
         return view('admin.fleet-manager.index',compact('fleetManagers'));
     }
-    public function addfleetmanager(Request $request)
+    public function store(FleetMviStoreRequest $request)
     {
-        $validated = $request->validate([
-            'fleetManager' => 'required|string|max:255',
-            'type' => 'required|in:fleet_manager,mvi',
-            'is_active' => 'sometimes|boolean',
-        ] );
-        FleetManager::create([
-            'name' => $request->fleetManager,
-            'type' => $request->type,
-            'is_active' => $request->is_active
-        ]);
-        //return redirect()->route('admin.fleet-manager.index')->with('success', 'Fleet Manager/Mvi added successfully.');
-        $fleetManagers=FleetManager::latest()->get();
-        return response()->json(['success' => true,
-         'message' => 'Fleet Manager/Mvi added successfully.',
-        'html'=>view('admin.fleet-manager.data-table',compact('fleetManagers'))->render()
+        $fleet_manager_id=$request->fleet_manager_id ?? null;
+        FleetManager::updateOrCreate(
+            ['id' => $fleet_manager_id],
+            [
+                'name' => $request->name,
+                'type' => $request->type,
+                'is_active' => $request->is_active
+             ]);
 
-        ]);
+       return $this->getLatestRecords('Record Save Successfully!');
     }
     public function destroy($id)
     {
         $fleetManager = FleetManager::findOrFail($id);
-        $fleetManager->delete();
-        return response()->json(['success' => true,
-         'message' => 'Fleet Manager/Mvi deleted successfully.',
+        if(!empty($fleetManager)){
+            $fleetManager->delete();
+            return $this->getLatestRecords('Fleet Manager/Mvi deleted successfully.');
+        }
+        return back()->with(['success' => false]);
+    }
+
+
+    public function getLatestRecords($message= ''){
+        $fleetManagers = FleetManager::latest()->get();
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'html'=>view('admin.fleet-manager.data-table',compact('fleetManagers'))->render(),
         ]) ;
+    }
+    public function edit($id)
+    {
+        $fleetManager = FleetManager::findOrFail($id);
+        if(!empty($fleetManager)){
+            return response()->json([
+                'success' => true,
+                'data' => $fleetManager
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Fleet Manager/Mvi not found'
+        ]);
+        return $this->getLatestRecords('Record Save Successfully!');
 
     }
+
+
+
 }
 
 
