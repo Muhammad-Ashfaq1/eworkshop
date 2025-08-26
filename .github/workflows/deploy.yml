@@ -46,9 +46,8 @@ jobs:
       - name: Deploy to Hostinger
         run: |
           echo "Deploying files to Hostinger..."
-          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz "ssh -o StrictHostKeyChecking=no -p 65002" ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
+          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
           echo "Deployed files to Hostinger"
-
       # Run npm install
       # - name: Run npm install and build
       #   run: |
@@ -73,7 +72,7 @@ jobs:
 
 
 
-      
+
       # Run Laravel Commands
       - name: Run Laravel Commands
         run: |
