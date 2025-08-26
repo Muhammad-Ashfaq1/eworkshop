@@ -45,14 +45,15 @@ jobs:
       # Deploy files to Hostinger
       - name: Deploy to Hostinger
         run: |
-          echo "Deploying files to Hostinger... ${{ secrets.SSH_PASSWORD }}"
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u233315698@178.16.136.50:/home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+          echo "Deploying files to Hostinger..."
+          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
+          echo "Deployed files to Hostinger"
 
       # Run npm install
       # - name: Run npm install and build
       #   run: |
-      #     sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 65002 u233315698@178.16.136.50 << 'EOF'
-      #     cd /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+      #     sshpass -p "${{ secrets.ELWMC_SSH }}" ssh -o StrictHostKeyChecking=no -p 65002u617995438@89.117.27.62 << 'EOF'
+      #     cd /home/u617995438/domains/elwmc/public_html/eworkshop/
 
       #     # Set Node.js memory limit for build process
       #     export NODE_OPTIONS="--max-old-space-size=2048"
@@ -72,18 +73,18 @@ jobs:
       # Run Laravel Commands
       - name: Run Laravel Commands
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 65002 u233315698@178.16.136.50 << 'EOF'
-          cd /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/
+          sshpass -p "${{ secrets.ELWMC_SSH }}" ssh -o StrictHostKeyChecking=no -p 65002 u617995438@89.117.27.62 << 'EOF'
+          cd /home/u617995438/domains/elwmc.com/public_html/eworkshop/
           php artisan migrate --force
           php artisan config:cache
           php artisan route:cache
           php artisan view:cache
           php artisan optimize:clear
           # Create symbolic link for storage
-          ln -sfn /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/storage/app/public /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/public/storage
+          ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
           # Set correct permissions
-          chmod -R 755 /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/storage
-          chmod -R 755 /home/u233315698/domains/syntixsolutions.com/public_html/eworkshop/public/storage
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
           EOF
 
       # Completion message
