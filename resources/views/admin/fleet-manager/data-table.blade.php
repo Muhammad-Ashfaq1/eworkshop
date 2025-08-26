@@ -13,11 +13,23 @@
             </td>
             <td>{{ $fleetManager->created_at->format('Y-m-d H:i') }}</td>
             <td>{{ $fleetManager->updated_at->format('Y-m-d H:i') }}</td>
-            <td>
-                <!-- Action buttons (Edit, Delete) can be added here -->
-                <button class="btn btn-sm btn-primary edit-btn">Edit</button>
-                <!-- Add delete button if needed -->
-            </td>
+           <td>
+        <div class="dropdown d-inline-block">
+            <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="ri-more-fill align-middle"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a href="#!" class="dropdown-item"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
+                @if(auth()->user()->can('edit fleet manager/mvi'))
+                <li><a href="" class="dropdown-item edit-item-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
+                <li>
+                    <a href="{{ route('admin.fleet-manager.destory',$fleetManager->id) }}" class="dropdown-item remove-item-btn" id="location-delete-btn" >
+                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </td>
         </tr>
     @endforeach
 

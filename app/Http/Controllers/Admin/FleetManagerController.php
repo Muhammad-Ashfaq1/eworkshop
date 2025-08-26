@@ -33,7 +33,15 @@ class FleetManagerController extends Controller
 
         ]);
     }
+    public function destroy($id)
+    {
+        $fleetManager = FleetManager::findOrFail($id);
+        $fleetManager->delete();
+        return response()->json(['success' => true,
+         'message' => 'Fleet Manager/Mvi deleted successfully.',
+        ]) ;
 
     }
+}
 
 

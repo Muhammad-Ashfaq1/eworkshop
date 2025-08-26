@@ -68,7 +68,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
           Route::controller(FleetManagerController::class,)->prefix('fleet-manager')->name('fleet-manager.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/store', 'addfleetmanager')->name('store');
-
+            Route::post('destroy/{id}', 'destroy')->name('destroy');
 
 });
 });
