@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FleetManagerController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleController;
@@ -40,7 +41,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('edit/{id}', 'edit')->name('edit');
         });
 
-    // Vehicle Routes
+    // Vehicle Routes_fleet
     Route::controller(VehicleController::class)->prefix('vehicles')
         ->name('vehicle.')->group(function () {
             Route::get('/', 'index')->name('index');
@@ -64,5 +65,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::post('/export', 'exportReport')->name('export');
         });
+          Route::controller(FleetManagerController::class,)->prefix('fleet-manager')->name('fleet-manager.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('destroy/{id}', 'destroy')->name('destroy');
+            Route::get('edit/{id}', 'edit')->name('edit');
 
+
+});
 });
