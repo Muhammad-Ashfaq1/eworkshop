@@ -263,7 +263,7 @@
                     data: "fleet_manager",
                     render: function (data, type, row) {
                         if (data) {
-                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                            return (data.name);
                         }
                         return 'N/A';
                     }
@@ -272,7 +272,7 @@
                     data: "mvi",
                     render: function (data, type, row) {
                         if (data) {
-                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                            return (data.name)
                         }
                         return 'N/A';
                     }

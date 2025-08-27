@@ -64,7 +64,7 @@ class DropdownController extends Controller
 
     public function getFleetManagers(Request $request)
     {
-        $managers = FleetManager::where('type', FleetManager::TYPE_FLEET_MANAGER)->where('is_active', FleetManager::ACTIVE_STATUS)->get();
+        $managers = FleetManager::where('type', FleetManager::TYPE_FLEET_MANAGER)->where('is_active', FleetManager::ACTIVE_STATUS)->orderBy('name','asc')->get();
 
         $formattedManagers = $managers->map(function ($manager) {
             return [
@@ -82,7 +82,7 @@ class DropdownController extends Controller
 
     public function getMvis(Request $request)
     {
-        $mvis = FleetManager::where('is_active', FleetManager::ACTIVE_STATUS)->where('type', FleetManager::TYPE_MVI)
+        $mvis = FleetManager::where('is_active', FleetManager::ACTIVE_STATUS)->where('type', FleetManager::TYPE_MVI)->orderBy('name','asc')
             ->get();
 
         $formattedMvis = $mvis->map(function ($mvi) {
