@@ -59,7 +59,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray(); // makes data using resource
+        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
 
         return response()->json($response, Response::HTTP_OK);
     }

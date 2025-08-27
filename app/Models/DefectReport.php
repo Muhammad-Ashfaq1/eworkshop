@@ -99,13 +99,9 @@ class DefectReport extends Model
             return $query;
         } elseif ($user->hasRole('deo')) {
             return $query->where('created_by', $user->id); // Only their own reports
-        } elseif ($user->hasRole('fleet_manager')) {
-            return $query->where('fleet_manager_id', $user->id);
-        } elseif ($user->hasRole('mvi')) {
-            return $query->where('mvi_id', $user->id);
         }
 
-        return $query->where('id', 0); // No access for other roles
+        return $query->where('id', 0);
     }
 
     // Scopes for filtering by type

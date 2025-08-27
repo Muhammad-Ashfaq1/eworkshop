@@ -398,22 +398,30 @@
     }
 
     function setupFormValidation() {
-        $('#defectReportForm').validate({
-            rules: {
+
+        var report_id = $('#defect_report_id').val();
+
+        var rules = {
                 vehicle_id: { required: true },
                 location_id: { required: true },
                 driver_name: { required: true, minlength: 2 },
                 date: { required: true },
                 fleet_manager_id: { required: true },
                 'works[0][work]': { required: true, minlength: 5 }
-            },
+            };
+            if(!report_id){
+                rules.attachment_url = { required: true };
+            }
+        $('#defectReportForm').validate({
+            rules: rules,
             messages: {
                 vehicle_id: { required: "Please select a vehicle" },
                 location_id: { required: "Please select a location" },
                 driver_name: { required: "Please enter driver name", minlength: "Driver name must be at least 2 characters" },
                 date: { required: "Please select a date" },
                 fleet_manager_id: { required: "Please select a fleet manager" },
-                'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" }
+                'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" },
+                attachment_url : { required : "Please add defect Report file"}
             },
             submitHandler: function(form) {
                 const formData = new FormData(form);
