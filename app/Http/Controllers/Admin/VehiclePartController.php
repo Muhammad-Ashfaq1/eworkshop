@@ -19,6 +19,7 @@ class VehiclePartController extends Controller
 
     public function index()
     {
+        $this->authorize('read_vehicle_parts');
         return view('admin.vehicle-parts.index');
     }
 
@@ -29,21 +30,25 @@ class VehiclePartController extends Controller
      */
     public function getVehiclePartsListing(Request $request): JsonResponse
     {
+        $this->authorize('read_vehicle_parts');
         return $this->vehiclePartRepository->getVehiclePartListing($request->all());
     }
 
     public function store(StoreVehiclePartRequest $request)
     {
+        $this->authorize('create_vehicle_parts');
         return $this->vehiclePartRepository->createOrUpdateVehiclePart($request->all());
     }
 
     public function destroy($id)
     {
+        $this->authorize('delete_vehicle_parts');
         return $this->vehiclePartRepository->deleteVehiclePart($id);
     }
 
     public function edit($id)
     {
+        $this->authorize('read_vehicle_parts');
         $vehiclePart = $this->vehiclePartRepository->getVehiclePartById($id);
 
         if (!$vehiclePart) {

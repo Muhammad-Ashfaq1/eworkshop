@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             VehiclePartSeeder::class,
             VehicleSeeder::class,
+            FleetManagerSeeder::class,
         ]);
     }
 }

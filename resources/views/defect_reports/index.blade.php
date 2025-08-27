@@ -30,11 +30,11 @@
                                 <h4 class="card-title mb-0">Defect Reports List</h4>
                             </div>
                             <div class="col-md-6 text-end">
-                                @role('deo')
+                               @can('create_defect_reports')
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#defectReportModal">
                                     <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
                                 </button>
-                                @endrole
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -44,6 +44,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Reference #</th>
                                         <th>Vehicle</th>
                                         <th>Office/Town</th>
                                         <th>Driver Name</th>
@@ -197,7 +198,7 @@
         loadDropdownData();
         setupWorkItems();
         setupFormValidation();
-        
+
         // Handle modal close to reset Select2
         $('#defectReportModal').on('hidden.bs.modal', function () {
             resetForm();
@@ -242,6 +243,12 @@
                     searchable: false,
                 },
                 {
+                    data: "reference_number",
+                    render: function (data, type, row) {
+                        return data || 'N/A';
+                    }
+                },
+                {
                     data: "vehicle",
                     render: function (data, type, row) {
                         return data ? data.vehicle_number : 'N/A';
@@ -263,7 +270,7 @@
                     data: "fleet_manager",
                     render: function (data, type, row) {
                         if (data) {
-                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                            return (data.name);
                         }
                         return 'N/A';
                     }
@@ -272,7 +279,7 @@
                     data: "mvi",
                     render: function (data, type, row) {
                         if (data) {
-                            return (data.first_name || '') + ' ' + (data.last_name || '');
+                            return (data.name)
                         }
                         return 'N/A';
                     }
@@ -317,21 +324,21 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item view-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>`;
-                        
+
                         if (row.can_edit) {
                             buttons += `<li><a class="dropdown-item edit-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
                         }
-                        
+
                         if (row.can_delete) {
                             buttons += `<li><a class="dropdown-item delete-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>`;
                         }
-                        
+
                         buttons += `</ul></div>`;
                         return buttons;
                     }
                 }
             ],
-            order: [[6, 'desc']]
+            order: [[7, 'desc']]
         });
 
         // Handle view action
@@ -359,13 +366,13 @@
     function loadDropdownData() {
         // Load vehicles
         getDynamicDropdownData("{{ route('dropdown.getVehicles') }}", '#vehicle_id');
-        
+
         // Load locations
         getDynamicDropdownData("{{ route('dropdown.getLocations') }}", '#location_id');
-        
+
         // Load fleet managers
         getDynamicDropdownData("{{ route('dropdown.getFleetManagers') }}", '#fleet_manager_id');
-        
+
         // Load MVIs
         getDynamicDropdownData("{{ route('dropdown.getMvis') }}", '#mvi_id');
     }
@@ -398,22 +405,30 @@
     }
 
     function setupFormValidation() {
-        $('#defectReportForm').validate({
-            rules: {
+
+        var report_id = $('#defect_report_id').val();
+
+        var rules = {
                 vehicle_id: { required: true },
                 location_id: { required: true },
                 driver_name: { required: true, minlength: 2 },
                 date: { required: true },
                 fleet_manager_id: { required: true },
                 'works[0][work]': { required: true, minlength: 5 }
-            },
+            };
+            if(!report_id){
+                rules.attachment_url = { required: true };
+            }
+        $('#defectReportForm').validate({
+            rules: rules,
             messages: {
                 vehicle_id: { required: "Please select a vehicle" },
                 location_id: { required: "Please select a location" },
                 driver_name: { required: "Please enter driver name", minlength: "Driver name must be at least 2 characters" },
                 date: { required: "Please select a date" },
                 fleet_manager_id: { required: "Please select a fleet manager" },
-                'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" }
+                'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" },
+                attachment_url : { required : "Please add defect Report file"}
             },
             submitHandler: function(form) {
                 const formData = new FormData(form);
@@ -522,7 +537,7 @@
 
     function populateForm(report, isReadOnly) {
         $('#defect_report_id').val(report.id);
-        
+
         // Handle Select2 dropdowns properly
         if (isReadOnly) {
             $('#vehicle_id').val(report.vehicle_id).prop('disabled', true).trigger('change');
@@ -535,7 +550,7 @@
             $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', false).trigger('change');
             $('#mvi_id').val(report.mvi_id).prop('disabled', false).trigger('change');
         }
-        
+
         $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
         $('#date').val(report.date).prop('readonly', isReadOnly);
         $('#type').val(report.type).prop('disabled', isReadOnly);
@@ -586,7 +601,7 @@
                 </div>
             </div>
         `);
-        
+
         // Reset Select2 dropdowns
         $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
         $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);

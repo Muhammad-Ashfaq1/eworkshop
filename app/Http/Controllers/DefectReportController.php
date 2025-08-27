@@ -25,6 +25,8 @@ class DefectReportController extends Controller
      */
     public function index()
     {
+        $this->authorize('read_defect_reports');
+        
         $user = Auth::user();
 
         // Get defect reports based on user role
@@ -40,6 +42,8 @@ class DefectReportController extends Controller
      */
     public function getDefectReportListing(Request $request): JsonResponse
     {
+        $this->authorize('read_defect_reports');
+        
         $user = Auth::user();
         return $this->defectReportRepository->getDefectReportListing($request->all(), $user);
     }
@@ -49,10 +53,7 @@ class DefectReportController extends Controller
      */
     public function store(DefectReportRequest $request)
     {
-        // Only DEO can create defect reports
-        if (! Auth::user()->hasRole('deo')) {
-            abort(403, 'Unauthorized action.');
-        }
+        $this->authorize('create_defect_reports');
 
         return $this->defectReportRepository->createDefectReport($request->all());
     }
@@ -62,6 +63,8 @@ class DefectReportController extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('read_defect_reports');
+        
         $defectReport = $this->defectReportRepository->getDefectReportById($id);
 
         if (!$defectReport) {
@@ -69,6 +72,15 @@ class DefectReportController extends Controller
                 'success' => false,
                 'message' => 'Defect report not found'
             ], 404);
+        }
+
+        // Check if user can view this specific report
+        $user = Auth::user();
+        if (!$this->canViewReport($user, $defectReport)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to view this defect report.'
+            ], 403);
         }
 
         return response()->json([
@@ -82,11 +94,16 @@ class DefectReportController extends Controller
      */
     public function update(DefectReportRequest $request, DefectReport $defectReport)
     {
+        $this->authorize('update_defect_reports');
+
         $user = Auth::user();
 
-        // Only super admin and admin can update
-        if (! $user->hasRole('super_admin') && ! $user->hasRole('admin')) {
-            abort(403, 'Unauthorized action.');
+        // Check if user can update this specific report
+        if (!$this->canViewReport($user, $defectReport)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to update this defect report.'
+            ], 403);
         }
 
         return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->all());
@@ -97,11 +114,16 @@ class DefectReportController extends Controller
      */
     public function destroy(DefectReport $defectReport)
     {
+        $this->authorize('delete_defect_reports');
+
         $user = Auth::user();
 
-        // Only super admin and admin can delete
-        if (! $user->hasRole('super_admin') && ! $user->hasRole('admin')) {
-            abort(403, 'Unauthorized action.');
+        // Check if user can delete this specific report
+        if (!$this->canViewReport($user, $defectReport)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to delete this defect report.'
+            ], 403);
         }
 
         return $this->defectReportRepository->deleteDefectReport($defectReport->id);
@@ -125,8 +147,13 @@ class DefectReportController extends Controller
         return false;
     }
 
+    /**
+     * Export defect reports
+     */
     public function exportReports()
     {
+        $this->authorize('export_data');
+        
         return Excel::download(new DefectReportExport, 'defect_reports.xlsx');
     }
 }

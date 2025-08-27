@@ -103,7 +103,7 @@ class ReportsController extends Controller
      */
     public function exportReport(Request $request): JsonResponse
     {
-        $this->authorize('access_admin_panel');
+        $this->authorize('export_data');
         return $this->reportsRepository->exportReport($request->all());
     }
 }
