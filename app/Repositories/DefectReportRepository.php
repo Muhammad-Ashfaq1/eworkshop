@@ -28,7 +28,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
         $query = DefectReport::forUser($user)
             ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi']);
-        
+
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where(function($q) use ($search) {
@@ -55,12 +55,12 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         }
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
-        
+
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray(); // makes data using resource
-        
+        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
+
         return response()->json($response, Response::HTTP_OK);
     }
 
@@ -132,7 +132,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             DB::beginTransaction();
 
             $defectReport = DefectReport::find($id);
-            
+
             if (!$defectReport) {
                 return response()->json([
                     'success' => false,
@@ -201,7 +201,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
     {
         try {
             $defectReport = DefectReport::find($id);
-            
+
             if (!$defectReport) {
                 return response()->json([
                     'success' => false,

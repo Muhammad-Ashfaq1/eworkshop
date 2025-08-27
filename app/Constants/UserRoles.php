@@ -10,10 +10,6 @@ class UserRoles
 
     const DEO = 'deo';
 
-    const FLEET_MANAGER = 'fleet_manager';
-
-    const MVI = 'mvi';
-
     /**
      * Get all available roles
      */
@@ -23,8 +19,6 @@ class UserRoles
             self::SUPER_ADMIN,
             self::ADMIN,
             self::DEO,
-            self::FLEET_MANAGER,
-            self::MVI,
         ];
     }
 
@@ -37,8 +31,6 @@ class UserRoles
             self::SUPER_ADMIN => 'Super Admin',
             self::ADMIN => 'Admin',
             self::DEO => 'Data Entry Operator',
-            self::FLEET_MANAGER => 'Fleet Manager',
-            self::MVI => 'Motor Vehicle Inspector',
         ];
     }
 
@@ -51,8 +43,6 @@ class UserRoles
             self::SUPER_ADMIN => 'dashboard.super_admin',
             self::ADMIN => 'dashboard.admin',
             self::DEO => 'dashboard.deo',
-            self::FLEET_MANAGER => 'dashboard.fleet_manager',
-            self::MVI => 'dashboard.mvi',
         ];
     }
 }
