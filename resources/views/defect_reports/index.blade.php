@@ -405,22 +405,20 @@
     }
 
     function setupFormValidation() {
-
-        var report_id = $('#defect_report_id').val();
-
-        var rules = {
+        $('#defectReportForm').validate({
+            rules: {
                 vehicle_id: { required: true },
                 location_id: { required: true },
                 driver_name: { required: true, minlength: 2 },
                 date: { required: true },
                 fleet_manager_id: { required: true },
-                'works[0][work]': { required: true, minlength: 5 }
-            };
-            if(!report_id){
-                rules.attachment_url = { required: true };
-            }
-        $('#defectReportForm').validate({
-            rules: rules,
+                'works[0][work]': { required: true, minlength: 5 },
+                attachment_url: { 
+                    required: function() {
+                        return $('#defect_report_id').val() === '';
+                    }
+                }
+            },
             messages: {
                 vehicle_id: { required: "Please select a vehicle" },
                 location_id: { required: "Please select a location" },
@@ -428,7 +426,7 @@
                 date: { required: "Please select a date" },
                 fleet_manager_id: { required: "Please select a fleet manager" },
                 'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" },
-                attachment_url : { required : "Please add defect Report file"}
+                attachment_url: { required: "Please add defect Report file" }
             },
             submitHandler: function(form) {
                 const formData = new FormData(form);
@@ -552,7 +550,14 @@
         }
 
         $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
-        $('#date').val(report.date).prop('readonly', isReadOnly);
+        
+        // Format date properly for input field (YYYY-MM-DD)
+        if (report.date) {
+            const date = new Date(report.date);
+            const formattedDate = date.toISOString().split('T')[0];
+            $('#date').val(formattedDate).prop('readonly', isReadOnly);
+        }
+        
         $('#type').val(report.type).prop('disabled', isReadOnly);
         $('#attachment_url').prop('disabled', isReadOnly);
 
@@ -564,8 +569,10 @@
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
                             <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work}" readonly="${isReadOnly}" required>
-                            <input type="hidden" name="works[${index}][type]" value="${work.type}">
+                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" readonly="${isReadOnly}" required>
+                            <input type="hidden" name="works[${index}][type]" value="${work.type || 'defect'}">
+                            <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
+                            <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             ${!isReadOnly ? `<button type="button" class="btn btn-danger btn-sm remove-work"><i class="ri-delete-bin-line"></i></button>` : ''}
@@ -574,6 +581,27 @@
                 `;
                 $('#works-container').append(workItem);
             });
+        } else {
+            // If no works, add at least one empty work item for editing
+            if (!isReadOnly) {
+                const workItem = `
+                    <div class="work-item row mb-3">
+                        <div class="col-md-10">
+                            <label class="form-label">Work Description <x-req /></label>
+                            <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
+                            <input type="hidden" name="works[0][type]" value="defect">
+                            <input type="hidden" name="works[0][quantity]" value="">
+                            <input type="hidden" name="works[0][vehicle_part_id]" value="">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                $('#works-container').append(workItem);
+            }
         }
 
         if (isReadOnly) {

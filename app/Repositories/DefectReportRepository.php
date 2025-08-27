@@ -169,15 +169,15 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 'type' => $data['type'],
             ]);
 
-            // Handle file upload
-            if (isset($data['attach_file']) && $data['attach_file']) {
+            // Handle file upload if provided
+            if (isset($data['attachment_url']) && $data['attachment_url']) {
                 // Delete old file if exists
-                if ($defectReport->attach_file) {
-                    FileUploadManager::deleteFile($defectReport->attach_file);
+                if ($defectReport->attachment_url) {
+                    FileUploadManager::deleteFile($defectReport->attachment_url);
                 }
 
-                $file = FileUploadManager::uploadFile($data['attach_file'], 'defect_reports/');
-                $defectReport->update(['attach_file' => $file['path']]);
+                $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
+                $defectReport->update(['attachment_url' => $file['path']]);
             }
 
             // Delete existing works and create new ones
@@ -228,8 +228,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             }
 
             // Delete attached file if exists
-            if ($defectReport->attach_file) {
-                FileUploadManager::deleteFile($defectReport->attach_file);
+            if ($defectReport->attachment_url) {
+                FileUploadManager::deleteFile($defectReport->attachment_url);
             }
 
             $defectReport->delete();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\DefectReportExport;
 use App\Http\Requests\DefectReportRequest;
+use App\Http\Requests\UpdateDefectReportRequest;
 use App\Interfaces\DefectReportRepositoryInterface;
 use App\Models\DefectReport;
 use Illuminate\Http\JsonResponse;
@@ -119,7 +120,7 @@ class DefectReportController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DefectReportRequest $request, DefectReport $defectReport)
+    public function update(UpdateDefectReportRequest $request, DefectReport $defectReport)
     {
         $this->authorize('update_defect_reports');
 

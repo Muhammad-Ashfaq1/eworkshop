@@ -86,6 +86,41 @@ class PermissionSystemTest extends TestCase
             ->assertStatus(200);
     }
 
+    public function test_super_admin_can_update_defect_report()
+    {
+        // Create super admin user
+        $superAdmin = User::factory()->create();
+        $superAdminRole = Role::where('name', 'super_admin')->first();
+        $superAdmin->assignRole($superAdminRole);
+
+        // Create a defect report
+        $defectReport = DefectReport::factory()->create([
+            'created_by' => User::factory()->create()->id,
+        ]);
+
+        // Test that super admin can update defect report
+        $this->actingAs($superAdmin)
+            ->put("/defect-reports/{$defectReport->id}", [
+                'driver_name' => 'Updated Driver Name',
+                'date' => '2025-08-28',
+                'type' => 'defect_report',
+                'works' => [
+                    [
+                        'work' => 'Updated work description',
+                        'type' => 'defect'
+                    ]
+                ]
+            ])
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        // Verify the update was successful
+        $this->assertDatabaseHas('defect_reports', [
+            'id' => $defectReport->id,
+            'driver_name' => 'Updated Driver Name',
+        ]);
+    }
+
     public function test_super_admin_has_all_permissions()
     {
         $user = User::factory()->create();
