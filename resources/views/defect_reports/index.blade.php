@@ -126,7 +126,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="mvi_id" class="form-label">MVI</label>
+                                <label for="mvi_id" class="form-label">MVI <x-req /></label>
                                 <select class="form-select" id="mvi_id" name="mvi_id">
                                     <option value="" selected disabled>Select MVI</option>
                                 </select>
@@ -137,11 +137,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="type" class="form-label">Report Type</label>
-                                <select class="form-select" id="type" name="type">
-                                    <option value="defect_report">Defect Report</option>
-                                    <option value="purchase_order">Purchase Order</option>
-                                </select>
+                                <label for="form-label">Report Type<x-req /></label>
+                                <input type="text" class="form-control" value="Defect Report" readonly>
+                                <input type="hidden" id="type" name="type" value="defect_report">
+                                <div class="form-text">This will always be a Defect Report</div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -204,6 +203,21 @@
             resetForm();
         });
     });
+
+    function updateValidationRules() {
+        const isEdit = $('#defect_report_id').val() ? true : false;
+        const $attachmentField = $('#attachment_url');
+        
+        if (isEdit) {
+            // Remove required validation for attachment when editing
+            $attachmentField.rules('remove', 'required');
+            $attachmentField.removeClass('error');
+            $attachmentField.siblings('.error').remove();
+        } else {
+            // Add required validation for attachment when creating new
+            $attachmentField.rules('add', { required: true });
+        }
+    }
 
     function applyDefectReportsDatatable() {
         var table = $('#js-defect-report-table').DataTable({
@@ -431,7 +445,7 @@
             submitHandler: function(form) {
                 const formData = new FormData(form);
                 const url = $(form).attr('action');
-                const method = $('#defect_report_id').val() ? 'PUT' : 'POST';
+                const method = $('#defect_report_id').val() ? 'POST' : 'POST'; // Always POST, method override handles PUT
 
                 $.ajax({
                     url: url,
@@ -464,7 +478,9 @@
                         }
                     },
                     complete: function() {
-                        $('#defectReportSubmit').prop('disabled', false).text('Create Defect Report');
+                        const isEdit = $('#defect_report_id').val() ? true : false;
+                        const buttonText = isEdit ? 'Update Defect Report' : 'Create Defect Report';
+                        $('#defectReportSubmit').prop('disabled', false).text(buttonText);
                     }
                 });
             }
@@ -493,6 +509,12 @@
                 $('#defectReportModalLabel').text(`Edit Defect Report #${report.id}`);
                 $('#defectReportSubmit').text('Update Defect Report').show();
                 $('#defectReportForm').attr('action', `/defect-reports/${id}`);
+                // Add method override for PUT request
+                if (!$('#defectReportForm input[name="_method"]').length) {
+                    $('#defectReportForm').append('<input type="hidden" name="_method" value="PUT">');
+                } else {
+                    $('#defectReportForm input[name="_method"]').val('PUT');
+                }
                 $('#defectReportModal').modal('show');
             } else {
                 toastr.error(response.message);
@@ -536,6 +558,9 @@
     function populateForm(report, isReadOnly) {
         $('#defect_report_id').val(report.id);
 
+        // Update validation rules based on edit mode
+        updateValidationRules();
+
         // Handle Select2 dropdowns properly
         if (isReadOnly) {
             $('#vehicle_id').val(report.vehicle_id).prop('disabled', true).trigger('change');
@@ -558,7 +583,7 @@
             $('#date').val(formattedDate).prop('readonly', isReadOnly);
         }
         
-        $('#type').val(report.type).prop('disabled', isReadOnly);
+        $('#type').val('defect_report');
         $('#attachment_url').prop('disabled', isReadOnly);
 
         // Populate works
@@ -615,6 +640,8 @@
         $('#defectReportForm')[0].reset();
         $('#defect_report_id').val('');
         $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+        // Remove method override
+        $('#defectReportForm input[name="_method"]').remove();
         $('#works-container').html(`
             <div class="work-item row mb-3">
                 <div class="col-md-10">
@@ -633,8 +660,13 @@
         // Reset Select2 dropdowns
         $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
         $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
+        // Ensure type field is always defect_report
+        $('#type').val('defect_report');
         $('#add-work').show();
         $('#defectReportSubmit').show();
+        
+        // Update validation rules after reset
+        updateValidationRules();
     }
 </script>
 @endsection
