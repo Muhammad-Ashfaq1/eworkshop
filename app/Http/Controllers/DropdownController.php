@@ -64,15 +64,13 @@ class DropdownController extends Controller
 
     public function getFleetManagers(Request $request)
     {
-        $managers = \App\Models\User::role('fleet_manager')
-            ->where('is_active', 1)
-            ->get(['id', 'first_name', 'last_name']);
+        $managers = FleetManager::where('type', FleetManager::TYPE_FLEET_MANAGER)->where('is_active', FleetManager::ACTIVE_STATUS)->get();
 
         $formattedManagers = $managers->map(function ($manager) {
             return [
                 'id' => $manager->id,
-                'text' => $manager->first_name.' '.$manager->last_name,
-                'name' => $manager->first_name.' '.$manager->last_name,
+                'text' => $manager->name,
+                'name' => $manager->name,
             ];
         });
 
@@ -84,7 +82,7 @@ class DropdownController extends Controller
 
     public function getMvis(Request $request)
     {
-        $mvis =FleetManager::where('is_active', 1)->where('type',FleetManager::TYPE_MVI)
+        $mvis = FleetManager::where('is_active', FleetManager::ACTIVE_STATUS)->where('type', FleetManager::TYPE_MVI)
             ->get();
 
         $formattedMvis = $mvis->map(function ($mvi) {

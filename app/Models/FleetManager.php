@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\AttachmentStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class FleetManager extends Model
 {
+    use AttachmentStatus;
     protected $fillable = ['name', 'type', 'is_active'];
 
 

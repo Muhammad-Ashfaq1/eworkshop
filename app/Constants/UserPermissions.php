@@ -95,6 +95,14 @@ class UserPermissions
 
     const EXPORT_DATA = 'export_data';
 
+
+
+
+    const CREATE_DEFECT_REPORTS = 'create_defect_reports';
+    const READ_DEFECT_REPORTS = 'read_defect_reports';
+    const UPDATE_DEFECT_REPORTS = 'update_defect_reports';
+    const DELETE_DEFECT_REPORTS = 'delete_defect_reports';
+
     /**
      * Get all permissions as an array
      */
@@ -162,6 +170,13 @@ class UserPermissions
             self::DATA_ENTRY,
             self::VIEW_REPORTS,
             self::EXPORT_DATA,
+
+
+            // Defect report management permissions
+            self::CREATE_DEFECT_REPORTS,
+            self::READ_DEFECT_REPORTS,
+            self::UPDATE_DEFECT_REPORTS,
+            self::DELETE_DEFECT_REPORTS
         ];
     }
 }

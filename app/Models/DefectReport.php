@@ -64,12 +64,12 @@ class DefectReport extends Model
 
     public function fleetManager()
     {
-        return $this->belongsTo(User::class, 'fleet_manager_id');
+        return $this->belongsTo(FleetManager::class, 'fleet_manager_id');
     }
 
     public function mvi()
     {
-        return $this->belongsTo(User::class, 'mvi_id');
+        return $this->belongsTo(FleetManager::class, 'mvi_id');
     }
 
     public function creator()
@@ -118,4 +118,5 @@ class DefectReport extends Model
     {
         return $query->where('type', self::TYPE_PURCHASE_ORDER);
     }
+
 }

@@ -48,6 +48,12 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::ACCESS_ADMIN_PANEL,
             UserPermissions::VIEW_REPORTS,
             UserPermissions::EXPORT_DATA,
+            UserPermissions::READ_FLEET_MANAGER,
+            UserPermissions::CREATE_FLEET_MANAGER,
+            UserPermissions::UPDATE_FLEET_MANAGER,
+            UserPermissions::CREATE_DEFECT_REPORTS,
+            UserPermissions::READ_DEFECT_REPORTS,
+            UserPermissions::UPDATE_DEFECT_REPORTS,
         ]);
 
         // DEO (Data Entry Operator) - limited to data entry and viewing

@@ -49,8 +49,8 @@ class DefectReportController extends Controller
      */
     public function store(DefectReportRequest $request)
     {
-        // Only DEO can create defect reports
-        if (! Auth::user()->hasRole('deo')) {
+        // Only DEO admin can create defect reports
+        if (! Auth::user()->hasRole('deo') && ! Auth::user()->hasRole('admin')) {
             abort(403, 'Unauthorized action.');
         }
 

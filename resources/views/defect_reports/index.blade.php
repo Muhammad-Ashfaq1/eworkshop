@@ -30,11 +30,11 @@
                                 <h4 class="card-title mb-0">Defect Reports List</h4>
                             </div>
                             <div class="col-md-6 text-end">
-                                @role('deo')
+                               @can('create_defect_reports')
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#defectReportModal">
                                     <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
                                 </button>
-                                @endrole
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -197,7 +197,7 @@
         loadDropdownData();
         setupWorkItems();
         setupFormValidation();
-        
+
         // Handle modal close to reset Select2
         $('#defectReportModal').on('hidden.bs.modal', function () {
             resetForm();
@@ -317,15 +317,15 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item view-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>`;
-                        
+
                         if (row.can_edit) {
                             buttons += `<li><a class="dropdown-item edit-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
                         }
-                        
+
                         if (row.can_delete) {
                             buttons += `<li><a class="dropdown-item delete-defect-report-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>`;
                         }
-                        
+
                         buttons += `</ul></div>`;
                         return buttons;
                     }
@@ -359,13 +359,13 @@
     function loadDropdownData() {
         // Load vehicles
         getDynamicDropdownData("{{ route('dropdown.getVehicles') }}", '#vehicle_id');
-        
+
         // Load locations
         getDynamicDropdownData("{{ route('dropdown.getLocations') }}", '#location_id');
-        
+
         // Load fleet managers
         getDynamicDropdownData("{{ route('dropdown.getFleetManagers') }}", '#fleet_manager_id');
-        
+
         // Load MVIs
         getDynamicDropdownData("{{ route('dropdown.getMvis') }}", '#mvi_id');
     }
@@ -522,7 +522,7 @@
 
     function populateForm(report, isReadOnly) {
         $('#defect_report_id').val(report.id);
-        
+
         // Handle Select2 dropdowns properly
         if (isReadOnly) {
             $('#vehicle_id').val(report.vehicle_id).prop('disabled', true).trigger('change');
@@ -535,7 +535,7 @@
             $('#fleet_manager_id').val(report.fleet_manager_id).prop('disabled', false).trigger('change');
             $('#mvi_id').val(report.mvi_id).prop('disabled', false).trigger('change');
         }
-        
+
         $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
         $('#date').val(report.date).prop('readonly', isReadOnly);
         $('#type').val(report.type).prop('disabled', isReadOnly);
@@ -586,7 +586,7 @@
                 </div>
             </div>
         `);
-        
+
         // Reset Select2 dropdowns
         $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
         $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
