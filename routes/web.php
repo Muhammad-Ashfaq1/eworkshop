@@ -39,16 +39,21 @@ Route::get('get-locations', [DropdownController::class, 'getLocations'])->name('
 Route::get('get-fleet-managers', [DropdownController::class, 'getFleetManagers'])->name('dropdown.getFleetManagers');
 Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.getMvis');
 
-// Defect Reports routes
-Route::resource('defect-reports', DefectReportController::class)->except(['create', 'edit', 'show']);
-Route::get('defect-reports/listing', [DefectReportController::class, 'getDefectReportListing'])->middleware('auth')->name('defect-reports.listing');
+// Defect Reports routes with permission middleware
+Route::middleware(['auth'])->group(function () {
+    Route::get('defect-reports', [DefectReportController::class, 'index'])->name('defect-reports.index')->middleware('permission:read_defect_reports');
+    Route::post('defect-reports', [DefectReportController::class, 'store'])->name('defect-reports.store')->middleware('permission:create_defect_reports');
+    Route::put('defect-reports/{defectReport}', [DefectReportController::class, 'update'])->name('defect-reports.update')->middleware('permission:update_defect_reports');
+    Route::delete('defect-reports/{defectReport}', [DefectReportController::class, 'destroy'])->name('defect-reports.destroy')->middleware('permission:delete_defect_reports');
+    Route::get('defect-reports/listing', [DefectReportController::class, 'getDefectReportListing'])->name('defect-reports.listing')->middleware('permission:read_defect_reports');
+    Route::get('defect-reports/export', [DefectReportController::class, 'exportReports'])->name('defect-reports.export')->middleware('permission:export_data');
+});
+
 // Role-specific dashboard routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/super-admin', [DashboardController::class, 'superAdmin'])->name('dashboard.super_admin');
     Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     Route::get('/dashboard/deo', [DashboardController::class, 'deo'])->name('dashboard.deo');
-    Route::get('/dashboard/fleet-manager', [DashboardController::class, 'fleetManager'])->name('dashboard.fleet_manager');
-    Route::get('/dashboard/mvi', [DashboardController::class, 'mvi'])->name('dashboard.mvi');
 });
 
 // location routes

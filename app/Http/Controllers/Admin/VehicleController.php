@@ -19,6 +19,7 @@ class VehicleController extends Controller
 
     public function index()
     {
+        $this->authorize('read_vehicles');
         // Return view - DataTable will automatically load data via AJAX on initialization
         return view('admin.vehicle.index');
     }
@@ -30,16 +31,19 @@ class VehicleController extends Controller
      */
     public function getVehicleListing(Request $request): JsonResponse
     {
+        $this->authorize('read_vehicles');
         return $this->vehicleRepository->getVehicleListing($request->all());
     }
 
     public function store(VehicleRequest $request)
     {
+        $this->authorize('create_vehicles');
         return $this->vehicleRepository->createOrUpdateVehicle($request->all());
     }
 
     public function edit($id)
     {
+        $this->authorize('read_vehicles');
         $vehicle = $this->vehicleRepository->getVehicleById($id);
 
         if (!$vehicle) {
@@ -57,6 +61,7 @@ class VehicleController extends Controller
 
     public function destroy($id)
     {
+        $this->authorize('delete_vehicles');
         return $this->vehicleRepository->deleteVehicle($id);
     }
 }

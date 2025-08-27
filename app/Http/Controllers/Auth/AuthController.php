@@ -31,8 +31,6 @@ class AuthController extends Controller
             if (! $user->is_active) {
                 return redirect()->back()->with(['error' => 'Please verify your email to login'])->withInput($request->only('email'));
             }
-
-            // Redirect to role-specific dashboard
             return $this->redirectToRoleDashboard($user);
         }
 

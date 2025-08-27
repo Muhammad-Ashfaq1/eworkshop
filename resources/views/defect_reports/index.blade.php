@@ -44,6 +44,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Reference #</th>
                                         <th>Vehicle</th>
                                         <th>Office/Town</th>
                                         <th>Driver Name</th>
@@ -242,6 +243,12 @@
                     searchable: false,
                 },
                 {
+                    data: "reference_number",
+                    render: function (data, type, row) {
+                        return data || 'N/A';
+                    }
+                },
+                {
                     data: "vehicle",
                     render: function (data, type, row) {
                         return data ? data.vehicle_number : 'N/A';
@@ -331,7 +338,7 @@
                     }
                 }
             ],
-            order: [[6, 'desc']]
+            order: [[7, 'desc']]
         });
 
         // Handle view action

@@ -11,11 +11,14 @@ class FleetManagerController extends Controller
 {
     public function index()
     {
+        $this->authorize('read_fleet_manager');
         $fleetManagers = FleetManager::latest()->get();
         return view('admin.fleet-manager.index',compact('fleetManagers'));
     }
+    
     public function store(FleetMviStoreRequest $request)
     {
+        $this->authorize('create_fleet_manager');
         $fleet_manager_id=$request->fleet_manager_id ?? null;
         FleetManager::updateOrCreate(
             ['id' => $fleet_manager_id],
@@ -27,8 +30,10 @@ class FleetManagerController extends Controller
 
        return $this->getLatestRecords('Record Save Successfully!');
     }
+    
     public function destroy($id)
     {
+        $this->authorize('delete_fleet_manager');
         $fleetManager = FleetManager::findOrFail($id);
         if(!empty($fleetManager)){
             $fleetManager->delete();
@@ -37,8 +42,8 @@ class FleetManagerController extends Controller
         return back()->with(['success' => false]);
     }
 
-
     public function getLatestRecords($message= ''){
+        $this->authorize('read_fleet_manager');
         $fleetManagers = FleetManager::latest()->get();
         return response()->json([
             'success' => true,
@@ -46,8 +51,10 @@ class FleetManagerController extends Controller
             'html'=>view('admin.fleet-manager.data-table',compact('fleetManagers'))->render(),
         ]) ;
     }
+    
     public function edit($id)
     {
+        $this->authorize('read_fleet_manager');
         $fleetManager = FleetManager::findOrFail($id);
         if(!empty($fleetManager)){
             return response()->json([
@@ -59,12 +66,7 @@ class FleetManagerController extends Controller
             'success' => false,
             'message' => 'Fleet Manager/Mvi not found'
         ]);
-        return $this->getLatestRecords('Record Save Successfully!');
-
     }
-
-
-
 }
 
 
