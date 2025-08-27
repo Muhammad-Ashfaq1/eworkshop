@@ -42,11 +42,14 @@ Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.g
 // Defect Reports routes with permission middleware
 Route::middleware(['auth'])->group(function () {
     Route::get('defect-reports', [DefectReportController::class, 'index'])->name('defect-reports.index')->middleware('permission:read_defect_reports');
-    Route::post('defect-reports', [DefectReportController::class, 'store'])->name('defect-reports.store')->middleware('permission:create_defect_reports');
-    Route::put('defect-reports/{defectReport}', [DefectReportController::class, 'update'])->name('defect-reports.update')->middleware('permission:update_defect_reports');
-    Route::delete('defect-reports/{defectReport}', [DefectReportController::class, 'destroy'])->name('defect-reports.destroy')->middleware('permission:delete_defect_reports');
+    Route::get('defect-reports/create', [DefectReportController::class, 'create'])->name('defect-reports.create')->middleware('permission:create_defect_reports');
     Route::get('defect-reports/listing', [DefectReportController::class, 'getDefectReportListing'])->name('defect-reports.listing')->middleware('permission:read_defect_reports');
     Route::get('defect-reports/export', [DefectReportController::class, 'exportReports'])->name('defect-reports.export')->middleware('permission:export_data');
+    Route::post('defect-reports', [DefectReportController::class, 'store'])->name('defect-reports.store')->middleware('permission:create_defect_reports');
+    Route::get('defect-reports/{defectReport}', [DefectReportController::class, 'show'])->name('defect-reports.show')->middleware('permission:read_defect_reports');
+    Route::get('defect-reports/{defectReport}/edit', [DefectReportController::class, 'edit'])->name('defect-reports.edit')->middleware('permission:read_defect_reports');
+    Route::put('defect-reports/{defectReport}', [DefectReportController::class, 'update'])->name('defect-reports.update')->middleware('permission:update_defect_reports');
+    Route::delete('defect-reports/{defectReport}', [DefectReportController::class, 'destroy'])->name('defect-reports.destroy')->middleware('permission:delete_defect_reports');
 });
 
 // Role-specific dashboard routes

@@ -36,6 +36,33 @@ class DefectReportController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $this->authorize('create_defect_reports');
+        
+        return view('defect_reports.create');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(DefectReport $defectReport)
+    {
+        $this->authorize('read_defect_reports');
+        
+        $user = Auth::user();
+
+        // Check if user can view this specific report
+        if (!$this->canViewReport($user, $defectReport)) {
+            abort(403, 'You are not authorized to view this defect report.');
+        }
+
+        return view('defect_reports.show', compact('defectReport'));
+    }
+
+    /**
      * Get defect reports listing for datatable
      * @param Request $request
      * @return JsonResponse
@@ -134,13 +161,23 @@ class DefectReportController extends Controller
      */
     private function canViewReport($user, $defectReport)
     {
-        if ($user->hasRole('super_admin') || $user->hasRole('admin')) {
+        // Super admin and admin can view all reports
+        if ($user->can('read_defect_reports')) {
             return true;
-        } elseif ($user->hasRole('deo')) {
+        }
+        
+        // DEO can only view their own reports
+        if ($user->hasRole('deo')) {
             return $defectReport->created_by == $user->id;
-        } elseif ($user->hasRole('fleet_manager')) {
+        }
+        
+        // Fleet manager can view reports assigned to them
+        if ($user->hasRole('fleet_manager')) {
             return $defectReport->fleet_manager_id == $user->id;
-        } elseif ($user->hasRole('mvi')) {
+        }
+        
+        // MVI can view reports assigned to them
+        if ($user->hasRole('mvi')) {
             return $defectReport->mvi_id == $user->id;
         }
 

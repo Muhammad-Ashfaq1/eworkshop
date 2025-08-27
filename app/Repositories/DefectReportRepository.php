@@ -15,15 +15,25 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 {
     public function getDefectReportListing($data, $user): JsonResponse
     {
+        // Set default values for DataTables parameters
+        $data = array_merge([
+            'start' => 0,
+            'length' => 10,
+            'draw' => 1,
+            'search' => ['value' => ''],
+            'order' => [],
+            'columns' => []
+        ], $data);
+
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
         $pageLength = $data['length'];
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
         $search['search'] = $data['search']['value']; // gets the search value from request
 
-        if (isset($data['order'])) {
+        if (isset($data['order']) && !empty($data['order'])) {
             $index = $data['order'][0]['column'];
             $search['direction'] = $data['order'][0]['dir'];
-            $search['column_name'] = $data['columns'][$index]['name'];
+            $search['column_name'] = $data['columns'][$index]['name'] ?? 'created_at';
         }
 
         $query = DefectReport::forUser($user)
@@ -56,10 +66,18 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
 
+        $defectReports = $query->skip($skip)->take($pageLength)->get();
+
+        // Add permission flags using can method
+        $defectReports->each(function ($defectReport) use ($user) {
+            $defectReport->can_edit = $user->can('update_defect_reports');
+            $defectReport->can_delete = $user->can('delete_defect_reports');
+        });
+
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
+        $response['data'] = $defectReports->toArray();
 
         return response()->json($response, Response::HTTP_OK);
     }
