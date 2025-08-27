@@ -1,5 +1,5 @@
 @extends('layout.main')
-@section('title', 'FleetManager/Mvi ')
+@section('title', 'Fleet Manager / MVI')
 
 @section('content')
     <div class="row">

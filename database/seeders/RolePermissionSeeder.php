@@ -61,33 +61,5 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::READ_PROFILE,
             UserPermissions::VIEW_REPORTS,
         ]);
-
-        // Fleet Manager - manages fleet operations and vehicles
-        $fleetManager = Role::firstOrCreate(['name' => UserRoles::FLEET_MANAGER]);
-        $fleetManager->syncPermissions([
-            UserPermissions::MANAGE_FLEET,
-            UserPermissions::VIEW_FLEET_REPORTS,
-            UserPermissions::TRACK_VEHICLES,
-            UserPermissions::ASSIGN_VEHICLES,
-            UserPermissions::READ_LOCATIONS,
-            UserPermissions::UPDATE_LOCATIONS,
-            UserPermissions::UPDATE_PROFILE,
-            UserPermissions::READ_PROFILE,
-            UserPermissions::VIEW_REPORTS,
-            UserPermissions::EXPORT_DATA,
-        ]);
-
-        // MVI (Motor Vehicle Inspector) - vehicle inspections and approvals
-        $mvi = Role::firstOrCreate(['name' => UserRoles::MVI]);
-        $mvi->syncPermissions([
-            UserPermissions::CONDUCT_INSPECTIONS,
-            UserPermissions::APPROVE_INSPECTIONS,
-            UserPermissions::REJECT_INSPECTIONS,
-            UserPermissions::VIEW_INSPECTION_REPORTS,
-            UserPermissions::READ_LOCATIONS,
-            UserPermissions::UPDATE_PROFILE,
-            UserPermissions::READ_PROFILE,
-            UserPermissions::VIEW_REPORTS,
-        ]);
     }
 }

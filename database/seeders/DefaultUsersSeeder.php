@@ -55,33 +55,5 @@ class DefaultUsersSeeder extends Seeder
             ]
         );
         $deo->assignRole(UserRoles::DEO);
-
-        // Create Fleet Manager user
-        $fleetManager = User::firstOrCreate(
-            ['email' => 'fleetmanager@example.com'],
-            [
-                'first_name' => 'Fleet',
-                'last_name' => 'Manager',
-                'password' => Hash::make('password123'),
-                'phone_number' => '+1234567893',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
-        $fleetManager->assignRole(UserRoles::FLEET_MANAGER);
-
-        // Create MVI user
-        $mvi = User::firstOrCreate(
-            ['email' => 'mvi@example.com'],
-            [
-                'first_name' => 'Motor Vehicle',
-                'last_name' => 'Inspector',
-                'password' => Hash::make('password123'),
-                'phone_number' => '+1234567894',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
-        $mvi->assignRole(UserRoles::MVI);
     }
 }

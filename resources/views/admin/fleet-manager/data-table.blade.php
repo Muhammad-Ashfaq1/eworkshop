@@ -3,7 +3,7 @@
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td>{{ $fleetManager->name }}</td>
-            <td>{{ $fleetManager->type }}</td>
+            <td>{{ ucfirst($fleetManager->type) }}</td>
             <td>
                 @if ($fleetManager->is_active)
                     <span class="badge bg-success">Active</span>
