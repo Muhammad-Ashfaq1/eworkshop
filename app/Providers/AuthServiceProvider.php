@@ -190,5 +190,73 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('super_admin', function ($user) {
             return $user->hasRole('super_admin');
         });
+
+        // Defect Report gates
+        Gate::define('create_defect_reports', function ($user) {
+            return $user->hasPermissionTo('create_defect_reports');
+        });
+
+        Gate::define('read_defect_reports', function ($user) {
+            return $user->hasPermissionTo('read_defect_reports');
+        });
+
+        Gate::define('update_defect_reports', function ($user) {
+            return $user->hasPermissionTo('update_defect_reports');
+        });
+
+        Gate::define('delete_defect_reports', function ($user) {
+            return $user->hasPermissionTo('delete_defect_reports');
+        });
+
+        // Vehicle gates
+        Gate::define('create_vehicles', function ($user) {
+            return $user->hasPermissionTo('create_vehicles');
+        });
+
+        Gate::define('read_vehicles', function ($user) {
+            return $user->hasPermissionTo('read_vehicles');
+        });
+
+        Gate::define('update_vehicles', function ($user) {
+            return $user->hasPermissionTo('update_vehicles');
+        });
+
+        Gate::define('delete_vehicles', function ($user) {
+            return $user->hasPermissionTo('delete_vehicles');
+        });
+
+        // Vehicle Parts gates
+        Gate::define('create_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('create_vehicle_parts');
+        });
+
+        Gate::define('read_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('read_vehicle_parts');
+        });
+
+        Gate::define('update_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('update_vehicle_parts');
+        });
+
+        Gate::define('delete_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('delete_vehicle_parts');
+        });
+
+        // Vehicle Categories gates
+        Gate::define('create_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('create_vehicle_categories');
+        });
+
+        Gate::define('read_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('read_vehicle_categories');
+        });
+
+        Gate::define('update_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('update_vehicle_categories');
+        });
+
+        Gate::define('delete_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('delete_vehicle_categories');
+        });
     }
 }

@@ -36,8 +36,6 @@ class DefectReport extends Model
     // constants for roles
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
-    const ROLE_FLEET_MANAGER = 'fleet_manager';
-    const ROLE_MVI = 'mvi';
     const ROLE_DEO = 'deo';
 
     protected static function boot()
@@ -57,7 +55,7 @@ class DefectReport extends Model
     public static function generateReferenceNumber()
     {
         do {
-            $reference = 'DR-' . date('Y') . '-' . strtoupper(Str::random(6));
+            $reference = 'DR-'. strtoupper(Str::random(5));
         } while (self::where('reference_number', $reference)->exists());
         
         return $reference;

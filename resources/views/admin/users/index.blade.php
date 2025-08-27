@@ -68,7 +68,7 @@
                                             </label>
                                         </div>
                                     </td>
-                                    <td>{{ $user->created_at->format('d M, Y') }}</td>
+                                    <td>{{ formatCreatedAt($user->created_at) }}</td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <button type="button" class="btn btn-sm btn-soft-primary edit-user-btn" data-user-id="{{ $user->id }}" title="Edit User">

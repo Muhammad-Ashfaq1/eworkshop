@@ -287,7 +287,7 @@
                 {
                     data: "date",
                     render: function (data, type, row) {
-                        return data ? moment(data).format('DD/MM/YYYY') : 'N/A';
+                        return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                     }
                 },
                 {

@@ -2,19 +2,10 @@
 
 namespace App\Providers;
 
-use App\Interfaces\VehiclePartRepositoryInterface;
-use App\Interfaces\VehicleRepositoryInterface;
-use App\Interfaces\DefectReportRepositoryInterface;
-use App\Interfaces\LocationRepositoryInterface;
-use App\Interfaces\ReportsRepositoryInterface;
-use App\Repositories\VehiclePartRepository;
-use App\Repositories\VehicleRepository;
-use App\Repositories\DefectReportRepository;
-use App\Repositories\LocationRepository;
-use App\Repositories\ReportsRepository;
+use App\Helpers\DateHelper;
 use App\View\Components\RequiredAsterisk;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,11 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(VehiclePartRepositoryInterface::class, VehiclePartRepository::class);
-        $this->app->bind(VehicleRepositoryInterface::class, VehicleRepository::class);
-        $this->app->bind(DefectReportRepositoryInterface::class, DefectReportRepository::class);
-        $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
-        $this->app->bind(ReportsRepositoryInterface::class, ReportsRepository::class);
+        //
     }
 
     /**
@@ -35,6 +22,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register the required asterisk component
         Blade::component('req', RequiredAsterisk::class);
+
+        // Blade directive for formatting dates
+        Blade::directive('formatDate', function ($expression) {
+            return "<?php echo \App\Helpers\DateHelper::formatDate($expression); ?>";
+        });
+
+        // Blade directive for formatting created_at
+        Blade::directive('formatCreatedAt', function ($expression) {
+            return "<?php echo \App\Helpers\DateHelper::formatCreatedAt($expression); ?>";
+        });
+
+        // Blade directive for formatting updated_at
+        Blade::directive('formatUpdatedAt', function ($expression) {
+            return "<?php echo \App\Helpers\DateHelper::formatUpdatedAt($expression); ?>";
+        });
+
+        // Blade directive for relative time
+        Blade::directive('relativeTime', function ($expression) {
+            return "<?php echo \App\Helpers\DateHelper::getRelativeTime($expression); ?>";
+        });
     }
 }
