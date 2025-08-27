@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Location;
 use App\Models\Vehicle;
-use App\Models\VehicleCategory;
+use App\Models\Location;
+use App\Models\FleetManager;
 use Illuminate\Http\Request;
+use App\Models\VehicleCategory;
 
 class DropdownController extends Controller
 {
@@ -83,14 +84,13 @@ class DropdownController extends Controller
 
     public function getMvis(Request $request)
     {
-        $mvis = \App\Models\User::role('mvi')
-            ->where('is_active', 1)
-            ->get(['id', 'first_name', 'last_name']);
+        $mvis =FleetManager::where('is_active', 1)->where('type',FleetManager::TYPE_MVI)
+            ->get();
 
         $formattedMvis = $mvis->map(function ($mvi) {
             return [
                 'id' => $mvi->id,
-                'name' => $mvi->first_name.' '.$mvi->last_name,
+                'name' => $mvi->name,
             ];
         });
 
