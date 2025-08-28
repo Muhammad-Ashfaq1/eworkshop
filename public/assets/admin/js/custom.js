@@ -1,4 +1,4 @@
-function getDynamicDropdownData(url, target) {
+function getDynamicDropdownData(url, target, callback) {
     $.ajax({
         url: url,
         type: 'GET',
@@ -23,6 +23,11 @@ function getDynamicDropdownData(url, target) {
                 width: '100%',
                 dropdownParent: $(target).closest('.modal').length ? $(target).closest('.modal') : 'body'
             });
+            
+            // Execute callback if provided
+            if (typeof callback === 'function') {
+                callback();
+            }
         },
         error: function(xhr) {
             console.error('Error fetching dynamic dropdown data:', xhr);

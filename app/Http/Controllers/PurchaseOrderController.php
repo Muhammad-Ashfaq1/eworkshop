@@ -56,10 +56,24 @@ class PurchaseOrderController extends Controller
 
         // Check if user can view this specific purchase order
         if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
-            abort(403, 'You are not authorized to view this purchase order.');
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to view this purchase order.'
+            ], 403);
         }
 
-        return view('purchase_orders.show', compact('purchaseOrder'));
+        // Load the purchase order with relationships
+        $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($purchaseOrder->id);
+
+        // Ensure we have the works relationship loaded
+        if (!$purchaseOrder->relationLoaded('works')) {
+            $purchaseOrder->load('works.vehiclePart');
+        }
+
+        return response()->json([
+            'success' => true,
+            'purchaseOrder' => $purchaseOrder,
+        ]);
     }
 
     /**
@@ -108,6 +122,11 @@ class PurchaseOrderController extends Controller
                 'success' => false,
                 'message' => 'You are not authorized to view this purchase order.'
             ], 403);
+        }
+
+        // Ensure we have the works relationship loaded
+        if (!$purchaseOrder->relationLoaded('works')) {
+            $purchaseOrder->load('works.vehiclePart');
         }
 
         return response()->json([

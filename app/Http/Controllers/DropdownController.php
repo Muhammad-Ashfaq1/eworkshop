@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vehicle;
-use App\Models\Location;
-use App\Models\FleetManager;
-use Illuminate\Http\Request;
-use App\Models\VehicleCategory;
 use App\Models\DefectReport;
+use App\Models\FleetManager;
+use App\Models\Location;
+use App\Models\Vehicle;
+use App\Models\VehicleCategory;
+use App\Models\VehiclePart;
+use Illuminate\Http\Request;
 
 class DropdownController extends Controller
 {
@@ -94,10 +95,29 @@ class DropdownController extends Controller
 
     public function getDefectReports(Request $request)
     {
-        // Get only defect reports (not purchase orders) for the dropdown
-        $defectReports = DefectReport::where('type', DefectReport::TYPE_DEFECT_REPORT)
-            ->whereNotNull('reference_number')
-            ->orderBy('created_at', 'desc')
+        $excludePurchaseOrderId = $request->get('exclude_po_id');
+        $includePurchaseOrderId = $request->get('include_po_id');
+        
+        $query = DefectReport::where('type', DefectReport::TYPE_DEFECT_REPORT)
+            ->whereNotNull('reference_number');
+        
+        if ($excludePurchaseOrderId) {
+            // For create mode: exclude defect reports that have purchase orders
+            $query->whereDoesntHave('purchaseOrders');
+        } elseif ($includePurchaseOrderId) {
+            // For edit mode: include the current defect report + defect reports without POs
+            $query->where(function($q) use ($includePurchaseOrderId) {
+                $q->whereDoesntHave('purchaseOrders')
+                  ->orWhereHas('purchaseOrders', function($poQuery) use ($includePurchaseOrderId) {
+                      $poQuery->where('id', $includePurchaseOrderId);
+                  });
+            });
+        } else {
+            // Default: exclude defect reports that have purchase orders
+            $query->whereDoesntHave('purchaseOrders');
+        }
+        
+        $defectReports = $query->orderBy('created_at', 'desc')
             ->get(['id', 'reference_number']);
 
         $formattedDefectReports = $defectReports->map(function ($defectReport) {
@@ -111,6 +131,26 @@ class DropdownController extends Controller
         return response()->json([
             'success' => true,
             'data' => $formattedDefectReports,
+        ]);
+    }
+
+    public function getVehicleParts(Request $request)
+    {
+        $vehicleParts = VehiclePart::where('is_active', 1)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name']);
+
+        $formattedVehicleParts = $vehicleParts->map(function ($part) {
+            return [
+                'id' => $part->id,
+                'text' => $part->name,
+                'name' => $part->name,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $formattedVehicleParts,
         ]);
     }
 }

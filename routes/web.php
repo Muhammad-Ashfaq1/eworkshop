@@ -40,6 +40,7 @@ Route::get('get-locations', [DropdownController::class, 'getLocations'])->name('
 Route::get('get-fleet-managers', [DropdownController::class, 'getFleetManagers'])->name('dropdown.getFleetManagers');
 Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.getMvis');
 Route::get('get-defect-reports', [DropdownController::class, 'getDefectReports'])->name('dropdown.getDefectReports');
+Route::get('get-vehicle-parts', [DropdownController::class, 'getVehicleParts'])->name('dropdown.getVehicleParts');
 
 // Defect Reports routes with permission middleware
 Route::middleware(['auth'])->group(function () {

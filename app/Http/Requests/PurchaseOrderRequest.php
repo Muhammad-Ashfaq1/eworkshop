@@ -22,7 +22,17 @@ class PurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'defect_report_id' => 'required|exists:defect_reports,id',
+            'defect_report_id' => [
+                'required',
+                'exists:defect_reports,id',
+                function ($attribute, $value, $fail) {
+                    // Check if defect report already has a purchase order
+                    $existingPO = \App\Models\PurchaseOrder::where('defect_report_id', $value)->exists();
+                    if ($existingPO) {
+                        $fail('This defect report already has a purchase order.');
+                    }
+                },
+            ],
             'po_no' => 'required|string|max:255|unique:purchase_orders,po_no',
             'issue_date' => 'required|date',
             'received_by' => 'required|string|max:255',
