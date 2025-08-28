@@ -35,9 +35,7 @@
                                     <i class="ri-add-line align-bottom me-1"></i> Add Purchase Order
                                 </button>
                                 @endcan
-                                <button type="button" class="btn btn-info ms-2" onclick="testModal()">
-                                    <i class="ri-bug-line align-bottom me-1"></i> Test Modal
-                                </button>
+                                
                             </div>
                         </div>
                     </div>
@@ -481,22 +479,6 @@
         $(document).on('click', '.remove-part', function() {
             $(this).closest('.part-item').remove();
         });
-    }
-
-    // Test function to manually open modal
-    function testModal() {
-        console.log('Testing modal open...');
-        console.log('jQuery version:', $.fn.jquery);
-        console.log('Bootstrap modal available:', typeof $.fn.modal);
-        console.log('Modal element exists:', $('#purchaseOrderModal').length);
-        console.log('Modal HTML:', $('#purchaseOrderModal').html().substring(0, 200) + '...');
-        
-        try {
-            $('#purchaseOrderModal').modal('show');
-            console.log('Modal show called successfully');
-        } catch (error) {
-            console.error('Error opening modal:', error);
-        }
     }
 
     function setupFormValidation() {

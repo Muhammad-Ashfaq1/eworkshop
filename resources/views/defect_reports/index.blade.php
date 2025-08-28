@@ -256,8 +256,12 @@
                     // Force column adjustment after AJAX completes
                     setTimeout(function() {
                         if (table) {
-                            table.columns.adjust();
-                            table.fixedHeader.adjust();
+                            if (table.columns) {
+                                table.columns.adjust();
+                            }
+                            if (table.fixedHeader && table.fixedHeader.adjust) {
+                                table.fixedHeader.adjust();
+                            }
                         }
                     }, 100);
                 }
@@ -385,8 +389,12 @@
             order: [[7, 'desc']],
             initComplete: function(settings, json) {
                 // Force column adjustment after table is fully loaded
-                this.api().columns.adjust();
-                this.api().fixedHeader.adjust();
+                if (this.api().columns) {
+                    this.api().columns.adjust();
+                }
+                if (this.api().fixedHeader && this.api().fixedHeader.adjust) {
+                    this.api().fixedHeader.adjust();
+                }
             }
         });
 
@@ -414,8 +422,12 @@
         // Force table to show all columns after initialization
         setTimeout(function() {
             if (table) {
-                table.columns.adjust().draw();
-                table.fixedHeader.adjust();
+                if (table.columns) {
+                    table.columns.adjust().draw();
+                }
+                if (table.fixedHeader && table.fixedHeader.adjust) {
+                    table.fixedHeader.adjust();
+                }
             }
         }, 500);
     }
