@@ -27,7 +27,7 @@ class ReportsRepository implements ReportsRepositoryInterface
                 'types' => ['mechanical', 'electrical', 'body', 'other'],
                 'vehicles' => Vehicle::pluck('vehicle_number', 'id'),
                 'locations' => Location::pluck('name', 'id'),
-                'users' => User::role(['fleet_manager', 'mvi'])->get()->mapWithKeys(function($user) {
+                'users' => User::role(['admin', 'deo'])->get()->mapWithKeys(function($user) {
                     return [$user->id => $user->full_name];
                 })
             ],
@@ -501,8 +501,8 @@ class ReportsRepository implements ReportsRepositoryInterface
             $query->where('location_id', $filters['location_id']);
         }
 
-        if (!empty($filters['created_by'])) {
-            $query->where('created_by', $filters['created_by']);
+        if (!empty($filters['defect_date'])) {
+            $query->where('date', $filters['defect_date']);
         }
 
         if (!empty($filters['date_from'])) {

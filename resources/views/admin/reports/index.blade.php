@@ -693,11 +693,8 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="defectCreatedBy" class="form-label">Created By</label>
-                    <select class="form-control" id="defectCreatedBy" name="defectCreatedBy">
-                        <option value="">All Users</option>
-                        ${generateOptions(filterOptions.defect_reports?.users || {})}
-                    </select>
+                    <label for="defectDate" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="defectDate" name="defectDate">
                 </div>
             </div>
         `;
@@ -769,7 +766,7 @@
                 filters.type = $('#defectType').val();
                 filters.vehicle_id = $('#defectVehicle').val();
                 filters.location_id = $('#defectLocation').val();
-                filters.created_by = $('#defectCreatedBy').val();
+                filters.defect_date = $('#defectDate').val();
                 break;
             case 'vehicle_parts':
                 filters.is_active = $('#partStatus').val();
