@@ -262,8 +262,12 @@
                 complete: function() {
                     setTimeout(function() {
                         if (table) {
-                            table.columns.adjust();
-                            table.fixedHeader.adjust();
+                            if (table.columns) {
+                                table.columns.adjust();
+                            }
+                            if (table.fixedHeader && table.fixedHeader.adjust) {
+                                table.fixedHeader.adjust();
+                            }
                         }
                     }, 100);
                 }
@@ -485,6 +489,7 @@
         console.log('jQuery version:', $.fn.jquery);
         console.log('Bootstrap modal available:', typeof $.fn.modal);
         console.log('Modal element exists:', $('#purchaseOrderModal').length);
+        console.log('Modal HTML:', $('#purchaseOrderModal').html().substring(0, 200) + '...');
         
         try {
             $('#purchaseOrderModal').modal('show');
