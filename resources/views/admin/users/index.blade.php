@@ -29,7 +29,8 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="usersTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <div class="table-wrapper">
+                            <table id="usersTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th data-ordering="false">SR No.</th>

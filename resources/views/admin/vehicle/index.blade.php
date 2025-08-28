@@ -14,8 +14,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                    <div class="masters-datatable">
-                        <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable" style="width:100%">
+                    <div class="masters-datatable table-responsive">
+                        <div class="table-wrapper">
+                            <table id="js-vehicle-table" class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -33,6 +34,7 @@
                                 <!-- Data will be loaded via AJAX -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

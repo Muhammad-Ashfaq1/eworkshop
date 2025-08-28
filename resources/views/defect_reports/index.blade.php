@@ -39,28 +39,30 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="masters-datatable">
-                            <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Reference #</th>
-                                        <th>Vehicle</th>
-                                        <th>Office/Town</th>
-                                        <th>Driver Name</th>
-                                        <th>Fleet Manager</th>
-                                        <th>MVI</th>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Works Count</th>
-                                        <th>Created By</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
+                        <div class="masters-datatable table-responsive">
+                            <div class="table-wrapper">
+                                <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable w-100" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Reference #</th>
+                                            <th>Vehicle</th>
+                                            <th>Office/Town</th>
+                                            <th>Driver Name</th>
+                                            <th>Fleet Manager</th>
+                                            <th>MVI</th>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Works Count</th>
+                                            <th>Created By</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -240,13 +242,30 @@
             lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
             processing: true,
             serverSide: true,
+            scrollX: true,
+            scrollY: '60vh',
+            scrollCollapse: true,
+            autoWidth: false,
+            responsive: false, // Disable responsive to force scroll behavior
+            deferRender: true,
+            scroller: true,
             ajax: {
                 url: "{{ route('defect-reports.listing') }}",
-                type: "GET"
+                type: "GET",
+                complete: function() {
+                    // Force column adjustment after AJAX completes
+                    setTimeout(function() {
+                        if (table) {
+                            table.columns.adjust();
+                            table.fixedHeader.adjust();
+                        }
+                    }, 100);
+                }
             },
             columns: [
                 {
                     data: null,
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         const start = meta.settings._iDisplayStart;
                         const pageLength = meta.settings._iDisplayLength;
@@ -258,30 +277,35 @@
                 },
                 {
                     data: "reference_number",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "vehicle",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? data.vehicle_number : 'N/A';
                     }
                 },
                 {
                     data: "location",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? data.name : 'N/A';
                     }
                 },
                 {
                     data: "driver_name",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "fleet_manager",
+                    width: '120px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.name);
@@ -291,6 +315,7 @@
                 },
                 {
                     data: "mvi",
+                    width: '100px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.name)
@@ -300,12 +325,14 @@
                 },
                 {
                     data: "date",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                     }
                 },
                 {
                     data: "type",
+                    width: '100px',
                     render: function (data, type, row) {
                         const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
                         const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A';
@@ -314,12 +341,14 @@
                 },
                 {
                     data: "works",
+                    width: '100px',
                     render: function (data, type, row) {
                         return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
                     }
                 },
                 {
                     data: "creator",
+                    width: '120px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.first_name || '') + ' ' + (data.last_name || '');
@@ -329,6 +358,7 @@
                 },
                 {
                     data: null,
+                    width: '100px',
                     orderable: false,
                     render: function (data, type, row) {
                         let buttons = `
@@ -352,7 +382,12 @@
                     }
                 }
             ],
-            order: [[7, 'desc']]
+            order: [[7, 'desc']],
+            initComplete: function(settings, json) {
+                // Force column adjustment after table is fully loaded
+                this.api().columns.adjust();
+                this.api().fixedHeader.adjust();
+            }
         });
 
         // Handle view action
@@ -375,6 +410,14 @@
             const id = $(this).data('id');
             deleteDefectReport(id);
         });
+
+        // Force table to show all columns after initialization
+        setTimeout(function() {
+            if (table) {
+                table.columns.adjust().draw();
+                table.fixedHeader.adjust();
+            }
+        }, 500);
     }
 
     function loadDropdownData() {

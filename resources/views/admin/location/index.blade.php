@@ -14,8 +14,9 @@
                     </div>
                     </div>
                     <div class="card-body">
-                    <div class="masters-datatable">
-                        <table id="js-location-table" class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable" style="width:100%">
+                    <div class="masters-datatable table-responsive">
+                        <div class="table-wrapper">
+                            <table id="js-location-table" class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -32,6 +33,7 @@
                                 <!-- Data will be loaded via AJAX -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,13 +126,30 @@
             lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
             processing: true,
             serverSide: true,
-                        ajax: {
+            scrollX: true,
+            scrollY: '60vh',
+            scrollCollapse: true,
+            autoWidth: false,
+            responsive: false, // Disable responsive to force scroll behavior
+            deferRender: true,
+            scroller: true,
+            ajax: {
                 url: "/admin/location/listing",
-                type: "GET"
+                type: "GET",
+                complete: function() {
+                    // Force column adjustment after AJAX completes
+                    setTimeout(function() {
+                        if (table) {
+                            table.columns.adjust();
+                            table.fixedHeader.adjust();
+                        }
+                    }, 100);
+                }
             },
             columns: [
                 {
                     data: null,
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         const start = meta.settings._iDisplayStart;
                         const pageLength = meta.settings._iDisplayLength;
@@ -142,18 +161,21 @@
                 },
                 {
                     data: "name",
+                    width: '150px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "slug",
+                    width: '150px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "location_type",
+                    width: '120px',
                     render: function (data, type, row) {
                         if (!data) return 'N/A';
                         const badgeClass = data === 'town' ? 'bg-info' : 'bg-warning';
@@ -163,6 +185,7 @@
                 },
                 {
                     data: "is_active",
+                    width: '100px',
                     render: function (data, type, row) {
                         return data == 1 ? 
                             '<span class="badge bg-success">Active</span>' : 
@@ -171,18 +194,21 @@
                 },
                 {
                     data: "created_at",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                     }
                 },
                 {
                     data: "updated_at",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                     }
                 },
                 {
                     data: null,
+                    width: '100px',
                     orderable: false,
                     render: function (data, type, row) {
                         return `
@@ -199,7 +225,12 @@
                     }
                 }
             ],
-            order: [[5, 'desc']]
+            order: [[5, 'desc']],
+            initComplete: function(settings, json) {
+                // Force column adjustment after table is fully loaded
+                this.api().columns.adjust();
+                this.api().fixedHeader.adjust();
+            }
         });
 
         // Handle edit action
@@ -215,6 +246,14 @@
             const id = $(this).data('id');
             deleteLocation(id);
         });
+
+        // Force table to show all columns after initialization
+        setTimeout(function() {
+            if (table) {
+                table.columns.adjust().draw();
+                table.fixedHeader.adjust();
+            }
+        }, 500);
     }
 
     function setupFormValidation() {

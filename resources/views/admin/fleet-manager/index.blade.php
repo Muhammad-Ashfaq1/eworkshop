@@ -17,10 +17,11 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable">
-                        <table id="js-fleet-manager-table"
-                            class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
-                            style="width:100%">
+                    <div class="masters-datatable table-responsive">
+                        <div class="table-wrapper">
+                            <table id="js-fleet-manager-table"
+                                class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
+                                style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -36,6 +37,7 @@
                                 @include('admin.fleet-manager.data-table')
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

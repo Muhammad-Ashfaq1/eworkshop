@@ -9,3 +9,404 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Table Overflow Styles - Global Application */
+.table-responsive {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive-y {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 70vh;
+}
+
+/* DataTable specific overflow handling */
+.defect-reports-datatable,
+.masters-datatable,
+.dataTables_wrapper {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure DataTable horizontal scroll works properly */
+.dataTables_wrapper .dataTables_scroll {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dataTables_wrapper .dataTables_scrollHead {
+    overflow: visible !important;
+}
+
+.defect-reports-datatable .table,
+.masters-datatable .table {
+    min-width: 100%;
+    overflow: auto;
+}
+
+/* Ensure table content doesn't break layout */
+.table {
+    width: 100%;
+    min-width: 100%;
+    overflow: auto;
+}
+
+/* Card body overflow handling */
+.card-body {
+    overflow: auto;
+}
+
+/* Modal body overflow handling */
+.modal-body {
+    overflow: auto;
+    max-height: 70vh;
+}
+
+/* Responsive table wrapper */
+.table-wrapper {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.375rem;
+}
+
+/* DataTable wrapper specific styling */
+.defect-reports-datatable .table-wrapper {
+    overflow: visible !important;
+}
+
+.defect-reports-datatable .dataTables_wrapper {
+    overflow: visible !important;
+}
+
+/* Ensure the card body doesn't hide table content */
+.defect-reports-datatable .card-body {
+    overflow: visible !important;
+    padding: 1rem !important;
+}
+
+/* Force table to be visible */
+.defect-reports-datatable table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    min-width: 1200px !important;
+}
+
+/* Ensure parent containers don't hide the table */
+.defect-reports-datatable .card,
+.defect-reports-datatable .card-body,
+.defect-reports-datatable .masters-datatable {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Force DataTable to maintain structure */
+.defect-reports-datatable .dataTables_wrapper {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Locations table specific styling */
+.location-datatable .table {
+    min-width: 800px !important; /* Ensure minimum width for all columns */
+    width: 100% !important;
+}
+
+/* Force DataTable to show all columns for locations */
+.location-datatable .dataTables_wrapper .dataTables_scroll {
+    overflow: auto !important;
+    width: 100% !important;
+}
+
+.location-datatable .dataTables_wrapper .dataTables_scrollHead {
+    overflow: visible !important;
+    width: 100% !important;
+}
+
+.location-datatable .dataTables_wrapper .dataTables_scrollBody {
+    overflow: auto !important;
+    width: 100% !important;
+}
+
+/* Override DataTables responsive behavior for locations */
+.location-datatable .dataTables_wrapper .dataTables_scrollBody table {
+    width: 100% !important;
+    min-width: 800px !important;
+}
+
+.location-datatable .dataTables_wrapper .dataTables_scrollHead table {
+    width: 100% !important;
+    min-width: 800px !important;
+}
+
+/* Ensure parent containers don't hide the locations table */
+.location-datatable .card,
+.location-datatable .card-body,
+.location-datatable .masters-datatable {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Force DataTable to maintain structure for locations */
+.location-datatable .dataTables_wrapper {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Horizontal scrollbar styling */
+.table-responsive::-webkit-scrollbar,
+.table-responsive-x::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track,
+.table-responsive-x::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb,
+.table-responsive-x::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover,
+.table-responsive-x::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Vertical scrollbar styling */
+.table-responsive-y::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-responsive-y::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive-y::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-responsive-y::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Ensure DataTable controls are properly positioned */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    overflow: visible;
+}
+
+/* Defect reports table specific styling */
+.defect-reports-datatable .table {
+    min-width: 1200px !important; /* Ensure minimum width for all columns */
+    width: 100% !important;
+}
+
+/* Force DataTable to show all columns */
+.defect-reports-datatable .dataTables_wrapper .dataTables_scroll {
+    overflow: auto !important;
+    width: 100% !important;
+}
+
+.defect-reports-datatable .dataTables_wrapper .dataTables_scrollHead {
+    overflow: visible !important;
+    width: 100% !important;
+}
+
+.defect-reports-datatable .dataTables_wrapper .dataTables_scrollBody {
+    overflow: auto !important;
+    width: 100% !important;
+}
+
+/* Override DataTables responsive behavior */
+.defect-reports-datatable .dataTables_wrapper .dataTables_scrollBody table {
+    width: 100% !important;
+    min-width: 1200px !important;
+}
+
+.defect-reports-datatable .dataTables_wrapper .dataTables_scrollHead table {
+    width: 100% !important;
+    min-width: 1200px !important;
+}
+
+/* Ensure DataTable maintains table structure */
+.dataTables_wrapper .dataTables_scroll {
+    clear: both;
+}
+
+.dataTables_wrapper .dataTables_scrollHead {
+    margin-bottom: 0;
+}
+
+.dataTables_wrapper .dataTables_scrollBody {
+    border-top: none;
+}
+
+.defect-reports-datatable .table th,
+.defect-reports-datatable .table td {
+    white-space: nowrap;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+/* Column specific widths */
+.defect-reports-datatable .table th:nth-child(1), /* # */
+.defect-reports-datatable .table td:nth-child(1) {
+    width: 50px;
+    min-width: 50px;
+}
+
+.defect-reports-datatable .table th:nth-child(2), /* Reference # */
+.defect-reports-datatable .table td:nth-child(2) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(3), /* Vehicle */
+.defect-reports-datatable .table td:nth-child(3) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(4), /* Office/Town */
+.defect-reports-datatable .table td:nth-child(4) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(5), /* Driver Name */
+.defect-reports-datatable .table td:nth-child(5) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(6), /* Fleet Manager */
+.defect-reports-datatable .table td:nth-child(6) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(7), /* MVI */
+.defect-reports-datatable .table td:nth-child(7) {
+    width: 100px;
+    min-width: 100px;
+}
+
+.defect-reports-datatable .table th:nth-child(8), /* Date */
+.defect-reports-datatable .table td:nth-child(8) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(9), /* Type */
+.defect-reports-datatable .table td:nth-child(9) {
+    width: 100px;
+    min-width: 100px;
+}
+
+.defect-reports-datatable .table th:nth-child(10), /* Works Count */
+.defect-reports-datatable .table td:nth-child(10) {
+    width: 100px;
+    min-width: 100px;
+}
+
+.defect-reports-datatable .table th:nth-child(11), /* Created By */
+.defect-reports-datatable .table td:nth-child(11) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.defect-reports-datatable .table th:nth-child(12), /* Actions */
+.defect-reports-datatable .table td:nth-child(12) {
+    width: 100px;
+    min-width: 100px;
+}
+
+/* Table cell content overflow handling */
+.table td,
+.table th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* Allow specific columns to wrap if needed */
+.table .text-wrap {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Responsive breakpoint adjustments */
+@media (max-width: 768px) {
+    .table-responsive,
+    .table-responsive-x,
+    .table-responsive-y {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table td,
+    .table th {
+        min-width: 120px;
+    }
+}
+
+/* Additional DataTable scroll fixes */
+.dataTables_scrollHeadInner {
+    width: 100% !important;
+}
+
+.dataTables_scrollHeadInner table {
+    width: 100% !important;
+}
+
+.dataTables_scrollBody table {
+    width: 100% !important;
+}
+
+/* Prevent DataTable from hiding columns */
+.dataTables_wrapper .dataTables_scrollBody .dataTables_empty {
+    display: none !important;
+}
+
+/* Force all columns to be visible */
+.dataTables_wrapper .dataTables_scrollBody td,
+.dataTables_wrapper .dataTables_scrollHead th {
+    display: table-cell !important;
+    visibility: visible !important;
+}
+
+/* Ensure proper alignment between header and body when scrolling */
+.dataTables_wrapper .dataTables_scrollHead table,
+.dataTables_wrapper .dataTables_scrollBody table {
+    border-collapse: collapse;
+}
+
+/* Fix for DataTable responsive modal */
+.dtr-modal {
+    z-index: 9999;
+}
+
+.dtr-modal .dtr-modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
