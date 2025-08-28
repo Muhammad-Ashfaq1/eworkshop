@@ -91,6 +91,12 @@ class RolePermissionSeeder extends Seeder
             // Profile management
             UserPermissions::UPDATE_PROFILE,
             UserPermissions::READ_PROFILE,
+
+            // Purchase Orders - can create, read, update but NOT delete
+            UserPermissions::CREATE_PURCHASE_ORDERS,
+            UserPermissions::READ_PURCHASE_ORDERS,
+            UserPermissions::UPDATE_PURCHASE_ORDERS,
+            // UserPermissions::DELETE_PURCHASE_ORDERS, // Admin cannot delete purchase orders
         ]);
 
         // DEO (Data Entry Operator) - limited to data entry, viewing master data, and managing own defect reports

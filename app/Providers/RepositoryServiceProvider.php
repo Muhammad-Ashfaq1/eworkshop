@@ -7,11 +7,13 @@ use App\Interfaces\VehicleRepositoryInterface;
 use App\Interfaces\DefectReportRepositoryInterface;
 use App\Interfaces\LocationRepositoryInterface;
 use App\Interfaces\ReportsRepositoryInterface;
+use App\Interfaces\PurchaseOrderRepositoryInterface;
 use App\Repositories\VehiclePartRepository;
 use App\Repositories\VehicleRepository;
 use App\Repositories\DefectReportRepository;
 use App\Repositories\LocationRepository;
 use App\Repositories\ReportsRepository;
+use App\Repositories\PurchaseOrderRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DefectReportRepositoryInterface::class, DefectReportRepository::class);
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
         $this->app->bind(ReportsRepositoryInterface::class, ReportsRepository::class);
+        $this->app->bind(PurchaseOrderRepositoryInterface::class, PurchaseOrderRepository::class);
     }
 
     /**

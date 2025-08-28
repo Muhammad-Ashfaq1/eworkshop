@@ -110,6 +110,11 @@ class DefectReport extends Model
         return $this->hasMany(Work::class)->purchaseOrders();
     }
 
+    public function purchaseOrders()
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
     // Scopes for role-based filtering
     public function scopeForUser($query, $user)
     {

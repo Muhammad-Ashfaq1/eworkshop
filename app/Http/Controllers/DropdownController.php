@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\FleetManager;
 use Illuminate\Http\Request;
 use App\Models\VehicleCategory;
+use App\Models\DefectReport;
 
 class DropdownController extends Controller
 {
@@ -85,16 +86,31 @@ class DropdownController extends Controller
         $mvis = FleetManager::where('is_active', FleetManager::ACTIVE_STATUS)->where('type', FleetManager::TYPE_MVI)->orderBy('name','asc')
             ->get();
 
-        $formattedMvis = $mvis->map(function ($mvi) {
+        return response()->json([
+            'success' => true,
+            'data' => $mvis,
+        ]);
+    }
+
+    public function getDefectReports(Request $request)
+    {
+        // Get only defect reports (not purchase orders) for the dropdown
+        $defectReports = DefectReport::where('type', DefectReport::TYPE_DEFECT_REPORT)
+            ->whereNotNull('reference_number')
+            ->orderBy('created_at', 'desc')
+            ->get(['id', 'reference_number']);
+
+        $formattedDefectReports = $defectReports->map(function ($defectReport) {
             return [
-                'id' => $mvi->id,
-                'name' => $mvi->name,
+                'id' => $defectReport->id,
+                'text' => $defectReport->reference_number,
+                'name' => $defectReport->reference_number,
             ];
         });
 
         return response()->json([
             'success' => true,
-            'data' => $formattedMvis,
+            'data' => $formattedDefectReports,
         ]);
     }
 }

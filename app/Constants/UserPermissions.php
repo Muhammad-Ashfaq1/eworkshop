@@ -90,6 +90,12 @@ class UserPermissions
     const UPDATE_DEFECT_REPORTS = 'update_defect_reports';
     const DELETE_DEFECT_REPORTS = 'delete_defect_reports';
 
+    // Purchase order management permissions
+    const CREATE_PURCHASE_ORDERS = 'create_purchase_orders';
+    const READ_PURCHASE_ORDERS = 'read_purchase_orders';
+    const UPDATE_PURCHASE_ORDERS = 'update_purchase_orders';
+    const DELETE_PURCHASE_ORDERS = 'delete_purchase_orders';
+
     /**
      * Get all permissions as an array
      */
@@ -180,7 +186,13 @@ class UserPermissions
             self::CREATE_DEFECT_REPORTS,
             self::READ_DEFECT_REPORTS,
             self::UPDATE_DEFECT_REPORTS,
-            self::DELETE_DEFECT_REPORTS
+            self::DELETE_DEFECT_REPORTS,
+
+            // Purchase order management permissions
+            self::CREATE_PURCHASE_ORDERS,
+            self::READ_PURCHASE_ORDERS,
+            self::UPDATE_PURCHASE_ORDERS,
+            self::DELETE_PURCHASE_ORDERS
         ];
     }
 }

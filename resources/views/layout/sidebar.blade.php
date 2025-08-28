@@ -144,6 +144,14 @@
                         </li>
                         @endrole
 
+                        @can('read_purchase_orders')
+                        <li class="nav-item">
+                            <a class="nav-link menu-link {{ request()->routeIs('purchase-orders.*') ? 'active' : '' }}" href="{{ route('purchase-orders.index') }}">
+                                <i class="ri-shopping-cart-line"></i> <span data-key="t-purchase-orders">Purchase Orders</span>
+                            </a>
+                        </li>
+                        @endcan
+
                     </ul>
                 </div>
                 <!-- Sidebar -->
