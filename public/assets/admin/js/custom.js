@@ -3,6 +3,7 @@ function getDynamicDropdownData(url, target, callback) {
         url: url,
         type: 'GET',
         success: function(response) {
+            console.log('custom js response' + response)
             if (!response.success) {
                 console.error('Failed to fetch data:', response.message);
                 return;
@@ -12,7 +13,7 @@ function getDynamicDropdownData(url, target, callback) {
             $.each(response.data, function(index, item) {
                 $(target).append($('<option></option>').attr('value', item.id).text(item.name));
             });
-            
+
             // Initialize Select2 after populating options
             if ($(target).hasClass('select2-hidden-accessible')) {
                 $(target).select2('destroy');
@@ -23,7 +24,7 @@ function getDynamicDropdownData(url, target, callback) {
                 width: '100%',
                 dropdownParent: $(target).closest('.modal').length ? $(target).closest('.modal') : 'body'
             });
-            
+
             // Execute callback if provided
             if (typeof callback === 'function') {
                 callback();
