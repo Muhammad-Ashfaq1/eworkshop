@@ -119,7 +119,7 @@
     function applyVehiclesDatatable() {
         console.log('Initializing vehicles DataTable...');
         console.log('Table element found:', $('#js-vehicle-table').length);
-        
+
         var table = $('#js-vehicle-table').DataTable({
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
             // buttons: [
@@ -194,8 +194,8 @@
                 {
                     data: "is_active",
                     render: function (data, type, row) {
-                        return data == 1 ? 
-                            '<span class="badge bg-success">Active</span>' : 
+                        return data == 1 ?
+                            '<span class="badge bg-success">Active</span>' :
                             '<span class="badge bg-danger">Inactive</span>';
                     }
                 },
@@ -248,23 +248,9 @@
     }
 
     function loadDropdownData() {
-        // Load vehicle categories
-        $.get("{{ route('dropdown.getVehicleCategories') }}", function(data) {
-            let options = '<option value="" selected disabled>Select Category</option>';
-            data.forEach(function(category) {
-                options += `<option value="${category.id}">${category.name}</option>`;
-            });
-            $('#js-category').html(options);
-        });
-
-        // Load locations/towns
-        $.get("{{ route('dropdown.getTowns') }}", function(data) {
-            let options = '<option value="" selected disabled>Select Town</option>';
-            data.forEach(function(town) {
-                options += `<option value="${town.id}">${town.name}</option>`;
-            });
-            $('#js-town').html(options);
-        });
+        // Load vehicle categories and towns data
+        getDynamicDropdownData("{{ route('dropdown.getVehicleCategories') }}" , "#js-category");
+        getDynamicDropdownData("{{ route('dropdown.getTowns') }}" , '#js-town');
     }
 
     function setupFormValidation() {
@@ -286,11 +272,10 @@
             submitHandler: function(form) {
                 const formData = new FormData(form);
                 const url = $(form).attr('action');
-                const method = $('#js-vehicle-id').val() ? 'PUT' : 'POST';
 
                 $.ajax({
                     url: url,
-                    type: method,
+                    type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -333,7 +318,6 @@
                 populateForm(vehicle);
                 $('#js-vehicle-modal-label').text(`Edit Vehicle #${vehicle.id}`);
                 $('#js-vehicle-submit').text('Update Vehicle');
-                $('#js-vehicle-form').attr('action', `/admin/vehicles/${id}`);
                 $('#js-vehicle-modal').modal('show');
             } else {
                 toastr.error(response.message);
@@ -380,7 +364,8 @@
         $('#js-category').val(vehicle.vehicle_category_id);
         $('#js-condition').val(vehicle.condition);
         $('#js-town').val(vehicle.location_id);
-        $('#js-is-active').val(vehicle.is_active);
+        const activeStatus = vehicle.is_active ? 1 : 0;
+        $('#js-is-active').val(activeStatus);
     }
 
     function resetForm() {
