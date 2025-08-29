@@ -1,4 +1,3 @@
-console.log('hellofrom custom js')
 function getDynamicDropdownData(url, target, callback) {
     $.ajax({
         url: url,
