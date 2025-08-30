@@ -7,9 +7,11 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">Vehicle Parts</h5>
                     <div class="float-end">
+                        @can('create_vehicle_parts')
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#js-add-vehicle-part-modal">
                             Add New Part
                         </button>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -114,6 +116,7 @@
             },
             submitHandler: function(form) {
                 var formData = new FormData(form);
+                const method='POST'
                 $.ajax({
                     url: $(form).attr('action'),
                     type: 'POST',
@@ -280,8 +283,8 @@
                     data: "is_active",
                     name: "is_active",
                     render: function (data, type, row) {
-                        return data == 1 ? 
-                            '<span class="badge bg-success">Active</span>' : 
+                        return data == 1 ?
+                            '<span class="badge bg-success">Active</span>' :
                             '<span class="badge bg-danger">Inactive</span>';
                     }
                 },
@@ -303,17 +306,25 @@
                     data: null,
                     orderable: false,
                     render: function (data, type, row) {
-                        return `
-                            <div class="dropdown">
+                        let buttons= `<div class="dropdown">
                                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-more-fill align-middle"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item edit-vehicle-part-btn" href="/admin/vehicle-parts/edit/${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
-                                    <li><a class="dropdown-item delete-vehicle-part-btn" href="/admin/vehicle-parts/destroy/${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        `;
+                                <ul class="dropdown-menu dropdown-menu-end">`
+
+                            if (row.can_edit) {
+                                buttons +=
+                                    `<li><a class="dropdown-item edit-vehicle-part-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
+                            }
+
+                            if (row.can_delete) {
+                                buttons +=
+                                    `<li><a class="dropdown-item delete-vehicle-part-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>`;
+                            }
+
+                            buttons += `</ul></div>`;
+                            return buttons;
+
                     }
                 }
             ],

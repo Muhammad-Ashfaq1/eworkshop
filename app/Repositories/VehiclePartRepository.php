@@ -23,7 +23,7 @@ class VehiclePartRepository implements VehiclePartRepositoryInterface
         }
 
         $query = VehiclePart::query();
-        
+
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where('name', 'like', '%' . $search['search'] . '%')
@@ -38,13 +38,22 @@ class VehiclePartRepository implements VehiclePartRepositoryInterface
         }
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
-        
-        $response['draw'] = $data['draw'];
-        $response['recordsTotal'] = $recordsTotal;
-        $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray(); // convert to array for DataTables
-        
-        return response()->json($response, Response::HTTP_OK);
+
+         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
+
+         $vehicle_parts = $query->skip($skip)->take($pageLength)->get();
+            // Add permission flags using can method
+        $vehicle_parts->each(function ($vehicle_part)  {
+            $vehicle_part->can_edit = auth()->user()->can('update_vehicle_parts');
+            $vehicle_part->can_delete = auth()->user()->can('delete_vehicle_parts');
+        });
+
+            $response['draw'] = $data['draw'];
+            $response['recordsTotal'] = $recordsTotal;
+            $response['recordsFiltered'] = $recordsTotal;
+            $response['data'] = $vehicle_parts->toArray();
+            return response()->json($response, Response::HTTP_OK);
+
     }
 
     public function getVehiclePartById($id)
@@ -55,7 +64,7 @@ class VehiclePartRepository implements VehiclePartRepositoryInterface
     public function createOrUpdateVehiclePart($data): JsonResponse
     {
         $vehiclePart = VehiclePart::updateOrCreate(
-            ['id' => @$data['vehicle_part']], 
+            ['id' => @$data['vehicle_part']],
             [
                 'name' => $data['name'],
                 'slug' => \Illuminate\Support\Str::slug($data['name']),
@@ -75,7 +84,7 @@ class VehiclePartRepository implements VehiclePartRepositoryInterface
     public function deleteVehiclePart($id): JsonResponse
     {
         $vehiclePart = VehiclePart::find($id);
-        
+
         if (!$vehiclePart) {
             return response()->json([
                 'success' => false,

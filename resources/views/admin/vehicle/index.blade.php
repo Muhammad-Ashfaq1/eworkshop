@@ -8,10 +8,12 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">Vehicles</h5>
                     <div class="float-end">
+                        @can('create_vehicles')
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#js-vehicle-modal">
                             Add New Vehicle
                         </button>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -222,17 +224,25 @@
                         data: null,
                         orderable: false,
                         render: function(data, type, row) {
-                            return `
+                             let buttons = `
                             <div class="dropdown">
                                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-more-fill align-middle"></i>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item edit-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>
-                                    <li><a class="dropdown-item delete-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        `;
+                                <ul class="dropdown-menu dropdown-menu-end">`
+                                    
+                            if (row.can_edit) {
+                                buttons +=
+                                    `<li><a class="dropdown-item edit-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
+                            }
+
+                            if (row.can_delete) {
+                                buttons +=
+                                    `<li><a class="dropdown-item delete-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>`;
+                            }
+
+                            buttons += `</ul></div>`;
+                            return buttons;
                         }
                     }
                 ],
@@ -303,6 +313,7 @@
                 submitHandler: function(form) {
                     const formData = new FormData(form);
                     const url = $(form).attr('action');
+                    const method='POST';
 
                     $.ajax({
                         url: url,

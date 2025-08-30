@@ -16,13 +16,13 @@ class LocationRepository implements LocationRepositoryInterface
             $pageLength = $search['length'] ?? 10;
             $start = $search['start'] ?? 0;
             $skip = $start;
-            
+
             $query = Location::query();
-            
+
                                 // Apply search filter
             if (isset($search['search']) && is_array($search['search']) && isset($search['search']['value'])) {
                 $searchValue = $search['search']['value'];
-                
+
                 if (!empty($searchValue) && is_string($searchValue)) {
                     $query->where(function($q) use ($searchValue) {
                         $q->where('name', 'like', '%' . $searchValue . '%')
@@ -47,19 +47,26 @@ class LocationRepository implements LocationRepositoryInterface
         }
 
             $recordsFiltered = $recordsTotal = $query->count();
-            
+
+            $locations = $query->skip($skip)->take($pageLength)->get();
+            // Add permission flags using can method
+        $locations->each(function ($location)  {
+            $location->can_edit = auth()->user()->can('update_locations');
+            $location->can_delete = auth()->user()->can('delete_locations');
+        });
+
             $response['draw'] = $data['draw'];
             $response['recordsTotal'] = $recordsTotal;
             $response['recordsFiltered'] = $recordsTotal;
-            $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
-            
+            $response['data'] = $locations->toArray();
+
             return response()->json($response, Response::HTTP_OK);
         } catch (\Exception $e) {
             \Log::error('LocationRepository: Error in getLocationListing', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load locations: ' . $e->getMessage()
@@ -79,11 +86,11 @@ class LocationRepository implements LocationRepositoryInterface
             $name = $data['name'];
             $slug = $data['slug'];
             $location_type = $data['location_type'];
-            
+
             if (!$slug) {
                 $slug = str($name)->slug();
             }
-            
+
             $is_active = $data['is_active'];
 
             $location = Location::updateOrCreate(
@@ -115,7 +122,7 @@ class LocationRepository implements LocationRepositoryInterface
     {
         try {
             $location = Location::find($id);
-            
+
             if (!$location) {
                 return response()->json([
                     'success' => false,
