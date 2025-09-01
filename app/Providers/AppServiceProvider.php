@@ -48,7 +48,7 @@ class AppServiceProvider extends ServiceProvider
             return "<?php echo \App\Helpers\DateHelper::getRelativeTime($expression); ?>";
         });
 
-        DefectReport::observe(DefectReportObserver::class);
+       DefectReport::observe(DefectReportObserver::class);
 
     }
 }

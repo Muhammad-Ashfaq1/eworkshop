@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\FleetManagerController;
-use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\VehicleController;
-use App\Http\Controllers\Admin\VehiclePartController;
-use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogsController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\VehiclePartController;
+use App\Http\Controllers\Admin\FleetManagerController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // User Management Routes - Super Admin only
@@ -29,6 +30,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_locations']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_locations']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_locations']);
+            Route::get('archieved', 'archieved')->name('archieved')->middleware(['permission:read_locations']);
+            Route::get('restore/{id}', 'restore')->name('restore')->middleware(['permission:restore_locations']);
         });
 
     // Vehicle Parts Routes
@@ -73,4 +76,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::post('/export', 'exportReport')->name('export')->middleware(['permission:export_data']);
         });
+
+        // Activity Logs - Super Admin only
+
+          Route::controller(LogsController::class)->prefix('logs')->name('logs.')->group(function () {
+            Route::get('/', 'index')->name('index')->middleware('permission:view_report_logs');
+
+        });
+
 });

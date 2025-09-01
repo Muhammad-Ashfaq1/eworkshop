@@ -2,12 +2,14 @@
 
 namespace App\Observers;
 
-use App\Models\DefectReport;
 use App\Models\ReportAudit;
+use App\Models\DefectReport;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class DefectReportObserver
 {
+
     /**
      * Handle the DefectReport "created" event.
      */
@@ -17,8 +19,7 @@ class DefectReportObserver
     }
     public function updating(DefectReport $report)
     {
-        // Store old data temporarily on model
-        $report->audit_before = $report->getOriginal();
+
     }
 
 
@@ -31,7 +32,7 @@ class DefectReportObserver
 
         ReportAudit::create([
             'modifier_id' => $user ? $user->id : null,
-            'before_changing_record' => $report->audit_before ?? [],
+            'before_changing_record' => $defectReport->getOriginal(),
             'after_changing_record' => $defectReport->getAttributes(),
             'type' => 'defect_report',
         ]);

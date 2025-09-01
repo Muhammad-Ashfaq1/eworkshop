@@ -191,9 +191,33 @@
                     </li>
                 @endcan
 
+
+                @role('admin|super_admin')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.location.archieved') }}"
+                            class="nav-link {{ request()->routeIs('admin.location.archieved') ? 'active' : '' }}"
+                            data-key="t-analytics">
+                            <i class="ri-map-pin-line me-2"></i> Archieved Locations / Workshop
+                        </a>
+                    </li>
+                @endrole
+
+                @role('super_admin')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link"
+                            href="{{ route('admin.logs.index') }}">
+                            <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Report Logs</span>
+                        </a>
+                    </li>
+                @endrole
+
             </ul>
         </div>
         <!-- Sidebar -->
+
+
+
+
     </div>
 
     <div class="sidebar-background"></div>

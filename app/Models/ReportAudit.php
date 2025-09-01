@@ -15,7 +15,10 @@ class ReportAudit extends Model
         'after_changing_record',
         'type',
     ];
-
+     protected $casts = [
+        'before_changing_record' => 'array',
+        'after_changing_record' => 'array',
+    ];
 
      public function modifier()
     {
