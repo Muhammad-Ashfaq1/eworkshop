@@ -59,6 +59,7 @@
                                             <th>Received By</th>
                                             <th>Amount</th>
                                             <th>Parts Count</th>
+                                            <th>Attachment</th>
                                             <th>Created By</th>
                                             <th>Actions</th>
                                         </tr>
@@ -341,6 +342,16 @@
                     width: '100px',
                     render: function (data, type, row) {
                         return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
+                    }
+                },
+                {
+                    data: "attachment_url",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return `<a href="${data}" target="_blank">View Attachment</a>`;
+                        }
+                        return 'N/A';
                     }
                 },
                 {

@@ -54,6 +54,7 @@
                                             <th>Date</th>
                                             <th>Type</th>
                                             <th>Works Count</th>
+                                            <th>Attachment</th>
                                             <th>Created By</th>
                                             <th>Actions</th>
                                         </tr>
@@ -356,6 +357,16 @@
                     render: function (data, type, row) {
                         if (data) {
                             return (data.first_name || '') + ' ' + (data.last_name || '');
+                        }
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "attachment_url",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return `<a href="${data}" target="_blank">View Attachment</a>`;
                         }
                         return 'N/A';
                     }
