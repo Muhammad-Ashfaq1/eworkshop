@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Helpers\DateHelper;
+use App\Models\DefectReport;
+use App\Observers\DefectReportObserver;
 use App\View\Components\RequiredAsterisk;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,5 +47,8 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('relativeTime', function ($expression) {
             return "<?php echo \App\Helpers\DateHelper::getRelativeTime($expression); ?>";
         });
+
+        DefectReport::observe(DefectReportObserver::class);
+
     }
 }
