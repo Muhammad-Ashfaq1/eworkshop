@@ -95,6 +95,25 @@ class DefectReport extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Get field labels for display
+     */
+    public static function getFieldLabels()
+    {
+        return [
+            'reference_number' => 'Reference Number',
+            'vehicle_id' => 'Vehicle',
+            'location_id' => 'Location',
+            'driver_name' => 'Driver Name',
+            'fleet_manager_id' => 'Fleet Manager',
+            'mvi_id' => 'MVI',
+            'date' => 'Date',
+            'attachment_url' => 'Attachment',
+            'type' => 'Type',
+            'created_by' => 'Created By',
+        ];
+    }
+
     public function works()
     {
         return $this->hasMany(Work::class);

@@ -90,6 +90,9 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::EXPORT_DATA,
             UserPermissions::ACCESS_ADMIN_PANEL,
 
+            // Report logs - can view but not delete
+            UserPermissions::VIEW_REPORT_LOGS,
+
             // Profile management
             UserPermissions::UPDATE_PROFILE,
             UserPermissions::READ_PROFILE,

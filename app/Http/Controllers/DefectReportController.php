@@ -56,7 +56,7 @@ class DefectReportController extends Controller
     {
         $this->authorize('create_defect_reports');
 
-        return $this->defectReportRepository->createDefectReport($request->all());
+        return $this->defectReportRepository->createDefectReport($request->validated());
     }
 
     /**
@@ -93,7 +93,7 @@ class DefectReportController extends Controller
 
         $user = Auth::user();
 
-        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->all());
+        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->validated());
     }
 
     /**

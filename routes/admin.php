@@ -78,10 +78,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         });
 
         // Activity Logs - Super Admin only
-
-          Route::controller(LogsController::class)->prefix('logs')->name('logs.')->group(function () {
-            Route::get('/', 'index')->name('index')->middleware('permission:view_report_logs');
-
+        Route::controller(LogsController::class)->prefix('logs')->name('logs.')->middleware(['permission:view_report_logs'])->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'getLogDetails')->name('details');
+            Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:delete_report_logs');
         });
 
 });
