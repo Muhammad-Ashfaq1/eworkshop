@@ -23,51 +23,48 @@
             </div>
             <!-- End page title -->
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h4 class="card-title mb-0">Defect Reports List</h4>
-                                </div>
-                                <div class="col-md-6 text-end">
-                                    @can('create_defect_reports')
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#defectReportModal">
-                                            <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
-                                        </button>
-                                    @endcan
-                                </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h4 class="card-title mb-0">Defect Reports List</h4>
+                            </div>
+                            <div class="col-md-6 text-end">
+                               @can('create_defect_reports')
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#defectReportModal">
+                                    <i class="ri-add-line align-bottom me-1"></i> Add Defect Report
+                                </button>
+                                @endcan
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="masters-datatable table-responsive">
-                                <div class="table-wrapper">
-                                    <table id="js-defect-report-table"
-                                        class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable w-100"
-                                        style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Reference #</th>
-                                                <th>Vehicle</th>
-                                                <th>Office/Town</th>
-                                                <th>Driver Name</th>
-                                                <th>Fleet Manager</th>
-                                                <th>MVI</th>
-                                                <th>Date</th>
-                                                <th>Type</th>
-                                                <th>Works Count</th>
-                                                <th>Created By</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be loaded via AJAX -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="masters-datatable table-responsive">
+                            <div class="table-wrapper">
+                                <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable w-100" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Reference #</th>
+                                            <th>Vehicle</th>
+                                            <th>Office/Town</th>
+                                            <th>Driver Name</th>
+                                            <th>Fleet Manager</th>
+                                            <th>MVI</th>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Works Count</th>
+                                            <th>Attachment</th>
+                                            <th>Created By</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -75,6 +72,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Unified Defect Report Modal -->
     <div class="modal fade" id="defectReportModal" tabindex="-1" aria-labelledby="defectReportModalLabel"
@@ -247,155 +245,161 @@
             }
         }
 
-        function applyDefectReportsDatatable() {
-            var table = $('#js-defect-report-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
-                // buttons: [
-                //     {
-                //         text: '<i class="fas fa-plus me-2"></i>Add New',
-                //         className: 'btn btn-primary',
-                //         action: function (e, dt, node, config) {
-                //             resetForm();
-                //             $('#defectReportModalLabel').text('Add Defect Report');
-                //             $('#defectReportSubmit').text('Create Defect Report');
-                //             $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
-                //             $('#defectReportModal').modal('show');
-                //         }
-                //     }
-                // ],
-                pageLength: 20,
-                searching: true,
-                lengthMenu: [
-                    [20, 30, 50, 100],
-                    ["20 entries", "30 entries", "50 entries", "100 entries"]
-                ],
-                processing: true,
-                serverSide: true,
-                scrollX: true,
-                scrollY: '60vh',
-                scrollCollapse: true,
-                autoWidth: false,
-                responsive: false, // Disable responsive to force scroll behavior
-                deferRender: true,
-                scroller: true,
-                ajax: {
-                    url: "{{ route('defect-reports.listing') }}",
-                    type: "GET",
-                    complete: function() {
-                        // Force column adjustment after AJAX completes
-                        setTimeout(function() {
-                            if (table) {
-                                if (table.columns) {
-                                    table.columns.adjust();
-                                }
-                                if (table.fixedHeader && table.fixedHeader.adjust) {
-                                    table.fixedHeader.adjust();
-                                }
+    function applyDefectReportsDatatable() {
+        var table = $('#js-defect-report-table').DataTable({
+            dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+            // buttons: [
+            //     {
+            //         text: '<i class="fas fa-plus me-2"></i>Add New',
+            //         className: 'btn btn-primary',
+            //         action: function (e, dt, node, config) {
+            //             resetForm();
+            //             $('#defectReportModalLabel').text('Add Defect Report');
+            //             $('#defectReportSubmit').text('Create Defect Report');
+            //             $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+            //             $('#defectReportModal').modal('show');
+            //         }
+            //     }
+            // ],
+            pageLength: 20,
+            searching: true,
+            lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            scrollY: '60vh',
+            scrollCollapse: true,
+            autoWidth: false,
+            responsive: false, // Disable responsive to force scroll behavior
+            deferRender: true,
+            scroller: true,
+            ajax: {
+                url: "{{ route('defect-reports.listing') }}",
+                type: "GET",
+                complete: function() {
+                    // Force column adjustment after AJAX completes
+                    setTimeout(function() {
+                        if (table) {
+                            if (table.columns) {
+                                table.columns.adjust();
                             }
-                        }, 100);
+                            if (table.fixedHeader && table.fixedHeader.adjust) {
+                                table.fixedHeader.adjust();
+                            }
+                        }
+                    }, 100);
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                    width: '50px',
+                    render: function (data, type, row, meta) {
+                        const start = meta.settings._iDisplayStart;
+                        const pageLength = meta.settings._iDisplayLength;
+                        const pageNumber = (start / pageLength) + 1;
+                        return pageLength * (pageNumber - 1) + (meta.row + 1);
+                    },
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: "reference_number",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        return data || 'N/A';
                     }
                 },
-                columns: [{
-                        data: null,
-                        width: '50px',
-                        render: function(data, type, row, meta) {
-                            const start = meta.settings._iDisplayStart;
-                            const pageLength = meta.settings._iDisplayLength;
-                            const pageNumber = (start / pageLength) + 1;
-                            return pageLength * (pageNumber - 1) + (meta.row + 1);
-                        },
-                        orderable: false,
-                        searchable: false,
-                    },
-                    {
-                        data: "reference_number",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            return data || 'N/A';
+                {
+                    data: "vehicle",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        return data ? data.vehicle_number : 'N/A';
+                    }
+                },
+                {
+                    data: "location",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        return data ? data.name : 'N/A';
+                    }
+                },
+                {
+                    data: "driver_name",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        return data || 'N/A';
+                    }
+                },
+                {
+                    data: "fleet_manager",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.name);
                         }
-                    },
-                    {
-                        data: "vehicle",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            return data ? data.vehicle_number : 'N/A';
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "mvi",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.name)
                         }
-                    },
-                    {
-                        data: "location",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            return data ? data.name : 'N/A';
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "date",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                    }
+                },
+                {
+                    data: "type",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
+                        const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A';
+                        return `<span class="badge ${badgeClass}">${displayText}</span>`;
+                    }
+                },
+                {
+                    data: "works",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
+                    }
+                },
+                {
+                    data: "creator",
+                    width: '120px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return (data.first_name || '') + ' ' + (data.last_name || '');
                         }
-                    },
-                    {
-                        data: "driver_name",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            return data || 'N/A';
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: "attachment_url",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return `<a href="${data}" target="_blank">View Attachment</a>`;
                         }
-                    },
-                    {
-                        data: "fleet_manager",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            if (data) {
-                                return (data.name);
-                            }
-                            return 'N/A';
-                        }
-                    },
-                    {
-                        data: "mvi",
-                        width: '100px',
-                        render: function(data, type, row) {
-                            if (data) {
-                                return (data.name)
-                            }
-                            return 'N/A';
-                        }
-                    },
-                    {
-                        data: "date",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
-                        }
-                    },
-                    {
-                        data: "type",
-                        width: '100px',
-                        render: function(data, type, row) {
-                            const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
-                            const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l
-                                .toUpperCase()) : 'N/A';
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
-                    },
-                    {
-                        data: "works",
-                        width: '100px',
-                        render: function(data, type, row) {
-                            return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
-                        }
-                    },
-                    {
-                        data: "creator",
-                        width: '120px',
-                        render: function(data, type, row) {
-                            if (data) {
-                                return (data.first_name || '') + ' ' + (data.last_name || '');
-                            }
-                            return 'N/A';
-                        }
-                    },
-                    {
-                        data: null,
-                        width: '100px',
-                        orderable: false,
-                        render: function(data, type, row) {
-                            let buttons =
-                                `
+                        return 'N/A';
+                    }
+                },
+                {
+                    data: null,
+                    width: '100px',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        let buttons = `
                             <div class="dropdown">
                                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ri-more-fill align-middle"></i>
