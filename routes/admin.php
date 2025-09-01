@@ -29,6 +29,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_locations']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_locations']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_locations']);
+            Route::get('archieved', 'archieved')->name('archieved')->middleware(['permission:read_locations']);
+            Route::get('restore/{id}', 'restore')->name('restore')->middleware(['permission:restore_locations']);
         });
 
     // Vehicle Parts Routes
