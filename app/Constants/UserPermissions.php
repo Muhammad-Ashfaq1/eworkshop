@@ -10,6 +10,8 @@ class UserPermissions
     const UPDATE_USERS = 'update_users';
     const DELETE_USERS = 'delete_users';
 
+    const RESET_USER_PASSWORD='reset_user_password';
+
     // Admin management permissions
     const CREATE_ADMIN = 'create_admin';
     const READ_ADMIN = 'read_admin';
@@ -96,6 +98,11 @@ class UserPermissions
     const UPDATE_PURCHASE_ORDERS = 'update_purchase_orders';
     const DELETE_PURCHASE_ORDERS = 'delete_purchase_orders';
 
+
+
+    //User's permissions for super admin and admin
+
+
     /**
      * Get all permissions as an array
      */
@@ -107,7 +114,7 @@ class UserPermissions
             self::READ_USERS,
             self::UPDATE_USERS,
             self::DELETE_USERS,
-
+            self::RESET_USER_PASSWORD,
             // Admin management permissions
             self::CREATE_ADMIN,
             self::READ_ADMIN,
@@ -192,7 +199,10 @@ class UserPermissions
             self::CREATE_PURCHASE_ORDERS,
             self::READ_PURCHASE_ORDERS,
             self::UPDATE_PURCHASE_ORDERS,
-            self::DELETE_PURCHASE_ORDERS
+            self::DELETE_PURCHASE_ORDERS,
+
+
+            //user permissions for superadmin
         ];
     }
 }

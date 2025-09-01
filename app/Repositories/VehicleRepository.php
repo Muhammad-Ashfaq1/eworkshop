@@ -23,7 +23,7 @@ class VehicleRepository implements VehicleRepositoryInterface
         }
 
         $query = Vehicle::with(['location', 'category']);
-        
+
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where(function($q) use ($search) {
@@ -46,12 +46,29 @@ class VehicleRepository implements VehicleRepositoryInterface
         }
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
-        
+
+        $vehicles = $query->skip($skip)->take($pageLength)->get();
+            // Add permission flags using can method
+        $vehicles->each(function ($vehicle)  {
+            $vehicle->can_edit = auth()->user()->can('update_vehicles');
+            $vehicle->can_delete = auth()->user()->can('delete_vehicles');
+        });
+
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray(); // makes data using resource
-        
+        $response['data'] =$vehicles = $query->skip($skip)->take($pageLength)->get();
+
+// Add permission flags
+$vehicles->each(function ($vehicle) {
+    $vehicle->can_edit = auth()->user()->can('update_vehicles');
+    $vehicle->can_delete = auth()->user()->can('delete_vehicles');
+});
+
+$response['draw'] = $data['draw'];
+$response['recordsTotal'] = $recordsTotal;
+$response['recordsFiltered'] = $recordsFiltered;
+$response['data'] = $vehicles->toArray();
         return response()->json($response, Response::HTTP_OK);
     }
 
@@ -64,7 +81,7 @@ class VehicleRepository implements VehicleRepositoryInterface
     {
         try {
             $vehicle = Vehicle::updateOrCreate(
-                ['id' => @$data['vehicle_id']], 
+                ['id' => @$data['vehicle_id']],
                 [
                     'vehicle_number' => $data['vehicle_number'],
                     'location_id' => $data['town'],
@@ -93,7 +110,7 @@ class VehicleRepository implements VehicleRepositoryInterface
     {
         try {
             $vehicle = Vehicle::find($id);
-            
+
             if (!$vehicle) {
                 return response()->json([
                     'success' => false,

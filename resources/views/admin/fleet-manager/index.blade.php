@@ -9,10 +9,12 @@
                     <h5 class="card-title mb-0">FleetManager / Mvi</h5>
                     @if(auth()->user()->can('create_fleet_manager'))
                         <div class="float-end">
+                            @can('create_fleet_manager')
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#js-fleet-manager-modal">
                                 Add New FleetManager/Mvi
                             </button>
+                            @endcan
                         </div>
                     @endif
                 </div>
