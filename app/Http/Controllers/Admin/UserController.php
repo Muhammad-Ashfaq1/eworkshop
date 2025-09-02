@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
         $this->authorize('read_users');
 
         $users = User::with('roles')->latest()->get();
-        $roles = Role::whereIn('name', ['admin', 'deo'])->get();
+        $roles = Role::whereIn('name', ['admin', 'deo'])->where('name', '!=', Auth::user()->roles->pluck('name')->first())->get();
 
         return view('admin.users.index', compact('users', 'roles'));
     }
