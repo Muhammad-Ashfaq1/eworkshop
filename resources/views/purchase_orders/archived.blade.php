@@ -10,7 +10,8 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="js-archived-purchase-orders-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-archived-purchase-orders-table"
+                            class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -28,8 +29,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(!@empty($archivedPurchaseOrders))
-                                    @foreach($archivedPurchaseOrders as $purchaseOrder)
+                                @if (!@empty($archivedPurchaseOrders))
+                                    @foreach ($archivedPurchaseOrders as $purchaseOrder)
                                         <tr>
                                             <td>{{ $purchaseOrder->id }}</td>
                                             <td>{{ $purchaseOrder->po_no }}</td>
@@ -44,9 +45,8 @@
                                             <td>{{ $purchaseOrder->deleted_at->format('d/m/Y H:i') }}</td>
                                             <td>
                                                 @can('restore_purchase_orders')
-                                                    <button class="btn btn-sm btn-success restore-purchase-order" 
-                                                            data-id="{{ $purchaseOrder->id }}"
-                                                            title="Restore Purchase Order">
+                                                    <button class="btn btn-sm btn-success restore-purchase-order"
+                                                        data-id="{{ $purchaseOrder->id }}" title="Restore Purchase Order">
                                                         <i class="ri-refresh-line"></i> Restore
                                                     </button>
                                                 @endcan
@@ -67,13 +67,15 @@
     <script>
         $(document).ready(function() {
             $('#js-archived-purchase-orders-table').DataTable({
-                order: [[10, 'desc']] // Sort by deleted_at descending
+                order: [
+                    [10, 'desc']
+                ] // Sort by deleted_at descending
             });
 
             // Restore purchase order
             $(document).on('click', '.restore-purchase-order', function() {
                 const purchaseOrderId = $(this).data('id');
-                
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "You want to restore this purchase order!",
@@ -88,18 +90,22 @@
                             url: `/purchase-orders/restore-archived/${purchaseOrderId}`,
                             type: 'POST',
                             beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                    'meta[name="csrf-token"]').attr('content'));
                             },
                             success: function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    $('#js-archived-purchase-orders-table').DataTable().ajax.reload();
+                                    $('#js-archived-purchase-orders-table').DataTable()
+                                        .ajax.reload();
                                 } else {
                                     toastr.error(response.message);
                                 }
                             },
                             error: function(xhr) {
-                                toastr.error('Failed to restore purchase order. Please try again.');
+                                toastr.error(
+                                    'Failed to restore purchase order. Please try again.'
+                                    );
                             }
                         });
                     }

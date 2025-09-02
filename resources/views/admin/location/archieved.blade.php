@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Archieved Locations</h5>
-                    
+
                     <div class="card-body">
                         <div class="masters-datatable table-responsive">
                             <div class="table-wrapper">
@@ -27,12 +27,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(!@empty($archievedLocations))
-                                            @foreach($archievedLocations as $location)
+                                        @if (!@empty($archievedLocations))
+                                            @foreach ($archievedLocations as $location)
                                                 <tr>
                                                     <td>{{ $location->id }}</td>
                                                     <td>{{ $location->name . ' - ' . $location->id }}</td>
-                                                    <td>{{  $location->slug }}</td>
+                                                    <td>{{ $location->slug }}</td>
                                                     <td>{{ $location->location_type }}</td>
                                                     <td>{{ $location->is_active }}</td>
                                                     <td>{{ $location->created_at }}</td>
@@ -40,28 +40,35 @@
                                                     <td>
                                                         @can('restore_locations')
                                                             <div class="dropdown">
-                                                                <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <button class="btn btn-soft-secondary btn-sm dropdown"
+                                                                    type="button" data-bs-toggle="dropdown"
+                                                                    aria-expanded="false">
                                                                     <i class="ri-more-fill align-middle"></i>
                                                                 </button>
                                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                                    <li><a class="dropdown-item restore-location-btn" data-id="{{ $location->id }}" id="js-location-restore-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Restore</a></li>                                                                </ul>
+                                                                    <li><a class="dropdown-item restore-location-btn"
+                                                                            data-id="{{ $location->id }}"
+                                                                            id="js-location-restore-btn"><i
+                                                                                class="ri-pencil-fill align-bottom me-2 text-muted"></i>Restore</a>
+                                                                    </li>
+                                                                </ul>
                                                             </div>
                                                         @endcan
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         @endif
-                                  
+
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                        
-                    </div>
+
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 
@@ -71,8 +78,8 @@
             $('#js-location-table').DataTable();
 
 
-        //restore record  starts here
-        $(document).on('click', '#js-location-restore-btn', function(e) {
+            //restore record  starts here
+            $(document).on('click', '#js-location-restore-btn', function(e) {
                 e.preventDefault();
                 const id = $(this).data('id');
                 restoreLocation(id);
@@ -80,7 +87,7 @@
 
         });
 
-            function restoreLocation(id) {
+        function restoreLocation(id) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You want to resotre this Location!",

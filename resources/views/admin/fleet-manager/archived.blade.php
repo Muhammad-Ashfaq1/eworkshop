@@ -10,7 +10,8 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="js-archived-fleet-managers-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-archived-fleet-managers-table"
+                            class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -23,18 +24,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(!@empty($archivedFleetManagers))
-                                    @foreach($archivedFleetManagers as $fleetManager)
+                                @if (!@empty($archivedFleetManagers))
+                                    @foreach ($archivedFleetManagers as $fleetManager)
                                         <tr>
                                             <td>{{ $fleetManager->id }}</td>
                                             <td>{{ $fleetManager->name }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $fleetManager->type === 'fleet_manager' ? 'primary' : 'info' }}">
+                                                <span
+                                                    class="badge bg-{{ $fleetManager->type === 'fleet_manager' ? 'primary' : 'info' }}">
                                                     {{ ucwords(str_replace('_', ' ', $fleetManager->type)) }}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge bg-{{ $fleetManager->is_active ? 'success' : 'danger' }}">
+                                                <span
+                                                    class="badge bg-{{ $fleetManager->is_active ? 'success' : 'danger' }}">
                                                     {{ $fleetManager->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>
@@ -42,9 +45,8 @@
                                             <td>{{ $fleetManager->deleted_at->format('d/m/Y H:i') }}</td>
                                             <td>
                                                 @can('restore_fleet_manager')
-                                                    <button class="btn btn-sm btn-success restore-fleet-manager" 
-                                                            data-id="{{ $fleetManager->id }}"
-                                                            title="Restore Fleet Manager">
+                                                    <button class="btn btn-sm btn-success restore-fleet-manager"
+                                                        data-id="{{ $fleetManager->id }}" title="Restore Fleet Manager">
                                                         <i class="ri-refresh-line"></i> Restore
                                                     </button>
                                                 @endcan
@@ -65,13 +67,15 @@
     <script>
         $(document).ready(function() {
             $('#js-archived-fleet-managers-table').DataTable({
-                order: [[5, 'desc']] // Sort by deleted_at descending
+                order: [
+                    [5, 'desc']
+                ] // Sort by deleted_at descending
             });
 
             // Restore fleet manager
             $(document).on('click', '.restore-fleet-manager', function() {
                 const fleetManagerId = $(this).data('id');
-                
+
                 Swal.fire({
                     title: "Are you sure?",
                     text: "You want to restore this fleet manager!",
@@ -86,18 +90,22 @@
                             url: `/admin/fleet-managers/restore-archived/${fleetManagerId}`,
                             type: 'POST',
                             beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                    'meta[name="csrf-token"]').attr('content'));
                             },
                             success: function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    $('#js-archived-fleet-managers-table').DataTable().ajax.reload();
+                                    $('#js-archived-fleet-managers-table').DataTable()
+                                        .ajax.reload();
                                 } else {
                                     toastr.error(response.message);
                                 }
                             },
                             error: function(xhr) {
-                                toastr.error('Failed to restore fleet manager. Please try again.');
+                                toastr.error(
+                                    'Failed to restore fleet manager. Please try again.'
+                                    );
                             }
                         });
                     }

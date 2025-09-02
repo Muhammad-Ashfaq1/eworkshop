@@ -7,13 +7,13 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">FleetManager / Mvi</h5>
-                    @if(auth()->user()->can('create_fleet_manager'))
+                    @if (auth()->user()->can('create_fleet_manager'))
                         <div class="float-end">
                             @can('create_fleet_manager')
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#js-fleet-manager-modal">
-                                Add New FleetManager/Mvi
-                            </button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#js-fleet-manager-modal">
+                                    Add New FleetManager/Mvi
+                                </button>
                             @endcan
                         </div>
                     @endif
@@ -24,21 +24,21 @@
                             <table id="js-fleet-manager-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
                                 style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="js-fleet-manager-table-body">
-                                @include('admin.fleet-manager.data-table')
-                            </tbody>
-                        </table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        <th>Updated At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="js-fleet-manager-table-body">
+                                    @include('admin.fleet-manager.data-table')
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
         $(document).on('click', '.edit-fleet-manager-btn', function(e) {
             e.preventDefault();
 
-        var url=$(this).attr('href');
+            var url = $(this).attr('href');
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -254,10 +254,9 @@
                         $('#js-fleet-manager-submit').text('Update Fleet Manager/Mvi');
                         $('#js-mvi-label').text('Edit Fleet Manager/Mvi');
                         $('#js-fleet-manager-modal').modal('show');
-                       // $('#js-table-fleet-manager-table-body').html(response.html);
+                        // $('#js-table-fleet-manager-table-body').html(response.html);
 
-                    }
-                    else {
+                    } else {
                         toastr.error('Failed to fetch data. Please try again.');
                     }
                 },

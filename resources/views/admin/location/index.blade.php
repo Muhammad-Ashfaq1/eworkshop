@@ -325,7 +325,7 @@
                 submitHandler: function(form) {
                     const formData = new FormData(form);
                     const url = $(form).attr('action');
-                    const method ='POST';
+                    const method = 'POST';
 
                     $.ajax({
                         url: url,

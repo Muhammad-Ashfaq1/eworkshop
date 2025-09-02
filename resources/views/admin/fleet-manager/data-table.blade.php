@@ -23,20 +23,22 @@
                         <li><a href="#!" class="dropdown-item"><i
                                     class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
 
-                        @if(auth()->user()->can('update_fleet_manager'))
-                        <li><a href="{{ route('admin.fleet-manager.edit', $fleetManager->id) }}" class="dropdown-item edit-fleet-manager-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
+                        @if (auth()->user()->can('update_fleet_manager'))
+                            <li><a href="{{ route('admin.fleet-manager.edit', $fleetManager->id) }}"
+                                    class="dropdown-item edit-fleet-manager-btn"><i
+                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
 
-                        </li>
+                            </li>
                         @endif
 
 
-                        @if(auth()->user()->can('delete_fleet_manager'))
-                        <li>
-                            <a href="{{ route('admin.fleet-manager.destroy', $fleetManager->id) }}"
-                                class="dropdown-item remove-item-btn" id="js-fleet-manager-delete-btn">
-                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                            </a>
-                        </li>
+                        @if (auth()->user()->can('delete_fleet_manager'))
+                            <li>
+                                <a href="{{ route('admin.fleet-manager.destroy', $fleetManager->id) }}"
+                                    class="dropdown-item remove-item-btn" id="js-fleet-manager-delete-btn">
+                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </div>
