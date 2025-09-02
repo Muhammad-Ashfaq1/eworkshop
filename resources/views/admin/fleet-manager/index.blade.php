@@ -113,7 +113,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#js-fleet-manager-table').DataTable();
+            quickResponsiveTable('#js-fleet-manager-table');
 
 
             $('#js-fleet-manager-form').validate({

@@ -71,9 +71,11 @@
 
         /* Enhanced Responsive Table Styles */
         .table-responsive {
-            overflow-x: auto;
-            overflow-y: visible;
-            width: 100%;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            width: 100% !important;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
         
         .table-nowrap {
@@ -82,16 +84,29 @@
         
         .table-responsive .table {
             margin-bottom: 0;
+            width: auto !important;
+            min-width: 1400px !important; /* Ensure table is wide enough to trigger horizontal scroll */
         }
         
-        /* DataTables responsive styling */
-        .dataTables_wrapper .dataTables_scroll {
-            overflow: auto;
+        /* Fix DataTables wrapper interference */
+        .dataTables_wrapper {
+            overflow: visible !important;
+            width: 100% !important;
         }
         
-        .dataTables_wrapper .dataTables_scrollBody {
-            overflow-x: auto;
-            overflow-y: visible;
+        .dataTables_wrapper .table-responsive {
+            overflow-x: auto !important;
+        }
+        
+        /* Ensure proper scrolling behavior */
+        #js-defect-report-table {
+            table-layout: auto !important;
+            width: auto !important;
+        }
+        
+        /* Fix any conflicting DataTables CSS */
+        .dataTables_scrollBody {
+            overflow: visible !important;
         }
         
         /* Mobile responsive adjustments */
@@ -108,6 +123,44 @@
         /* Ensure proper column min-widths are respected */
         .table th[style*="min-width"], .table td[style*="min-width"] {
             white-space: nowrap;
+        }
+        
+        /* Enhanced Table Header Styling */
+        .table-dark th {
+            background-color: #495057 !important;
+            border-color: #6c757d !important;
+            color: #fff !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: none;
+            vertical-align: middle;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            padding: 12px 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .table-dark th i {
+            opacity: 0.8;
+            font-size: 0.875rem;
+        }
+        
+        /* Hover effect for sortable headers */
+        .table-dark th.sorting:hover,
+        .table-dark th.sorting_asc:hover,
+        .table-dark th.sorting_desc:hover {
+            background-color: #6c757d !important;
+            cursor: pointer;
+        }
+        
+        /* Sorting indicators */
+        .table-dark th.sorting:after,
+        .table-dark th.sorting_asc:after,
+        .table-dark th.sorting_desc:after {
+            color: #fff !important;
+            opacity: 0.7;
         }
     </style>
     @yield('styles')
@@ -209,6 +262,116 @@
     
     <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
 
+    <!-- Common DataTable Responsive Configuration -->
+    <script>
+        /**
+         * Apply responsive scroll configuration to any DataTable
+         * @param {string} tableId - The ID of the table element
+         * @param {object} customOptions - Custom DataTable options to merge
+         * @returns {DataTable} - The initialized DataTable instance
+         */
+        function applyResponsiveDataTable(tableId, customOptions = {}) {
+            const defaultOptions = {
+                responsive: false,
+                autoWidth: false,
+                initComplete: function() {
+                    // Force proper table container setup
+                    var $wrapper = $(tableId + '_wrapper');
+                    var $table = $(tableId);
+                    var $responsive = $table.closest('.table-responsive');
+                    
+                    // Ensure responsive container is properly set
+                    $responsive.css({
+                        'overflow-x': 'auto',
+                        'overflow-y': 'visible',
+                        'width': '100%',
+                        'position': 'relative'
+                    });
+                    
+                    // Set table width to trigger scroll
+                    $table.css({
+                        'min-width': '1400px',
+                        'width': 'auto',
+                        'table-layout': 'auto'
+                    });
+                    
+                    // Remove any conflicting DataTables styling
+                    $wrapper.find('.dataTables_scroll').remove();
+                    $wrapper.find('.dataTables_scrollHead').remove();
+                    $wrapper.find('.dataTables_scrollBody').css('overflow', 'visible');
+                },
+                drawCallback: function() {
+                    // Reapply settings after each draw
+                    setTimeout(function() {
+                        $(tableId).closest('.table-responsive').css({
+                            'overflow-x': 'auto',
+                            'overflow-y': 'visible'
+                        });
+                        $(tableId).css({
+                            'min-width': '1400px',
+                            'width': 'auto'
+                        });
+                    }, 50);
+                }
+            };
+            
+            // Merge custom options with defaults
+            const options = $.extend(true, {}, defaultOptions, customOptions);
+            
+            return $(tableId).DataTable(options);
+        }
+
+        /**
+         * Apply enhanced table header styling with icons
+         * @param {string} tableId - The ID of the table element
+         * @param {array} headerConfig - Array of header configurations with icons
+         */
+        function enhanceTableHeaders(tableId, headerConfig) {
+            const $table = $(tableId);
+            const $headers = $table.find('thead th');
+            
+            headerConfig.forEach((config, index) => {
+                if (config.icon && $headers.eq(index).length) {
+                    const currentText = $headers.eq(index).text().trim();
+                    const iconHtml = `<i class="${config.icon} me-1"></i> ${currentText}`;
+                    $headers.eq(index).html(iconHtml);
+                    
+                    if (config.className) {
+                        $headers.eq(index).addClass(config.className);
+                    }
+                }
+            });
+            
+            // Add dark theme to header
+            $table.find('thead').addClass('table-dark');
+        }
+
+        /**
+         * Quick setup for simple responsive tables
+         * @param {string} tableId - The ID of the table element
+         * @param {object} options - Optional DataTable options
+         */
+        function quickResponsiveTable(tableId, options = {}) {
+            // Add table-nowrap class if not present
+            $(tableId).addClass('table-nowrap');
+            
+            // Wrap in responsive container if not already wrapped
+            if (!$(tableId).closest('.table-responsive').length) {
+                $(tableId).wrap('<div class="table-responsive"></div>');
+            }
+            
+            // Add dark header
+            $(tableId).find('thead').addClass('table-dark');
+            
+            // Apply responsive DataTable with minimal config
+            const defaultOptions = {
+                pageLength: 20,
+                lengthMenu: [[20, 30, 50, 100], ["20", "30", "50", "100"]]
+            };
+            
+            return applyResponsiveDataTable(tableId, $.extend({}, defaultOptions, options));
+        }
+    </script>
 
     @yield('scripts')
 </body>

@@ -101,7 +101,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#js-archieved-defect-reports-table").DataTable();
+            quickResponsiveTable("#js-archieved-defect-reports-table");
             $(document).on('click', '#js-defect-report-restore-btn', function(e) {
                 e.preventDefault();
                 const id = $(this).data('id');

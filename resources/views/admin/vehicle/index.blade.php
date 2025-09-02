@@ -17,29 +17,26 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
-                        <div class="table-wrapper">
-                            <table id="js-vehicle-table"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Vehicle Number</th>
-                                        <th>Location</th>
-                                        <th>Category</th>
-                                        <th>Condition</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
-                                        <th>Updated At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table id="js-vehicle-table"
+                            class="table table-bordered table-striped align-middle table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 120px;">Vehicle Number</th>
+                                    <th style="min-width: 120px;">Location</th>
+                                    <th style="min-width: 100px;">Category</th>
+                                    <th style="min-width: 100px;">Condition</th>
+                                    <th style="min-width: 100px;">Status</th>
+                                    <th style="min-width: 120px;">Created At</th>
+                                    <th style="min-width: 120px;">Updated At</th>
+                                    <th style="min-width: 120px;" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -127,10 +124,23 @@
             console.log('Initializing vehicles DataTable...');
             console.log('Table element found:', $('#js-vehicle-table').length);
 
-            var table = $('#js-vehicle-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
+            // Configure header icons
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-truck-line' },
+                { icon: 'ri-building-line' },
+                { icon: 'ri-bookmark-line' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-calendar-event-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // Apply header enhancements
+            enhanceTableHeaders('#js-vehicle-table', headerConfig);
+
+            var table = applyResponsiveDataTable('#js-vehicle-table', {
         
         
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',

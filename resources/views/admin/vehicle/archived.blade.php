@@ -9,19 +9,19 @@
                     <h5 class="card-title mb-0">Archived Vehicles</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive force-table-responsive table-scroll-indicator">
-                        <table id="js-archived-vehicles-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <div class="table-responsive">
+                        <table id="js-archived-vehicles-table" class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Vehicle Number</th>
-                                    <th>Category</th>
-                                    <th>Model</th>
-                                    <th>Year</th>
-                                    <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Deleted At</th>
-                                    <th>Actions</th>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 120px;">Vehicle Number</th>
+                                    <th style="min-width: 100px;">Category</th>
+                                    <th style="min-width: 100px;">Model</th>
+                                    <th style="min-width: 80px;">Year</th>
+                                    <th style="min-width: 100px;">Status</th>
+                                    <th style="min-width: 120px;">Created At</th>
+                                    <th style="min-width: 120px;">Deleted At</th>
+                                    <th style="min-width: 120px;" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

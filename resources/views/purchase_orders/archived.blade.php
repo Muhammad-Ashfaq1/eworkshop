@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="table-responsive force-table-responsive table-scroll-indicator">
                         <table id="js-archived-purchase-orders-table"
-                            class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
                                     <th>#</th>

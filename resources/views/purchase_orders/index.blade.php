@@ -50,32 +50,29 @@
                                 <small>Start by creating a purchase order for a defect report that doesn't already have
                                     one.</small>
                             </div>
-                            <div class="masters-datatable table-responsive">
-                                <div class="table-wrapper">
-                                    <table id="js-purchase-order-table"
-                                        class="table table-bordered dt-responsive nowrap table-striped align-middle purchase-orders-datatable w-100"
-                                        style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>PO Number</th>
-                                                <th>Defect Report Ref</th>
-                                                <th>Vehicle</th>
-                                                <th>Office/Town</th>
-                                                <th>Issue Date</th>
-                                                <th>Received By</th>
-                                                <th>Amount</th>
-                                                <th>Parts Count</th>
-                                                <th>Attachment</th>
-                                                <th>Created By</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be loaded via AJAX -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="table-responsive">
+                                <table id="js-purchase-order-table"
+                                    class="table table-bordered table-striped align-middle table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px;" class="text-center">#</th>
+                                            <th style="min-width: 120px;">PO Number</th>
+                                            <th style="min-width: 140px;">Defect Report Ref</th>
+                                            <th style="min-width: 120px;">Vehicle</th>
+                                            <th style="min-width: 120px;">Office/Town</th>
+                                            <th style="min-width: 120px;">Issue Date</th>
+                                            <th style="min-width: 120px;">Received By</th>
+                                            <th style="min-width: 100px;">Amount</th>
+                                            <th style="min-width: 100px;" class="text-center">Parts Count</th>
+                                            <th style="min-width: 100px;" class="text-center">Attachment</th>
+                                            <th style="min-width: 120px;">Created By</th>
+                                            <th style="min-width: 120px;" class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -266,7 +263,26 @@
         }
 
         function applyPurchaseOrdersDatatable() {
-            var table = $('#js-purchase-order-table').DataTable({
+            // Configure header icons
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-file-text-line' },
+                { icon: 'ri-file-copy-line' },
+                { icon: 'ri-truck-line' },
+                { icon: 'ri-building-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-user-received-line' },
+                { icon: 'ri-money-dollar-circle-line' },
+                { icon: 'ri-shopping-cart-line', className: 'text-center' },
+                { icon: 'ri-attachment-line', className: 'text-center' },
+                { icon: 'ri-user-add-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // Apply header enhancements
+            enhanceTableHeaders('#js-purchase-order-table', headerConfig);
+
+            var table = applyResponsiveDataTable('#js-purchase-order-table', {
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 pageLength: 20,
                 searching: true,
@@ -276,7 +292,6 @@
                 ],
                 processing: true,
                 serverSide: true,
-                scrollX: false,
                 
                 
                 
@@ -285,19 +300,7 @@
                 
                 ajax: {
                     url: "{{ route('purchase-orders.listing') }}",
-                    type: "GET",
-                    complete: function() {
-                        setTimeout(function() {
-                            if (table) {
-                                if (table.columns) {
-                                    table.columns.adjust();
-                                }
-                                if (table.fixedHeader && table.fixedHeader.adjust) {
-                                    table.fixedHeader.adjust();
-                                }
-                            }
-                        }, 100);
-                    }
+                    type: "GET"
                 },
                 language: {
                     emptyTable: "No purchase orders found. Create your first purchase order by clicking the 'Add Purchase Order' button above.",
@@ -305,7 +308,7 @@
                 },
                 columns: [{
                         data: null,
-                        width: '50px',
+                        name: 'serial',
                         render: function(data, type, row, meta) {
                             const start = meta.settings._iDisplayStart;
                             const pageLength = meta.settings._iDisplayLength;
@@ -314,76 +317,79 @@
                         },
                         orderable: false,
                         searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: "po_no",
-                        width: '120px',
+                        name: 'po_no',
                         render: function(data, type, row) {
                             return data || 'N/A';
                         }
                     },
                     {
                         data: "defect_report",
-                        width: '120px',
+                        name: 'defect_report_ref',
                         render: function(data, type, row) {
                             return data ? data.reference_number : 'N/A';
                         }
                     },
                     {
                         data: "defect_report",
-                        width: '120px',
+                        name: 'vehicle',
                         render: function(data, type, row) {
                             return data && data.vehicle ? data.vehicle.vehicle_number : 'N/A';
                         }
                     },
                     {
                         data: "defect_report",
-                        width: '120px',
+                        name: 'location',
                         render: function(data, type, row) {
                             return data && data.location ? data.location.name : 'N/A';
                         }
                     },
                     {
                         data: "issue_date",
-                        width: '120px',
+                        name: 'issue_date',
                         render: function(data, type, row) {
                             return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                         }
                     },
                     {
                         data: "received_by",
-                        width: '120px',
+                        name: 'received_by',
                         render: function(data, type, row) {
                             return data || 'N/A';
                         }
                     },
                     {
                         data: "acc_amount",
-                        width: '100px',
+                        name: 'amount',
                         render: function(data, type, row) {
                             return data ? '$' + parseFloat(data).toFixed(2) : 'N/A';
                         }
                     },
                     {
                         data: "works",
-                        width: '100px',
+                        name: 'parts_count',
                         render: function(data, type, row) {
                             return data ? `<span class="status-badge active">${data.length}</span>` : '0';
-                        }
+                        },
+                        className: 'text-center'
                     },
                     {
                         data: "attachment_url",
-                        width: '100px',
+                        name: 'attachment',
                         render: function(data, type, row) {
                             if (data) {
-                                return `<a href="${data}" target="_blank">View Attachment</a>`;
+                                return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>`;
                             }
                             return 'N/A';
-                        }
+                        },
+                        className: 'text-center'
                     },
                     {
                         data: "creator",
-                        width: '120px',
+                        name: 'created_by',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.first_name || '') + ' ' + (data.last_name || '');
@@ -393,8 +399,9 @@
                     },
                     {
                         data: null,
-                        width: '100px',
+                        name: 'actions',
                         orderable: false,
+                        searchable: false,
                         render: function(data, type, row) {
                             let buttons =
                                 `
@@ -417,20 +424,13 @@
 
                             buttons += `</ul></div>`;
                             return buttons;
-                        }
+                        },
+                        className: 'text-center'
                     }
                 ],
                 order: [
                     [5, 'desc']
-                ],
-                initComplete: function(settings, json) {
-                    if (this.api().columns) {
-                        this.api().columns.adjust();
-                    }
-                    if (this.api().fixedHeader && this.api().fixedHeader.adjust) {
-                        this.api().fixedHeader.adjust();
-                    }
-                }
+                ]
             });
 
             // Handle view action

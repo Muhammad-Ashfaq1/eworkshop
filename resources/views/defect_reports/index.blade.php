@@ -45,21 +45,47 @@
                             <div class="table-responsive">
                                 <table id="js-defect-report-table"
                                     class="table table-bordered table-striped align-middle table-nowrap">
-                                    <thead>
+                                    <thead class="table-dark">
                                         <tr>
-                                            <th style="min-width: 50px;">#</th>
-                                            <th style="min-width: 120px;">Reference #</th>
-                                            <th style="min-width: 120px;">Vehicle</th>
-                                            <th style="min-width: 120px;">Office/Town</th>
-                                            <th style="min-width: 120px;">Driver Name</th>
-                                            <th style="min-width: 120px;">Fleet Manager</th>
-                                            <th style="min-width: 100px;">MVI</th>
-                                            <th style="min-width: 120px;">Date</th>
-                                            <th style="min-width: 100px;">Type</th>
-                                            <th style="min-width: 100px;">Works Count</th>
-                                            <th style="min-width: 120px;">Created By</th>
-                                            <th style="min-width: 100px;">Attachment</th>
-                                            <th style="min-width: 120px;">Actions</th>
+                                            <th style="min-width: 50px;" class="text-center">
+                                                <i class="ri-hashtag"></i> #
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-file-text-line me-1"></i> Reference #
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-truck-line me-1"></i> Vehicle
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-building-line me-1"></i> Office/Town
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-user-line me-1"></i> Driver Name
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-user-settings-line me-1"></i> Fleet Manager
+                                            </th>
+                                            <th style="min-width: 100px;">
+                                                <i class="ri-user-star-line me-1"></i> MVI
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-calendar-line me-1"></i> Date
+                                            </th>
+                                            <th style="min-width: 100px;">
+                                                <i class="ri-bookmark-line me-1"></i> Type
+                                            </th>
+                                            <th style="min-width: 100px;" class="text-center">
+                                                <i class="ri-list-check me-1"></i> Works Count
+                                            </th>
+                                            <th style="min-width: 120px;">
+                                                <i class="ri-user-add-line me-1"></i> Created By
+                                            </th>
+                                            <th style="min-width: 100px;" class="text-center">
+                                                <i class="ri-attachment-line me-1"></i> Attachment
+                                            </th>
+                                            <th style="min-width: 120px;" class="text-center">
+                                                <i class="ri-settings-line me-1"></i> Actions
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -249,13 +275,50 @@
                 ],
                 processing: true,
                 serverSide: true,
-                scrollX: true,
-                scrollCollapse: true,
                 responsive: false,
                 autoWidth: false,
                 ajax: {
                     url: "{{ route('defect-reports.listing') }}",
                     type: "GET"
+                },
+                initComplete: function() {
+                    // Force proper table container setup
+                    var $wrapper = $('#js-defect-report-table_wrapper');
+                    var $table = $('#js-defect-report-table');
+                    var $responsive = $('.table-responsive');
+                    
+                    // Ensure responsive container is properly set
+                    $responsive.css({
+                        'overflow-x': 'auto',
+                        'overflow-y': 'visible',
+                        'width': '100%',
+                        'position': 'relative'
+                    });
+                    
+                    // Set table width to trigger scroll
+                    $table.css({
+                        'min-width': '1400px',
+                        'width': 'auto',
+                        'table-layout': 'auto'
+                    });
+                    
+                    // Remove any conflicting DataTables styling
+                    $wrapper.find('.dataTables_scroll').remove();
+                    $wrapper.find('.dataTables_scrollHead').remove();
+                    $wrapper.find('.dataTables_scrollBody').css('overflow', 'visible');
+                },
+                drawCallback: function() {
+                    // Reapply settings after each draw
+                    setTimeout(function() {
+                        $('.table-responsive').css({
+                            'overflow-x': 'auto',
+                            'overflow-y': 'visible'
+                        });
+                        $('#js-defect-report-table').css({
+                            'min-width': '1400px',
+                            'width': 'auto'
+                        });
+                    }, 50);
                 },
                 columns: [{
                         data: null,
