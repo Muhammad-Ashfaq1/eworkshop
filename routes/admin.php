@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\FleetManagerController;
-use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\VehicleController;
-use App\Http\Controllers\Admin\VehiclePartController;
-use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogsController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\VehiclePartController;
+use App\Http\Controllers\Admin\FleetManagerController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // User Management Routes - Super Admin only
@@ -75,4 +76,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::post('/export', 'exportReport')->name('export')->middleware(['permission:export_data']);
         });
+
+        // Activity Logs - Super Admin only
+        Route::controller(LogsController::class)->prefix('logs')->name('logs.')->middleware(['permission:view_report_logs'])->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'getLogDetails')->name('details');
+            Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:delete_report_logs');
+        });
+
 });

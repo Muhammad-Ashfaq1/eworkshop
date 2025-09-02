@@ -202,6 +202,15 @@
                     </li>
                 @endrole
 
+                @role('super_admin')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link"
+                            href="{{ route('admin.logs.index') }}">
+                            <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Report Logs</span>
+                        </a>
+                    </li>
+                @endrole
+
             </ul>
         </div>
         <!-- Sidebar -->

@@ -92,6 +92,9 @@ class UserPermissions
     const READ_DEFECT_REPORTS = 'read_defect_reports';
     const UPDATE_DEFECT_REPORTS = 'update_defect_reports';
     const DELETE_DEFECT_REPORTS = 'delete_defect_reports';
+    // Report logs permissions
+    const VIEW_REPORT_LOGS = 'view_report_logs';
+    const DELETE_REPORT_LOGS = 'delete_report_logs';
 
     // Purchase order management permissions
     const CREATE_PURCHASE_ORDERS = 'create_purchase_orders';
@@ -197,6 +200,8 @@ class UserPermissions
             self::READ_DEFECT_REPORTS,
             self::UPDATE_DEFECT_REPORTS,
             self::DELETE_DEFECT_REPORTS,
+            self::VIEW_REPORT_LOGS,
+            self::DELETE_REPORT_LOGS,
 
             // Purchase order management permissions
             self::CREATE_PURCHASE_ORDERS,

@@ -208,6 +208,15 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_defect_reports');
         });
 
+        // Report logs gates
+        Gate::define('view_report_logs', function ($user) {
+            return $user->hasPermissionTo('view_report_logs');
+        });
+
+        Gate::define('delete_report_logs', function ($user) {
+            return $user->hasPermissionTo('delete_report_logs');
+        });
+
         // Vehicle gates
         Gate::define('create_vehicles', function ($user) {
             return $user->hasPermissionTo('create_vehicles');

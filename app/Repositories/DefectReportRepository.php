@@ -158,16 +158,23 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Update defect report
-            $defectReport->update([
-                'vehicle_id' => $data['vehicle_id'],
-                'location_id' => $data['location_id'],
-                'driver_name' => $data['driver_name'],
-                'fleet_manager_id' => $data['fleet_manager_id'],
-                'mvi_id' => $data['mvi_id'],
-                'date' => $data['date'],
-                'type' => $data['type'],
-            ]);
+            // Store original values BEFORE any modifications
+            $originalValues = $defectReport->getAttributes();
+            
+            // Store the original values in the observer's static property
+            \App\Observers\DefectReportObserver::setOriginalValues($defectReport->id, $originalValues);
+            
+            // Update defect report fields individually to preserve original values
+            $defectReport->vehicle_id = $data['vehicle_id'];
+            $defectReport->location_id = $data['location_id'];
+            $defectReport->driver_name = $data['driver_name'];
+            $defectReport->fleet_manager_id = $data['fleet_manager_id'];
+            $defectReport->mvi_id = $data['mvi_id'];
+            $defectReport->date = $data['date'];
+            $defectReport->type = $data['type'];
+            
+            // Save the changes - this will trigger the observer with proper original values
+            $defectReport->save();
 
             // Handle file upload if provided
             if (isset($data['attachment_url']) && $data['attachment_url']) {
