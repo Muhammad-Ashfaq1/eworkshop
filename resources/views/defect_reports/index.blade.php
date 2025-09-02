@@ -42,6 +42,13 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            
+                            <!-- DataTable Controls Area (Fixed) -->
+                            <div id="datatable-controls-wrapper">
+                                <!-- DataTable controls will be moved here -->
+                            </div>
+                            
+                            <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-defect-report-table"
                                     class="table table-bordered table-striped align-middle table-nowrap">
@@ -92,6 +99,11 @@
                                         <!-- Data will be loaded via AJAX -->
                                     </tbody>
                                 </table>
+                            </div>
+                            
+                            <!-- DataTable Info and Pagination Area (Fixed) -->
+                            <div id="datatable-bottom-wrapper">
+                                <!-- DataTable info and pagination will be moved here -->
                             </div>
                         </div>
                     </div>
@@ -462,6 +474,9 @@
                     [7, 'desc']
                 ]
             });
+
+            // Fix DataTable controls layout using utility function
+            fixDataTableControlsLayout('#js-defect-report-table');
 
             // Handle view action
             $(document).on('click', '.view-defect-report-btn', function(e) {

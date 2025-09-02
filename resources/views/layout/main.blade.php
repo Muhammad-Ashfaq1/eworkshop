@@ -39,6 +39,8 @@
     <link href="{{ asset('assets/css/admin-panel-style.css')}}" rel="stylesheet" type="text/css" />
     <!-- Admin Panel DataTable Styles -->
     <link href="{{ asset('assets/css/admin-datatable-style.css')}}" rel="stylesheet" type="text/css" />
+    <!-- DataTable Fixed Controls CSS -->
+    <link href="{{ asset('assets/css/datatable-fixed-controls.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
     <!-- Google Fonts for Inter font family -->
@@ -197,6 +199,9 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
+    
+    <!-- DataTable Utilities -->
+    <script src="{{ asset('assets/js/datatable-utils.js') }}"></script>
 
     <!-- Common DataTable Responsive Configuration -->
 

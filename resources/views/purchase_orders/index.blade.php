@@ -50,6 +50,13 @@
                                 <small>Start by creating a purchase order for a defect report that doesn't already have
                                     one.</small>
                             </div>
+                            
+                            <!-- DataTable Controls Area (Fixed) -->
+                            <div id="datatable-controls-wrapper">
+                                <!-- DataTable controls will be moved here -->
+                            </div>
+                            
+                            <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-purchase-order-table"
                                     class="table table-bordered table-striped align-middle table-nowrap">
@@ -73,6 +80,11 @@
                                         <!-- Data will be loaded via AJAX -->
                                     </tbody>
                                 </table>
+                            </div>
+                            
+                            <!-- DataTable Info and Pagination Area (Fixed) -->
+                            <div id="datatable-bottom-wrapper">
+                                <!-- DataTable info and pagination will be moved here -->
                             </div>
                         </div>
                     </div>
@@ -425,6 +437,9 @@
                     [5, 'desc']
                 ]
             });
+
+            // Fix DataTable controls layout using utility function
+            fixDataTableControlsLayout('#js-purchase-order-table');
 
             // Handle view action
             $(document).on('click', '.view-purchase-order-btn', function(e) {
