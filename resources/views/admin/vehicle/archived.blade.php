@@ -10,18 +10,18 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="js-archived-vehicles-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-archived-vehicles-table" class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Vehicle Number</th>
-                                    <th>Category</th>
-                                    <th>Model</th>
-                                    <th>Year</th>
-                                    <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Deleted At</th>
-                                    <th>Actions</th>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 120px;">Vehicle Number</th>
+                                    <th style="min-width: 100px;">Category</th>
+                                    <th style="min-width: 100px;">Model</th>
+                                    <th style="min-width: 80px;">Year</th>
+                                    <th style="min-width: 100px;">Status</th>
+                                    <th style="min-width: 120px;">Created At</th>
+                                    <th style="min-width: 120px;">Deleted At</th>
+                                    <th style="min-width: 120px;" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -34,7 +34,8 @@
                                             <td>{{ $vehicle->model ?? 'N/A' }}</td>
                                             <td>{{ $vehicle->year ?? 'N/A' }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $vehicle->is_active ? 'success' : 'danger' }}">
+                                                <span class="badge bg-{{ $vehicle->is_active ? 'success-subtle text-success' : 'danger-subtle text-danger' }}">
+                                                    <i class="{{ $vehicle->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                     {{ $vehicle->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>
@@ -64,7 +65,28 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            // Configure header icons for archived vehicles
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-truck-line' },
+                { icon: 'ri-bookmark-line' },
+                { icon: 'ri-car-line' },
+                { icon: 'ri-calendar-2-line' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-delete-bin-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // enhanceTableHeaders('#js-archived-vehicles-table', headerConfig);
+
             $('#js-archived-vehicles-table').DataTable({
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[7, 'desc']] // Sort by deleted_at descending
             });
 

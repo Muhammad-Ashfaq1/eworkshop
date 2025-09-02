@@ -6,9 +6,13 @@
             <td>{{ ucfirst($fleetManager->type) }}</td>
             <td>
                 @if ($fleetManager->is_active)
-                    <span class="badge bg-success">Active</span>
+                    <span class="status-badge active with-icon">
+                        <i class="ri-check-line"></i>Active
+                    </span>
                 @else
-                    <span class="badge bg-danger">Inactive</span>
+                    <span class="status-badge inactive with-icon">
+                        <i class="ri-close-line"></i>Inactive
+                    </span>
                 @endif
             </td>
             <td>{{ formatCreatedAt($fleetManager->created_at) }}</td>
@@ -23,20 +27,22 @@
                         <li><a href="#!" class="dropdown-item"><i
                                     class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
 
-                        @if(auth()->user()->can('update_fleet_manager'))
-                        <li><a href="{{ route('admin.fleet-manager.edit', $fleetManager->id) }}" class="dropdown-item edit-fleet-manager-btn"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
+                        @if (auth()->user()->can('update_fleet_manager'))
+                            <li><a href="{{ route('admin.fleet-manager.edit', $fleetManager->id) }}"
+                                    class="dropdown-item edit-fleet-manager-btn"><i
+                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a>
 
-                        </li>
+                            </li>
                         @endif
 
 
-                        @if(auth()->user()->can('delete_fleet_manager'))
-                        <li>
-                            <a href="{{ route('admin.fleet-manager.destroy', $fleetManager->id) }}"
-                                class="dropdown-item remove-item-btn" id="js-fleet-manager-delete-btn">
-                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                            </a>
-                        </li>
+                        @if (auth()->user()->can('delete_fleet_manager'))
+                            <li>
+                                <a href="{{ route('admin.fleet-manager.destroy', $fleetManager->id) }}"
+                                    class="dropdown-item remove-item-btn" id="js-fleet-manager-delete-btn">
+                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </div>

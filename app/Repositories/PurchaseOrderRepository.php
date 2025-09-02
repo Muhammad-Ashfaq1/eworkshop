@@ -61,9 +61,9 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             });
         }
 
-        // Apply ordering
+        // Apply ordering with relationship support
         if (isset($search['column_name']) && isset($search['direction'])) {
-            $query->orderBy($search['column_name'], $search['direction']);
+            $this->applyOrderBy($query, $search['column_name'], $search['direction']);
         } else {
             $query->orderBy('created_at', 'desc');
         }
@@ -84,6 +84,42 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $response['data'] = $purchaseOrders->toArray();
 
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    /**
+     * Apply ordering to query with relationship support
+     */
+    private function applyOrderBy($query, $columnName, $direction)
+    {
+        // Handle relationship sorting
+        switch ($columnName) {
+            case 'defect_report.vehicle.vehicle_number':
+                $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
+                      ->join('vehicles', 'defect_reports.vehicle_id', '=', 'vehicles.id')
+                      ->orderBy('vehicles.vehicle_number', $direction)
+                      ->select('purchase_orders.*');
+                break;
+                
+            case 'defect_report.location.name':
+                $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
+                      ->join('locations', 'defect_reports.location_id', '=', 'locations.id')
+                      ->orderBy('locations.name', $direction)
+                      ->select('purchase_orders.*');
+                break;
+                
+            case 'creator.name':
+                $query->leftJoin('users as creators', 'purchase_orders.created_by', '=', 'creators.id')
+                      ->orderBy('creators.name', $direction)
+                      ->select('purchase_orders.*');
+                break;
+                
+            default:
+                // Handle direct column sorting
+                if (strpos($columnName, '.') === false) {
+                    $query->orderBy($columnName, $direction);
+                }
+                break;
+        }
     }
 
     public function getPurchaseOrderById($id)

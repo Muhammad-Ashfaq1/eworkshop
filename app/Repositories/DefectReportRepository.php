@@ -52,14 +52,21 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                       $locationQuery->where('name', 'like', '%' . $search['search'] . '%');
                   })
                   ->orWhereHas('creator', function($creatorQuery) use ($search) {
-                      $creatorQuery->where('name', 'like', '%' . $search['search'] . '%');
+                      $creatorQuery->where('first_name', 'like', '%' . $search['search'] . '%')
+                                  ->orWhere('last_name', 'like', '%' . $search['search'] . '%');
+                  })
+                  ->orWhereHas('fleetManager', function($fleetManagerQuery) use ($search) {
+                      $fleetManagerQuery->where('name', 'like', '%' . $search['search'] . '%');
+                  })
+                  ->orWhereHas('mvi', function($mviQuery) use ($search) {
+                      $mviQuery->where('name', 'like', '%' . $search['search'] . '%');
                   });
             });
         }
 
-        // Apply ordering
+        // Apply ordering with relationship support
         if (isset($search['column_name']) && isset($search['direction'])) {
-            $query->orderBy($search['column_name'], $search['direction']);
+            $this->applyOrderBy($query, $search['column_name'], $search['direction']);
         } else {
             $query->orderBy('created_at', 'desc');
         }
@@ -80,6 +87,52 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         $response['data'] = $defectReports->toArray();
 
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    /**
+     * Apply ordering to query with relationship support
+     */
+    private function applyOrderBy($query, $columnName, $direction)
+    {
+        // Handle relationship sorting
+        switch ($columnName) {
+            case 'vehicle.vehicle_number':
+                $query->join('vehicles', 'defect_reports.vehicle_id', '=', 'vehicles.id')
+                      ->orderBy('vehicles.vehicle_number', $direction)
+                      ->select('defect_reports.*');
+                break;
+                
+            case 'location.name':
+                $query->join('locations', 'defect_reports.location_id', '=', 'locations.id')
+                      ->orderBy('locations.name', $direction)
+                      ->select('defect_reports.*');
+                break;
+                
+            case 'fleet_manager.name':
+                $query->leftJoin('fleet_managers as fleet_managers', 'defect_reports.fleet_manager_id', '=', 'fleet_managers.id')
+                      ->orderBy('fleet_managers.name', $direction)
+                      ->select('defect_reports.*');
+                break;
+                
+            case 'mvi.name':
+                $query->leftJoin('fleet_managers as mvis', 'defect_reports.mvi_id', '=', 'mvis.id')
+                      ->orderBy('mvis.name', $direction)
+                      ->select('defect_reports.*');
+                break;
+                
+            case 'creator.name':
+                $query->leftJoin('users as creators', 'defect_reports.created_by', '=', 'creators.id')
+                      ->orderBy('creators.name', $direction)
+                      ->select('defect_reports.*');
+                break;
+                
+            default:
+                // Handle direct column sorting
+                if (strpos($columnName, '.') === false) {
+                    $query->orderBy($columnName, $direction);
+                }
+                break;
+        }
     }
 
     public function getDefectReportById($id)

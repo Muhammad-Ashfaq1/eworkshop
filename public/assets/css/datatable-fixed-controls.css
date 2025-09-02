@@ -1,0 +1,85 @@
+/* ===============================================
+   DATATABLE FIXED CONTROLS STYLING
+   Keeps search, pagination, and controls fixed while table scrolls
+   =============================================== */
+
+/* DataTable Controls Wrapper Styling */
+#datatable-controls-wrapper {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 5;
+}
+
+#datatable-bottom-wrapper {
+    background: transparent;
+    padding: 0;
+    margin-top: 15px;
+    position: relative;
+    z-index: 5;
+}
+
+/* Ensure controls don't interfere with scroll */
+.dataTables_wrapper {
+    overflow: visible !important;
+}
+
+.table-responsive {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Style the moved controls */
+#datatable-controls-wrapper .dataTables_length,
+#datatable-controls-wrapper .dataTables_filter {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#datatable-bottom-wrapper .dataTables_info,
+#datatable-bottom-wrapper .dataTables_paginate {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #datatable-controls-wrapper .row .col-sm-6,
+    #datatable-bottom-wrapper .row .col-sm-6 {
+        text-align: center !important;
+        margin-bottom: 10px;
+    }
+    
+    #datatable-controls-wrapper .dataTables_length,
+    #datatable-controls-wrapper .dataTables_filter {
+        text-align: center !important;
+    }
+    
+    #datatable-bottom-wrapper .dataTables_info,
+    #datatable-bottom-wrapper .dataTables_paginate {
+        text-align: center !important;
+    }
+}
+
+/* Hide empty DataTable wrapper rows */
+.dataTables_wrapper > .row:empty {
+    display: none !important;
+}
+
+.dataTables_wrapper > .row {
+    margin: 0 !important;
+}
+
+.dataTables_wrapper > .row > div:empty {
+    display: none !important;
+}
+
+/* Ensure proper spacing */
+.card-body #datatable-controls-wrapper + .table-responsive {
+    clear: both;
+}
+
+.card-body .table-responsive + #datatable-bottom-wrapper {
+    clear: both;
+} 

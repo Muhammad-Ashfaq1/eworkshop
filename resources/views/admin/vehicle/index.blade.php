@@ -17,29 +17,25 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
-                        <div class="table-wrapper">
-                            <table id="js-vehicle-table"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Vehicle Number</th>
-                                        <th>Location</th>
-                                        <th>Category</th>
-                                        <th>Condition</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
-                                        <th>Updated At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div style="overflow-x: auto;">
+                        <table id="js-vehicle-table" class="table table-bordered table-striped align-middle table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 120px;"><i class="ri-truck-line me-1"></i>Vehicle Number</th>
+                                    <th style="min-width: 120px;"><i class="ri-map-pin-line me-1"></i>Location</th>
+                                    <th style="min-width: 100px;"><i class="ri-bookmark-line me-1"></i>Category</th>
+                                    <th style="min-width: 100px;"><i class="ri-settings-3-line me-1"></i>Condition</th>
+                                    <th style="min-width: 100px;" data-column-type="status"><i class="ri-check-line me-1"></i>Status</th>
+                                    <th style="min-width: 120px;" data-column-type="date"><i class="ri-calendar-line me-1"></i>Created At</th>
+                                    <th style="min-width: 120px;" data-column-type="date"><i class="ri-calendar-edit-line me-1"></i>Updated At</th>
+                                    <th style="min-width: 120px;" class="text-center"><i class="ri-settings-line me-1"></i>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -63,14 +59,14 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="vehicleNumber" class="form-label">Vehicle Number <x-req /></label>
-                                    <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number"
+                                    <input type="text" class="form-control enhanced-dropdown" id="vehicleNumber" name="vehicle_number"
                                         placeholder="Enter Vehicle Number" required>
                                 </div>
                             </div>
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="category" class="form-label">Category <x-req /></label>
-                                    <select name="category" id="js-category" class="form-control" required>
+                                    <select name="category" id="js-category" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Category</option>
                                     </select>
                                 </div>
@@ -78,7 +74,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="condition" class="form-label">Condition <x-req /></label>
-                                    <select name="condition" id="js-condition" class="form-control" required>
+                                    <select name="condition" id="js-condition" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Condition</option>
                                         <option value="new">New</option>
                                         <option value="old">Old</option>
@@ -88,7 +84,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="town" class="form-label">Town <x-req /></label>
-                                    <select name="town" id="js-town" class="form-control" required>
+                                    <select name="town" id="js-town" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Town</option>
                                     </select>
                                 </div>
@@ -96,7 +92,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="status" class="form-label">Status <x-req /></label>
-                                    <select name="is_active" id="js-is-active" class="form-control" required>
+                                    <select name="is_active" id="js-is-active" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Status</option>
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
@@ -124,11 +120,23 @@
         });
 
         function applyVehiclesDatatable() {
-            console.log('Initializing vehicles DataTable...');
-            console.log('Table element found:', $('#js-vehicle-table').length);
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-truck-line' },
+                { icon: 'ri-building-line' },
+                { icon: 'ri-bookmark-line' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-calendar-event-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // Apply header enhancements
+            // enhanceTableHeaders('#js-vehicle-table');
 
             var table = $('#js-vehicle-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+                // dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
                 //         text: '<i class="fas fa-plus me-2"></i>Add New',
@@ -154,7 +162,6 @@
                     url: "{{ route('admin.vehicle.listing') }}",
                     type: "GET",
                     dataSrc: function(json) {
-                        console.log('AJAX response received:', json);
                         return json.data;
                     },
                     error: function(xhr, error, thrown) {
@@ -181,32 +188,37 @@
                     },
                     {
                         data: "location",
+                        name: "location.name",
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "category",
+                        name: "category.name", 
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "condition",
                         render: function(data, type, row) {
-                            if (!data) return 'N/A';
-                            const badgeClass = data === 'new' ? 'bg-success' : 'bg-warning';
-                            const displayText = data.charAt(0).toUpperCase() + data.slice(1);
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
+                            return createConditionBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "is_active",
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",
@@ -230,7 +242,7 @@
                                     <i class="ri-more-fill align-middle"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">`
-                                    
+
                             if (row.can_edit) {
                                 buttons +=
                                     `<li><a class="dropdown-item edit-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;
@@ -250,6 +262,11 @@
                     [6, 'desc']
                 ]
             });
+
+            // Refresh sorting icons after DataTable initialization
+            setTimeout(function() {
+                refreshSortingIcons('#js-vehicle-table');
+            }, 200);
 
             // Handle edit action
             $(document).on('click', '.edit-vehicle-btn', function(e) {

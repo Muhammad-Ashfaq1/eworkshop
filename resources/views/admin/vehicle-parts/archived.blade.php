@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="js-archived-vehicle-parts-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                        <table id="js-archived-vehicle-parts-table" class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -34,7 +34,8 @@
                                             <td>{{ $vehiclePart->description ?? 'N/A' }}</td>
                                             <td>{{ $vehiclePart->price ? '₹' . number_format($vehiclePart->price, 2) : 'N/A' }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $vehiclePart->is_active ? 'success' : 'danger' }}">
+                                                <span class="badge bg-{{ $vehiclePart->is_active ? 'success-subtle text-success' : 'danger-subtle text-danger' }}">
+                                                    <i class="{{ $vehiclePart->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                     {{ $vehiclePart->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>
@@ -64,7 +65,26 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            // Configure header icons for archived vehicle parts
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-link' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-delete-bin-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // enhanceTableHeaders('#js-archived-vehicle-parts-table', headerConfig);
+
             $('#js-archived-vehicle-parts-table').DataTable({
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[7, 'desc']] // Sort by deleted_at descending
             });
 

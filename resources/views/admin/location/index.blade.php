@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
+                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
                         <div class="table-wrapper">
                             <table id="js-location-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
@@ -62,21 +62,21 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="locationName" class="form-label">Location <x-req /></label>
-                                    <input type="text" class="form-control" id="locationName" name="name"
+                                    <input type="text" class="form-control enhanced-dropdown" id="locationName" name="name"
                                         placeholder="Enter Location / Workshop Name" required>
                                 </div>
                             </div>
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="slug" class="form-label">Slug <x-req /></label>
-                                    <input type="text" class="form-control" id="slug" name="slug"
+                                    <input type="text" class="form-control enhanced-dropdown" id="slug" name="slug"
                                         placeholder="Enter Slug" required>
                                 </div>
                             </div>
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="locationType" class="form-label">Select Location Type <x-req /></label>
-                                    <select name="location_type" id="js-location-type" class="form-control" required>
+                                    <select name="location_type" id="js-location-type" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Location Type</option>
                                         <option value="town">Town</option>
                                         <option value="workshop">Workshop</option>
@@ -86,7 +86,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="status" class="form-label">Status <x-req /></label>
-                                    <select name="is_active" id="js-is-active" class="form-control" required>
+                                    <select name="is_active" id="js-is-active" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Status</option>
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
@@ -115,7 +115,6 @@
 
         function applyLocationsDatatable() {
             var table = $('#js-location-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
                 //         text: '<i class="fas fa-plus me-2"></i>Add New',
@@ -137,13 +136,13 @@
                 ],
                 processing: true,
                 serverSide: true,
-                scrollX: true,
-                scrollY: '60vh',
-                scrollCollapse: true,
-                autoWidth: false,
-                responsive: false, // Disable responsive to force scroll behavior
-                deferRender: true,
-                scroller: true,
+                scrollX: false,
+                
+                
+                
+                 // Disable responsive to force scroll behavior
+                
+                
                 ajax: {
                     url: "/admin/location/listing",
                     type: "GET",
@@ -191,20 +190,24 @@
                         data: "location_type",
                         width: '120px',
                         render: function(data, type, row) {
-                            if (!data) return 'N/A';
-                            const badgeClass = data === 'town' ? 'bg-info' : 'bg-warning';
-                            const displayText = data.charAt(0).toUpperCase() + data.slice(1);
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
+                            const typeMap = {
+                                'town': { class: 'bg-info-subtle text-info', icon: 'ri-map-pin-line' },
+                                'city': { class: 'bg-warning-subtle text-warning', icon: 'ri-building-line' },
+                                'district': { class: 'bg-primary-subtle text-primary', icon: 'ri-government-line' }
+                            };
+                            return createTypeBadge(data, typeMap);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "is_active",
                         width: '100px',
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",
@@ -325,7 +328,7 @@
                 submitHandler: function(form) {
                     const formData = new FormData(form);
                     const url = $(form).attr('action');
-                    const method ='POST';
+                    const method = 'POST';
 
                     $.ajax({
                         url: url,

@@ -31,7 +31,8 @@
                                                     <td>{{ $log->id }}</td>
                                                     <td>{{ $log->modifier->full_name ?? 'N/A' }}</td>
                                                     <td>
-                                                        <span class="badge bg-{{ $log->type === 'defect_report' ? 'primary' : 'success' }}">
+                                                        <span class="badge bg-{{ $log->type === 'defect_report' ? 'warning-subtle text-warning' : 'success-subtle text-success' }}">
+                                                            <i class="{{ $log->type === 'defect_report' ? 'ri-tools-line' : 'ri-shopping-cart-line' }} me-1"></i>
                                                             {{ ucwords(str_replace('_', ' ', $log->type)) }}
                                                         </span>
                                                     </td>
@@ -122,6 +123,12 @@
     <script>
         $(document).ready(function() {
             $('#js-reports-table').DataTable({
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[4, 'desc']] // Sort by created_at descending
             });
         });
@@ -171,7 +178,7 @@
             };
 
             // Display before changes
-            let beforeHtml = '<div class="table-responsive"><table class="table table-sm">';
+            let beforeHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             beforeHtml += '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
             
             if (log.before_changing_record_readable) {
@@ -187,7 +194,7 @@
             $('#beforeChanges').html(beforeHtml);
 
             // Display after changes
-            let afterHtml = '<div class="table-responsive"><table class="table table-sm">';
+            let afterHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             afterHtml += '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
             
             if (log.after_changing_record_readable) {
@@ -203,7 +210,7 @@
             $('#afterChanges').html(afterHtml);
 
             // Display change summary - only show fields that actually changed
-            let summaryHtml = '<div class="table-responsive"><table class="table table-sm">';
+            let summaryHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             summaryHtml += '<thead><tr><th>Field</th><th>Old Value</th><th>New Value</th><th>Status</th></tr></thead><tbody>';
             
             if (log.before_changing_record_readable && log.after_changing_record_readable) {
@@ -222,14 +229,14 @@
                             <td><strong>${fieldLabels[key] || key}</strong></td>
                             <td class="text-danger">${oldValue}</td>
                             <td class="text-success">${newValue}</td>
-                            <td><span class="badge bg-warning">Changed</span></td>
+                            <td><span class="status-badge pending with-icon"><i class="ri-edit-line"></i>Changed</span></td>
                         </tr>`;
                     } else {
                         summaryHtml += `<tr class="table-success">
                             <td><strong>${fieldLabels[key] || key}</strong></td>
                             <td>${oldValue}</td>
                             <td>${newValue}</td>
-                            <td><span class="badge bg-success">No Change</span></td>
+                            <td><span class="status-badge active with-icon"><i class="ri-check-line"></i>No Change</span></td>
                         </tr>`;
                     }
                 });
