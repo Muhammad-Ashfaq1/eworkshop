@@ -118,8 +118,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                         'defect_report_id' => $defectReport->id,
                         'work' => $workData['work'],
                         'type' => $workData['type'],
-                        'quantity' => $workData['quantity'] ?? null,
-                        'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
+                        'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
+                        'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                     ]);
                 }
             }
@@ -196,8 +196,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                         'defect_report_id' => $defectReport->id,
                         'work' => $workData['work'],
                         'type' => $workData['type'],
-                        'quantity' => $workData['quantity'] ?? null,
-                        'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
+                        'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
+                        'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                     ]);
                 }
             }

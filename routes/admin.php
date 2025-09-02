@@ -42,6 +42,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_vehicle_parts']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_vehicle_parts']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_vehicle_parts']);
+            Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_vehicle_parts']);
+            Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicle_parts']);
         });
 
     // Vehicle Routes
@@ -52,6 +54,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_vehicles']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_vehicles']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_vehicles']);
+            Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_vehicles']);
+            Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicles']);
         });
 
     // Fleet Manager Routes
@@ -60,6 +64,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::post('/store', 'store')->name('store')->middleware(['permission:create_fleet_manager']);
         Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_fleet_manager']);
         Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_fleet_manager']);
+        Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_fleet_manager']);
+        Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_fleet_manager']);
     });
 
     // Reports Routes - Admin and Super Admin only

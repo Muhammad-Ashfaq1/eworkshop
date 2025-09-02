@@ -59,9 +59,6 @@ Route::middleware(['auth'])->controller(DefectReportController::class)->prefix('
     Route::get('/restore-archieved/{id}','restoreArchieved')->name('restore.archieved');
 });
 
-
-
-
 // Purchase Orders routes with permission middleware
 Route::middleware(['auth'])->group(function () {
     Route::get('purchase-orders', [PurchaseOrderController::class, 'index'])->name('purchase-orders.index')->middleware('permission:read_purchase_orders');
@@ -71,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('purchase-orders/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('purchase-orders.edit')->middleware('permission:read_purchase_orders');
     Route::put('purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('purchase-orders.update')->middleware('permission:update_purchase_orders');
     Route::delete('purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'destroy'])->name('purchase-orders.destroy')->middleware('permission:delete_purchase_orders');
+    Route::get('purchase-orders-archived', [PurchaseOrderController::class, 'archived'])->name('purchase-orders.archived')->middleware('permission:read_purchase_orders');
+    Route::post('purchase-orders/restore-archived/{id}', [PurchaseOrderController::class, 'restoreArchived'])->name('purchase-orders.restore.archived')->middleware('permission:restore_purchase_orders');
 });
 
 // Role-specific dashboard routes

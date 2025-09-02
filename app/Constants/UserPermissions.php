@@ -29,6 +29,7 @@ class UserPermissions
     const READ_FLEET_MANAGER = 'read_fleet_manager';
     const UPDATE_FLEET_MANAGER = 'update_fleet_manager';
     const DELETE_FLEET_MANAGER = 'delete_fleet_manager';
+    const RESTORE_FLEET_MANAGER = 'restore_fleet_manager';
 
     // MVI management permissions
     const CREATE_MVI = 'create_mvi';
@@ -48,12 +49,14 @@ class UserPermissions
     const READ_VEHICLES = 'read_vehicles';
     const UPDATE_VEHICLES = 'update_vehicles';
     const DELETE_VEHICLES = 'delete_vehicles';
+    const RESTORE_VEHICLES = 'restore_vehicles';
 
     // Vehicle Parts management permissions
     const CREATE_VEHICLE_PARTS = 'create_vehicle_parts';
     const READ_VEHICLE_PARTS = 'read_vehicle_parts';
     const UPDATE_VEHICLE_PARTS = 'update_vehicle_parts';
     const DELETE_VEHICLE_PARTS = 'delete_vehicle_parts';
+    const RESTORE_VEHICLE_PARTS = 'restore_vehicle_parts';
 
     // Vehicle Category management permissions
     const CREATE_VEHICLE_CATEGORIES = 'create_vehicle_categories';
@@ -93,6 +96,7 @@ class UserPermissions
     const UPDATE_DEFECT_REPORTS = 'update_defect_reports';
     const DELETE_DEFECT_REPORTS = 'delete_defect_reports';
     const RESTORE_DEFECT_REPORTS = 'restore_defect_reports';
+    
     // Report logs permissions
     const VIEW_REPORT_LOGS = 'view_report_logs';
     const DELETE_REPORT_LOGS = 'delete_report_logs';
@@ -102,11 +106,9 @@ class UserPermissions
     const READ_PURCHASE_ORDERS = 'read_purchase_orders';
     const UPDATE_PURCHASE_ORDERS = 'update_purchase_orders';
     const DELETE_PURCHASE_ORDERS = 'delete_purchase_orders';
-
-
+    const RESTORE_PURCHASE_ORDERS = 'restore_purchase_orders';
 
     //User's permissions for super admin and admin
-
 
     /**
      * Get all permissions as an array
@@ -137,6 +139,7 @@ class UserPermissions
             self::READ_FLEET_MANAGER,
             self::UPDATE_FLEET_MANAGER,
             self::DELETE_FLEET_MANAGER,
+            self::RESTORE_FLEET_MANAGER,
 
             // MVI management permissions
             self::CREATE_MVI,
@@ -151,18 +154,19 @@ class UserPermissions
             self::DELETE_LOCATIONS,
             self::RESTORE_LOCATIONS,
 
-
             // Vehicle management permissions
             self::CREATE_VEHICLES,
             self::READ_VEHICLES,
             self::UPDATE_VEHICLES,
             self::DELETE_VEHICLES,
+            self::RESTORE_VEHICLES,
 
             // Vehicle Parts management permissions
             self::CREATE_VEHICLE_PARTS,
             self::READ_VEHICLE_PARTS,
             self::UPDATE_VEHICLE_PARTS,
             self::DELETE_VEHICLE_PARTS,
+            self::RESTORE_VEHICLE_PARTS,
 
             // Vehicle Category management permissions
             self::CREATE_VEHICLE_CATEGORIES,
@@ -201,16 +205,18 @@ class UserPermissions
             self::READ_DEFECT_REPORTS,
             self::UPDATE_DEFECT_REPORTS,
             self::DELETE_DEFECT_REPORTS,
+            self::RESTORE_DEFECT_REPORTS,
+            
+            // Report logs permissions
             self::VIEW_REPORT_LOGS,
             self::DELETE_REPORT_LOGS,
-            self::RESTORE_DEFECT_REPORTS,
 
             // Purchase order management permissions
             self::CREATE_PURCHASE_ORDERS,
             self::READ_PURCHASE_ORDERS,
             self::UPDATE_PURCHASE_ORDERS,
             self::DELETE_PURCHASE_ORDERS,
-
+            self::RESTORE_PURCHASE_ORDERS,
 
             //user permissions for superadmin
         ];

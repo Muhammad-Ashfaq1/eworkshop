@@ -202,13 +202,13 @@
 
                 @role('super_admin')
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'active' : '' }}"
+                        <a class="nav-link menu-link {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') || request()->routeIs('admin.vehicle.archived') || request()->routeIs('admin.vehicle.part.archived') || request()->routeIs('admin.fleet-manager.archived') || request()->routeIs('purchase-orders.archived') ? 'active' : '' }}"
                             href="#sidebarArchived" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'true' : 'false' }}"
+                            aria-expanded="{{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') || request()->routeIs('admin.vehicle.archived') || request()->routeIs('admin.vehicle.part.archived') || request()->routeIs('admin.fleet-manager.archived') || request()->routeIs('purchase-orders.archived') ? 'true' : 'false' }}"
                             aria-controls="sidebarArchived">
                             <i class="ri-archive-line"></i> <span data-key="t-archived">Archived Data</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'show' : '' }}"
+                        <div class="collapse menu-dropdown {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') || request()->routeIs('admin.vehicle.archived') || request()->routeIs('admin.vehicle.part.archived') || request()->routeIs('admin.fleet-manager.archived') || request()->routeIs('purchase-orders.archived') ? 'show' : '' }}"
                             id="sidebarArchived">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item">
@@ -219,10 +219,38 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ route('admin.vehicle.archived') }}"
+                                        class="nav-link {{ request()->routeIs('admin.vehicle.archived') ? 'active' : '' }}"
+                                        data-key="t-archived-vehicles">
+                                        <i class="ri-car-line me-2"></i>Archived Vehicles
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.vehicle.part.archived') }}"
+                                        class="nav-link {{ request()->routeIs('admin.vehicle.part.archived') ? 'active' : '' }}"
+                                        data-key="t-archived-vehicle-parts">
+                                        <i class="ri-settings-3-line me-2"></i>Archived Vehicle Parts
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.fleet-manager.archived') }}"
+                                        class="nav-link {{ request()->routeIs('admin.fleet-manager.archived') ? 'active' : '' }}"
+                                        data-key="t-archived-fleet-managers">
+                                        <i class="ri-team-line me-2"></i>Archived Fleet Managers
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('defect-reports.archieved') }}"
                                         class="nav-link {{ request()->routeIs('defect-reports.archieved') ? 'active' : '' }}"
                                         data-key="t-archived-defect-reports">
                                         <i class="ri-file-damage-line me-2"></i>Archived Defect Reports
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('purchase-orders.archived') }}"
+                                        class="nav-link {{ request()->routeIs('purchase-orders.archived') ? 'active' : '' }}"
+                                        data-key="t-archived-purchase-orders">
+                                        <i class="ri-shopping-cart-line me-2"></i>Archived Purchase Orders
                                     </a>
                                 </li>
                             </ul>

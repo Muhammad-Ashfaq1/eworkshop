@@ -176,6 +176,39 @@ class PurchaseOrderController extends Controller
     }
 
     /**
+     * Show archived purchase orders
+     */
+    public function archived()
+    {
+        $this->authorize('read_purchase_orders');
+        $archivedPurchaseOrders = PurchaseOrder::with(['creator', 'defectReport.vehicle', 'defectReport.location'])->onlyTrashed()->get();
+        return view('purchase_orders.archived', compact('archivedPurchaseOrders'));
+    }
+
+    /**
+     * Restore archived purchase order
+     */
+    public function restoreArchived($id)
+    {
+        $this->authorize('restore_purchase_orders');
+        $purchaseOrder = PurchaseOrder::withTrashed()->find($id);
+        
+        if (!$purchaseOrder) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Purchase order not found'
+            ], 404);
+        }
+        
+        $purchaseOrder->restore();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Purchase order restored successfully'
+        ]);
+    }
+
+    /**
      * Check if user can view the purchase order
      */
     private function canViewPurchaseOrder($user, $purchaseOrder)
