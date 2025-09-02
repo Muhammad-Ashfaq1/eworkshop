@@ -96,10 +96,14 @@ class UserPermissions
     const UPDATE_DEFECT_REPORTS = 'update_defect_reports';
     const DELETE_DEFECT_REPORTS = 'delete_defect_reports';
     const RESTORE_DEFECT_REPORTS = 'restore_defect_reports';
-    
+
     // Report logs permissions
     const VIEW_REPORT_LOGS = 'view_report_logs';
     const DELETE_REPORT_LOGS = 'delete_report_logs';
+
+    //Archieved Data Permissions
+    const VIEW_DELETED_RECORDS='view_deleted_records';
+    const RESTORE_DELETED_RECORDS='restore_deleted_records';
 
     // Purchase order management permissions
     const CREATE_PURCHASE_ORDERS = 'create_purchase_orders';
@@ -206,10 +210,14 @@ class UserPermissions
             self::UPDATE_DEFECT_REPORTS,
             self::DELETE_DEFECT_REPORTS,
             self::RESTORE_DEFECT_REPORTS,
-            
+
             // Report logs permissions
             self::VIEW_REPORT_LOGS,
             self::DELETE_REPORT_LOGS,
+
+            //Archieved Record permissions
+            self::VIEW_DELETED_RECORDS,
+            self::RESTORE_DELETED_RECORDS,
 
             // Purchase order management permissions
             self::CREATE_PURCHASE_ORDERS,

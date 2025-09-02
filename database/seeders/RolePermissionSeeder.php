@@ -83,11 +83,10 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::DELETE_MVI,
 
             // Defect Reports - can read, update but NOT delete
-            UserPermissions::CREATE_DEFECT_REPORTS,
             UserPermissions::READ_DEFECT_REPORTS,
             UserPermissions::UPDATE_DEFECT_REPORTS,
             UserPermissions::DELETE_DEFECT_REPORTS,
-            UserPermissions::RESTORE_DEFECT_REPORTS,
+            
 
             // Reports and exports
             UserPermissions::VIEW_REPORTS,
