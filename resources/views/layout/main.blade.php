@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
 <head>
     <meta charset="utf-8" />
-    <title>LWMC Workshop - @yield('title', 'LWMC')</title>
+    <title>LWMC Workshop - @yield('title', 'LWMC Workshop')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesbrand" name="author" />
+    <meta content="LWMC Workshop Management System" name="description" />
+    <meta content="LWMC IT Department" name="author" />
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
@@ -33,40 +33,84 @@
     <link href="{{ asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{ asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Sidebar Custom CSS -->
+    <link href="{{ asset('assets/css/sidebar-custom.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Admin Panel Inspired Clean Styles (PRIORITY LOADING) -->
+    <link href="{{ asset('assets/css/admin-panel-style.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Admin Panel DataTable Styles -->
+    <link href="{{ asset('assets/css/admin-datatable-style.css')}}" rel="stylesheet" type="text/css" />
+    <!-- DataTable Fixed Controls CSS -->
+    <link href="{{ asset('assets/css/datatable-fixed-controls.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Badge Improvements CSS -->
+    <link href="{{ asset('assets/css/badge-improvements.css')}}" rel="stylesheet" type="text/css" />
+    <!-- DataTable Sorting Icons CSS V2 -->
+    <link href="{{ asset('assets/css/datatable-sorting-icons-v2.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
+    <!-- Google Fonts for Inter font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+        /* Essential styles that need to be inline */
         .error {
-            color: #dc3545;
-            font-size: 0.875em;
-            }
-            input.error, select.error {
-            border-color: #dc3545;
+            color: #dc3545 !important;
+            font-size: 0.875em !important;
         }
         
-        /* Select2 Modal Fixes */
+        input.error, select.error {
+            border-color: #dc3545 !important;
+        }
+
+        /* Select2 Modal Fixes - Essential for functionality */
         .select2-container--open {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
-        
+
         .modal .select2-container {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
-        
+
         .select2-dropdown {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
-        
-        /* Ensure Select2 width matches parent */
+
         .select2-container {
             width: 100% !important;
         }
+
+        /* Essential table responsive behavior - simplified */
+        .table-responsive {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            width: 100% !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        .table-nowrap {
+            white-space: nowrap !important;
+        }
+
+        /* Essential DataTables functionality */
+        .dataTables_wrapper {
+            overflow: visible !important;
+            width: 100% !important;
+        }
+
+        .dataTables_scrollBody {
+            overflow: visible !important;
+        }
+
+        /* Keep column min-widths functional */
+        .table th[style*="min-width"], 
+        .table td[style*="min-width"] {
+            white-space: nowrap !important;
+        }
     </style>
     @yield('styles')
-
 </head>
 
 <body>
@@ -86,14 +130,9 @@
         <!-- Start right Content here -->
         <!-- ============================================================== -->
         <div class="main-content">
-
             <div class="page-content">
                 <div class="container-fluid">
-
                     @yield('content')
-
-
-
                 </div>
                 <!-- container-fluid -->
             </div>
@@ -158,13 +197,23 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-    
+
     <!-- Select2 CSS and JS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
-    <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
 
+    <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
+    
+    <!-- DataTable Utilities -->
+    <script src="{{ asset('assets/js/datatable-utils.js') }}"></script>
+    
+    <!-- Badge System -->
+    <script src="{{ asset('assets/js/badge-system.js') }}"></script>
+    
+    <!-- DataTable Sorting Fix -->
+    <script src="{{ asset('assets/js/datatable-sorting-fix.js') }}"></script>
+
+    <!-- Common DataTable Responsive Configuration -->
 
     @yield('scripts')
 </body>

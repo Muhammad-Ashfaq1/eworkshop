@@ -59,6 +59,9 @@ class DefectReportObserver
 
             ReportAudit::create([
                 'modifier_id' => $user ? $user->id : null,
+                'original_creator_id' => $defectReport->created_by,
+                'record_id' => $defectReport->id,
+                'record_type' => 'defect_report',
                 'before_changing_record' => $originalData,
                 'after_changing_record' => $newData,
                 'before_changing_record_readable' => $originalReadable,

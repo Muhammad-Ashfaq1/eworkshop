@@ -57,7 +57,7 @@
                                                     <td>{{ $archievedDefectReport->updated_at->format('d M Y, h:i A') }}
                                                     </td>
                                                     <td>
-
+                                                        @can('restore_defect_reports')
                                                         <div class="dropdown">
                                                             <button class="btn btn-soft-secondary btn-sm dropdown"
                                                                 type="button" data-bs-toggle="dropdown"
@@ -72,6 +72,7 @@
                                                                 </li>
                                                             </ul>
                                                         </div>
+                                                        @endcan
 
                                                     </td>
 
@@ -101,7 +102,14 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $("#js-archieved-defect-reports-table").DataTable();
+            $('#js-archieved-defect-reports-table').DataTable({
+            pageLength: 20,
+            searching: true,
+            lengthMenu: [
+                [20, 30, 50, 100],
+                ["20 entries", "30 entries", "50 entries", "100 entries"]
+            ]
+        });
             $(document).on('click', '#js-defect-report-restore-btn', function(e) {
                 e.preventDefault();
                 const id = $(this).data('id');

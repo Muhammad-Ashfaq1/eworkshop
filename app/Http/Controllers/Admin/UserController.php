@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
         $this->authorize('read_users');
 
         $users = User::with('roles')->latest()->get();
-        $roles = Role::whereIn('name', ['admin', 'deo'])->get();
+        $roles = Role::whereIn('name', ['admin', 'deo'])->where('name', '!=', Auth::user()->roles->pluck('name')->first())->get();
 
         return view('admin.users.index', compact('users', 'roles'));
     }
@@ -29,9 +30,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            // Debug logging
-            \Log::info('Creating user with data:', $request->all());
-
             // Validate input first
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -54,13 +52,6 @@ class UserController extends Controller
                 'role.in' => 'Invalid role selected.',
             ]);
 
-            // Check permissions after validation
-            if ($validated['role'] === 'admin') {
-                $this->authorize('create_admin');
-            } elseif ($validated['role'] === 'deo') {
-                $this->authorize('create_deo');
-            }
-
             // Create user
             $user = User::create([
                 'first_name' => $validated['first_name'],
@@ -75,8 +66,6 @@ class UserController extends Controller
             // Assign role
             $user->assignRole($validated['role']);
 
-            \Log::info('User created successfully:', ['user_id' => $user->id, 'role' => $validated['role']]);
-
             return response()->json([
                 'success' => true,
                 'message' => ucfirst($validated['role']).' user created successfully.',
@@ -84,23 +73,17 @@ class UserController extends Controller
             ], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation failed:', $e->errors());
-
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
-            \Log::error('Authorization failed:', ['message' => $e->getMessage()]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'You are not authorized to perform this action.',
             ], 403);
         } catch (\Exception $e) {
-            \Log::error('Error creating user:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while creating the user: '.$e->getMessage(),
@@ -115,9 +98,6 @@ class UserController extends Controller
     {
         try {
             $this->authorize('read_users');
-
-            \Log::info('Fetching user data:', ['user_id' => $user->id]);
-
             return response()->json([
                 'success' => true,
                 'user' => $user->load('roles'),
@@ -128,8 +108,6 @@ class UserController extends Controller
                 'message' => 'You are not authorized to view this user.',
             ], 403);
         } catch (\Exception $e) {
-            \Log::error('Error fetching user:', ['message' => $e->getMessage()]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching user data.',
@@ -143,13 +121,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         try {
-            // Check permissions based on user role
-            if ($user->hasRole('admin')) {
-                $this->authorize('update_admin');
-            } elseif ($user->hasRole('deo')) {
-                $this->authorize('update_deo');
-            }
-
+          
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',

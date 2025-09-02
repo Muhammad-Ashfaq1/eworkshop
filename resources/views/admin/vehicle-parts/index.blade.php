@@ -16,27 +16,24 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
-                        <div class="table-wrapper">
-                            <table id="js-vehicle-part-table"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-parts-datatable"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Part Name</th>
-                                        <th>Slug</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
-                                        <th>Updated At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table id="js-vehicle-part-table"
+                            class="table table-bordered table-striped align-middle table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 150px;">Part Name</th>
+                                    <th style="min-width: 120px;">Slug</th>
+                                    <th style="min-width: 100px;">Status</th>
+                                    <th style="min-width: 120px;">Created At</th>
+                                    <th style="min-width: 120px;">Updated At</th>
+                                    <th style="min-width: 120px;" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -60,7 +57,7 @@
                                 <div class="col-xxl-6">
                                     <div>
                                         <label for="partName" class="form-label">Part Name <x-req /></label>
-                                        <input type="text" class="form-control" id="partName" name="name"
+                                        <input type="text" class="form-control enhanced-dropdown" id="partName" name="name"
                                             placeholder="Enter part name">
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
@@ -70,7 +67,7 @@
                                 <div class="col-xxl-6">
                                     <div>
                                         <label for="status" class="form-label">Status <x-req /></label>
-                                        <select name="is_active" id="myDropdown" class="form-control">
+                                        <select name="is_active" id="myDropdown" class="form-control enhanced-dropdown">
                                             <option value="" selected disabled>Select Status</option>
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
@@ -247,21 +244,20 @@
         });
 
         function applyVehiclePartsDatatable() {
+            // Configure header icons for vehicle parts
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-link' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-calendar-event-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            // enhanceTableHeaders('#js-vehicle-part-table', headerConfig);
+
             var table = $('#js-vehicle-part-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
-                // buttons: [
-                //     {
-                //         text: '<i class="fas fa-plus me-2"></i>Add New',
-                //         className: 'btn btn-primary',
-                //         action: function (e, dt, node, config) {
-                //             $('#js-modal-title').text('Add Vehicle Part');
-                //             $('#js-vehiclePart-id').val('');
-                //             $('#js-add-vehicle-part-form')[0].reset();
-                //             $('#js-add-vehicle-part-submit').text('Add');
-                //             $('#js-add-vehicle-part-modal').modal('show');
-                //         }
-                //     }
-                // ],
                 pageLength: 20,
                 searching: true,
                 lengthMenu: [
@@ -303,10 +299,10 @@
                         data: "is_active",
                         name: "is_active",
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",

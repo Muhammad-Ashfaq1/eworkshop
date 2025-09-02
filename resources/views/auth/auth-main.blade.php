@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg"
     data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+
 <head>
 
     <meta charset="utf-8" />
@@ -21,8 +22,10 @@
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Global UI Styles -->
+    <link href="{{ asset('assets/css/global-ui-styles.css') }}" rel="stylesheet" type="text/css" />
 
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
 
     @yield('styles')
@@ -52,7 +55,8 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="index.html" class="d-inline-block auth-logo">
-                                    <img src="{{ asset('assets/images/logo-light.png') }}" alt="" height="20">
+                                    <img src="{{ asset('assets/images/logo-light.png') }}" alt=""
+                                        height="20">
                                 </a>
                             </div>
                             <p class="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
@@ -62,61 +66,62 @@
                 <!-- end row -->
                 @yield('formContent')
 
-        <!-- end auth page content -->
+                <!-- end auth page content -->
 
-        <!-- footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="text-center">
-                            <p class="mb-0 text-muted">&copy;
-                                <script>
-                                    document.write(new Date().getFullYear())
-                                </script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i>
-                                by Themesbrand
-                            </p>
+                <!-- footer -->
+                <footer class="footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="text-center">
+                                    <p class="mb-0 text-muted">&copy;
+                                        <script>
+                                            document.write(new Date().getFullYear())
+                                        </script> LWMC Workshop. Crafted with <i
+                                            class="mdi mdi-heart text-danger"></i>
+                                        by Themesbrand
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </footer>
+                <!-- end Footer -->
             </div>
-        </footer>
-        <!-- end Footer -->
-    </div>
-    <!-- end auth-page-wrapper -->
+            <!-- end auth-page-wrapper -->
 
-    <!-- JAVASCRIPT -->
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js')}}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js')}}"></script>
-    <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
-    <script src="{{ asset('assets/js/plugins.js')}}"></script>
+            <!-- JAVASCRIPT -->
+            <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+            <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
+            <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
+            <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+            <script src="{{ asset('assets/js/plugins.js') }}"></script>
 
-    <!-- particles js -->
-    <script src="{{ asset('assets/libs/particles.js/particles.js')}}"></script>
-    <!-- particles app js -->
-    <script src="{{ asset('assets/js/pages/particles.app.js')}}"></script>
-    <!-- validation init -->
-    <script src="{{ asset('assets/js/pages/form-validation.init.js')}}"></script>
-    <!-- password create init -->
-    <script src="{{ asset('assets/js/pages/passowrd-create.init.js')}}"></script>
+            <!-- particles js -->
+            <script src="{{ asset('assets/libs/particles.js/particles.js') }}"></script>
+            <!-- particles app js -->
+            <script src="{{ asset('assets/js/pages/particles.app.js') }}"></script>
+            <!-- validation init -->
+            <script src="{{ asset('assets/js/pages/form-validation.init.js') }}"></script>
+            <!-- password create init -->
+            <script src="{{ asset('assets/js/pages/passowrd-create.init.js') }}"></script>
 
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+                crossorigin="anonymous"></script>
 
-    <!-- Toastr JavaScript (requires jQuery to be loaded first) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
-    <!-- Include jQuery Validation Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+            <!-- Toastr JavaScript (requires jQuery to be loaded first) -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
-    @yield('scripts')
+            <!-- Include jQuery Validation Plugin -->
+            <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+
+            @yield('scripts')
+            <script src="{{ asset('assets/js/datatable-scroll-fix.js') }}"></script>
+            <script src="{{ asset('assets/js/datatable-scroll-persistence.js') }}"></script>
 </body>
-
-
-<!-- Mirrored from themesbrand.com/velzon/html/master/auth-signup-basic.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 27 Feb 2025 08:00:50 GMT -->
 
 </html>

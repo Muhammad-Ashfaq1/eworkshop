@@ -1,0 +1,694 @@
+/* ===============================================
+   ADMIN PANEL INSPIRED STYLES FOR EWORKSHOP
+   Clean, Professional, and Optimized Design
+   =============================================== */
+
+/* ===============================================
+   TYPOGRAPHY & FONTS - CLEAN & READABLE
+   =============================================== */
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #374151 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: #1f2937 !important;
+}
+
+.card-title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+    margin-bottom: 0 !important;
+}
+
+.page-title-box h4 {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+}
+
+/* ===============================================
+   TABLE STYLING - CLEAN & PROFESSIONAL
+   =============================================== */
+
+/* Override existing table styles */
+.table {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    margin-bottom: 0 !important;
+    color: #374151 !important;
+    background-color: #ffffff !important;
+}
+
+.table th {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.025em !important;
+    text-transform: uppercase !important;
+    vertical-align: middle !important;
+    padding: 12px 8px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+.table td {
+    padding: 10px 8px !important;
+    vertical-align: middle !important;
+    border-color: #f1f5f9 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+
+.table-dark th {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.025em !important;
+    text-transform: uppercase !important;
+    padding: 12px 8px !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: #fafbfc !important;
+}
+
+.table-hover > tbody > tr:hover > td {
+    background-color: #f1f5f9 !important;
+}
+
+/* ===============================================
+   TABLE RESPONSIVE & SCROLL - OPTIMIZED
+   =============================================== */
+
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.table-responsive .table {
+    margin-bottom: 0 !important;
+    white-space: nowrap !important;
+    min-width: 100% !important;
+}
+
+/* Scrollbar styling for webkit browsers */
+.table-responsive::-webkit-scrollbar {
+    height: 8px !important;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1 !important;
+    border-radius: 4px !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8 !important;
+}
+
+/* ===============================================
+   DATATABLE CLEAN STYLING
+   =============================================== */
+
+.dataTables_wrapper {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    font-size: 13px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #6366f1 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    font-size: 13px !important;
+    padding: 6px 12px !important;
+    margin: 0 2px !important;
+    border-radius: 6px !important;
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f9fafb !important;
+    border-color: #9ca3af !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #6366f1 !important;
+    border-color: #6366f1 !important;
+    color: #ffffff !important;
+}
+
+/* ===============================================
+   CARD STYLING - CLEAN & MODERN
+   =============================================== */
+
+.card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    background-color: #ffffff !important;
+}
+
+.card-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 16px 20px !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.card-body {
+    padding: 20px !important;
+}
+
+/* ===============================================
+   BUTTON STYLING - EWORKSHOP COLORS
+   =============================================== */
+
+.btn {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Primary Buttons - Eworkshop Green */
+.btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid #059669 !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 4px rgba(16, 185, 129, 0.2) !important;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+    border-color: #047857 !important;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Secondary Buttons - Eworkshop Light */
+.btn-secondary {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #94a3b8 !important;
+    color: #334155 !important;
+}
+
+/* Success Buttons - Eworkshop Green Variant */
+.btn-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    border: 1px solid #16a34a !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2) !important;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Danger Buttons - Eworkshop Red */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border: 1px solid #dc2626 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2) !important;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Warning Buttons - Eworkshop Orange */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    border: 1px solid #d97706 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2) !important;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Info Buttons - Eworkshop Blue */
+.btn-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: 1px solid #2563eb !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2) !important;
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Light Buttons */
+.btn-light {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-light:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Outline Primary - Eworkshop Green */
+.btn-outline-primary {
+    background: transparent !important;
+    border: 2px solid #10b981 !important;
+    color: #10b981 !important;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+}
+
+.btn-sm {
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+}
+
+.btn-lg {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+}
+
+/* ===============================================
+   FORM STYLING - EWORKSHOP COLORS
+   =============================================== */
+
+.form-control {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.form-control:focus {
+    border-color: #10b981 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+.form-control:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-label {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 6px !important;
+}
+
+.form-select {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.form-select:focus {
+    border-color: #10b981 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* ===============================================
+   BADGE STYLING - EWORKSHOP COLORS
+   =============================================== */
+
+.badge {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+}
+
+/* Primary Badge - Eworkshop Green */
+.badge.bg-primary,
+.bg-primary-subtle {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+}
+
+.text-primary {
+    color: #10b981 !important;
+}
+
+/* Success Badge - Eworkshop Green Variant */
+.badge.bg-success,
+.bg-success-subtle {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+/* Danger Badge - Eworkshop Red */
+.badge.bg-danger,
+.bg-danger-subtle {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+/* Warning Badge - Eworkshop Orange */
+.badge.bg-warning,
+.bg-warning-subtle {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+}
+
+.text-warning {
+    color: #f59e0b !important;
+}
+
+/* Info Badge - Eworkshop Blue */
+.badge.bg-info,
+.bg-info-subtle {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+}
+
+.text-info {
+    color: #3b82f6 !important;
+}
+
+/* Light Badge */
+.badge.bg-light,
+.bg-light-subtle {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Dark Badge */
+.badge.bg-dark,
+.bg-dark-subtle {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+    color: #ffffff !important;
+}
+
+/* ===============================================
+   BREADCRUMB STYLING
+   =============================================== */
+
+.breadcrumb {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    background-color: transparent !important;
+    margin-bottom: 0 !important;
+}
+
+.breadcrumb-item a {
+    color: #6b7280 !important;
+    text-decoration: none !important;
+}
+
+.breadcrumb-item.active {
+    color: #374151 !important;
+    font-weight: 500 !important;
+}
+
+/* ===============================================
+   DROPDOWN STYLING - EWORKSHOP COLORS
+   =============================================== */
+
+.dropdown-menu {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    font-family: 'Inter', sans-serif !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+}
+
+.dropdown-item {
+    font-size: 13px !important;
+    padding: 12px 16px !important;
+    color: #374151 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    color: #059669 !important;
+    transform: translateX(4px) !important;
+}
+
+.dropdown-item:focus {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    color: #059669 !important;
+    outline: none !important;
+}
+
+.dropdown-item.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+}
+
+.dropdown-divider {
+    border-color: #e2e8f0 !important;
+    opacity: 1 !important;
+}
+
+.dropdown-header {
+    color: #6b7280 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN - MOBILE OPTIMIZED
+   =============================================== */
+
+@media (max-width: 768px) {
+    .page-content .container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+    
+    .table {
+        font-size: 12px !important;
+    }
+    
+    .table th,
+    .table td {
+        padding: 8px 6px !important;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: 12px !important;
+    }
+    
+    .btn {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+    }
+}
+
+/* ===============================================
+   SIDEBAR ENHANCEMENTS
+   =============================================== */
+
+.app-menu .navbar-nav .nav-link {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    border-radius: 6px !important;
+    margin: 2px 0 !important;
+    padding: 10px 16px !important;
+}
+
+.app-menu .navbar-nav .nav-link.active {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    color: #059669 !important;
+    border-left: 3px solid #10b981 !important;
+}
+
+.app-menu .navbar-nav .nav-link:hover {
+    background: linear-gradient(135deg, #f9fafb 0%, #f0fdf4 100%) !important;
+    color: #10b981 !important;
+    transform: translateX(2px) !important;
+}
+
+/* ===============================================
+   UTILITY CLASSES - CLEAN HELPERS
+   =============================================== */
+
+.text-muted {
+    color: #6b7280 !important;
+}
+
+.text-primary {
+    color: #10b981 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+.text-warning {
+    color: #f59e0b !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-info {
+    color: #3b82f6 !important;
+}
+
+/* Clean container spacing */
+.container,
+.container-fluid {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+/* Clean margins for page content */
+.page-content {
+    padding-top: 20px !important;
+}
+
+/* ===============================================
+   REMOVE HEAVY STYLING OVERRIDES
+   =============================================== */
+
+/* Remove heavy animations and gradients */
+.btn::before,
+.btn-primary::before {
+    display: none !important;
+}
+
+/* Remove complex box shadows */
+.card,
+.btn,
+.form-control {
+    box-shadow: none !important;
+}
+
+.card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Eworkshop focus states */
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+} 

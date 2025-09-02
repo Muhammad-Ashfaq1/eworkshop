@@ -7,38 +7,38 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">FleetManager / Mvi</h5>
-                    @if(auth()->user()->can('create_fleet_manager'))
+                    @if (auth()->user()->can('create_fleet_manager'))
                         <div class="float-end">
                             @can('create_fleet_manager')
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#js-fleet-manager-modal">
-                                Add New FleetManager/Mvi
-                            </button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#js-fleet-manager-modal">
+                                    Add New FleetManager/Mvi
+                                </button>
                             @endcan
                         </div>
                     @endif
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
+                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
                         <div class="table-wrapper">
                             <table id="js-fleet-manager-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
                                 style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="js-fleet-manager-table-body">
-                                @include('admin.fleet-manager.data-table')
-                            </tbody>
-                        </table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        <th>Updated At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="js-fleet-manager-table-body">
+                                    @include('admin.fleet-manager.data-table')
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="fleetMangerName" class="form-label">Fleet Manger/Mvi Name <x-req /></label>
-                                    <input type="text" class="form-control" id="fleetManagerName" name="name"
+                                    <input type="text" class="form-control enhanced-dropdown" id="fleetManagerName" name="name"
                                         placeholder="Enter Fleet Manager/ Mvi Name" required>
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
@@ -74,7 +74,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="Type" class="form-label"> Type <x-req /></label>
-                                    <select name="type" id="js-type" class="form-control" required>
+                                    <select name="type" id="js-type" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Type</option>
                                         <option value="fleet_manager">FleetManager</option>
                                         <option value="mvi">Mvi</option>
@@ -87,7 +87,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="status" class="form-label">Status <x-req /></label>
-                                    <select name="is_active" id="js-is-active" class="form-control" required>
+                                    <select name="is_active" id="js-is-active" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Status</option>
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
@@ -113,7 +113,14 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#js-fleet-manager-table').DataTable();
+            $('#js-fleet-manager-table').DataTable({
+            pageLength: 20,
+            searching: true,
+            lengthMenu: [
+                [20, 30, 50, 100],
+                ["20 entries", "30 entries", "50 entries", "100 entries"]
+            ]
+        });
 
 
             $('#js-fleet-manager-form').validate({
@@ -237,7 +244,7 @@
         $(document).on('click', '.edit-fleet-manager-btn', function(e) {
             e.preventDefault();
 
-        var url=$(this).attr('href');
+            var url = $(this).attr('href');
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -254,10 +261,9 @@
                         $('#js-fleet-manager-submit').text('Update Fleet Manager/Mvi');
                         $('#js-mvi-label').text('Edit Fleet Manager/Mvi');
                         $('#js-fleet-manager-modal').modal('show');
-                       // $('#js-table-fleet-manager-table-body').html(response.html);
+                        // $('#js-table-fleet-manager-table-body').html(response.html);
 
-                    }
-                    else {
+                    } else {
                         toastr.error('Failed to fetch data. Please try again.');
                     }
                 },

@@ -54,12 +54,14 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::READ_VEHICLES,
             UserPermissions::UPDATE_VEHICLES,
             UserPermissions::DELETE_VEHICLES,
+            UserPermissions::RESTORE_VEHICLES,
 
             // Vehicle Parts management - can create, read, update but NOT delete
             UserPermissions::CREATE_VEHICLE_PARTS,
             UserPermissions::READ_VEHICLE_PARTS,
             UserPermissions::UPDATE_VEHICLE_PARTS,
-            // UserPermissions::DELETE_VEHICLE_PARTS,
+            UserPermissions::DELETE_VEHICLE_PARTS,
+            UserPermissions::RESTORE_VEHICLE_PARTS,
 
             // Vehicle Categories management - can create, read, update but NOT delete
             UserPermissions::CREATE_VEHICLE_CATEGORIES,
@@ -71,19 +73,20 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::CREATE_FLEET_MANAGER,
             UserPermissions::READ_FLEET_MANAGER,
             UserPermissions::UPDATE_FLEET_MANAGER,
-            // UserPermissions::DELETE_FLEET_MANAGER, // Admin cannot delete fleet managers
+            UserPermissions::DELETE_FLEET_MANAGER,
+            UserPermissions::RESTORE_FLEET_MANAGER,
 
             // MVI management - can create, read, update but NOT delete
             UserPermissions::CREATE_MVI,
             UserPermissions::READ_MVI,
             UserPermissions::UPDATE_MVI,
-            // UserPermissions::DELETE_MVI, // Admin cannot delete MVI
+            UserPermissions::DELETE_MVI,
 
             // Defect Reports - can read, update but NOT delete
-            UserPermissions::CREATE_DEFECT_REPORTS,
             UserPermissions::READ_DEFECT_REPORTS,
             UserPermissions::UPDATE_DEFECT_REPORTS,
             UserPermissions::DELETE_DEFECT_REPORTS,
+            
 
             // Reports and exports
             UserPermissions::VIEW_REPORTS,
@@ -101,7 +104,8 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::CREATE_PURCHASE_ORDERS,
             UserPermissions::READ_PURCHASE_ORDERS,
             UserPermissions::UPDATE_PURCHASE_ORDERS,
-            // UserPermissions::DELETE_PURCHASE_ORDERS, // Admin cannot delete purchase orders
+            UserPermissions::DELETE_PURCHASE_ORDERS,
+            UserPermissions::RESTORE_PURCHASE_ORDERS,
         ]);
 
         // DEO (Data Entry Operator) - limited to data entry, viewing master data, and managing own defect reports
