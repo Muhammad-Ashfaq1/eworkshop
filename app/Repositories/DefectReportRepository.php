@@ -52,7 +52,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                       $locationQuery->where('name', 'like', '%' . $search['search'] . '%');
                   })
                   ->orWhereHas('creator', function($creatorQuery) use ($search) {
-                      $creatorQuery->where('name', 'like', '%' . $search['search'] . '%');
+                      $creatorQuery->where('first_name', 'like', '%' . $search['search'] . '%')
+                                  ->orWhere('last_name', 'like', '%' . $search['search'] . '%');
                   })
                   ->orWhereHas('fleetManager', function($fleetManagerQuery) use ($search) {
                       $fleetManagerQuery->where('name', 'like', '%' . $search['search'] . '%');

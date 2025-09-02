@@ -380,16 +380,14 @@
                     {
                         data: "fleet_manager",
                         name: 'fleet_manager.name',
-                        orderable: false,
+                        orderable: true,
                         searchable: true,
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name);
                             }
                             return 'N/A';
-                        },
-                        orderable: true,
-                        searchable: true
+                        }
                     },
                     {
                         data: "mvi",

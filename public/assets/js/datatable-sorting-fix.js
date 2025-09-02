@@ -15,7 +15,7 @@ $(document).ready(function() {
                 var $th = $(this);
                 
                 // Add sorting class if column is orderable and doesn't have it
-                if (api.column($th.index()).orderable() && 
+                if (api.column($th.index()).orderable && 
                     !$th.hasClass('sorting') && 
                     !$th.hasClass('sorting_asc') && 
                     !$th.hasClass('sorting_desc')) {
@@ -64,7 +64,7 @@ $(document).ready(function() {
                     } else {
                         $th.addClass('sorting_desc');
                     }
-                } else if (api.column(colIdx).orderable()) {
+                } else if (api.column(colIdx).orderable) {
                     $th.addClass('sorting');
                 }
             });
@@ -81,7 +81,7 @@ $(document).ready(function() {
                     var $th = $(this);
                     var colIdx = $th.index();
                     
-                    if (api.column(colIdx).orderable()) {
+                    if (api.column(colIdx).orderable) {
                         if (!$th.hasClass('sorting') && 
                             !$th.hasClass('sorting_asc') && 
                             !$th.hasClass('sorting_desc')) {
@@ -107,7 +107,7 @@ function refreshSortingIcons(tableId) {
             var $th = $(this);
             var colIdx = $th.index();
             
-            if (api.column(colIdx).orderable()) {
+            if (api.column(colIdx).orderable) {
                 if (!$th.hasClass('sorting') && 
                     !$th.hasClass('sorting_asc') && 
                     !$th.hasClass('sorting_desc')) {
