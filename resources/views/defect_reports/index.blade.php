@@ -75,7 +75,7 @@
                                             <th style="min-width: 100px;">
                                                 <i class="ri-user-star-line me-1"></i> MVI
                                             </th>
-                                            <th style="min-width: 120px;">
+                                            <th style="min-width: 120px;" data-column-type="date">
                                                 <i class="ri-calendar-line me-1"></i> Date
                                             </th>
                                             <th style="min-width: 100px;">
@@ -84,7 +84,7 @@
                                             <th style="min-width: 100px;" class="text-center">
                                                 <i class="ri-list-check me-1"></i> Works Count
                                             </th>
-                                            <th style="min-width: 120px;">
+                                            <th style="min-width: 120px;" data-column-type="user">
                                                 <i class="ri-user-add-line me-1"></i> Created By
                                             </th>
                                             <th style="min-width: 100px;" class="text-center">

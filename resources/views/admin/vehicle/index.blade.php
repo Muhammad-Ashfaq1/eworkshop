@@ -22,14 +22,14 @@
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px;" class="text-center">#</th>
-                                    <th style="min-width: 120px;">Vehicle Number</th>
-                                    <th style="min-width: 120px;">Location</th>
-                                    <th style="min-width: 100px;">Category</th>
-                                    <th style="min-width: 100px;">Condition</th>
-                                    <th style="min-width: 100px;">Status</th>
-                                    <th style="min-width: 120px;">Created At</th>
-                                    <th style="min-width: 120px;">Updated At</th>
-                                    <th style="min-width: 120px;" class="text-center">Actions</th>
+                                    <th style="min-width: 120px;"><i class="ri-truck-line me-1"></i>Vehicle Number</th>
+                                    <th style="min-width: 120px;"><i class="ri-map-pin-line me-1"></i>Location</th>
+                                    <th style="min-width: 100px;"><i class="ri-bookmark-line me-1"></i>Category</th>
+                                    <th style="min-width: 100px;"><i class="ri-settings-3-line me-1"></i>Condition</th>
+                                    <th style="min-width: 100px;" data-column-type="status"><i class="ri-check-line me-1"></i>Status</th>
+                                    <th style="min-width: 120px;" data-column-type="date"><i class="ri-calendar-line me-1"></i>Created At</th>
+                                    <th style="min-width: 120px;" data-column-type="date"><i class="ri-calendar-edit-line me-1"></i>Updated At</th>
+                                    <th style="min-width: 120px;" class="text-center"><i class="ri-settings-line me-1"></i>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>

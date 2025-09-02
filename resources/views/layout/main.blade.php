@@ -43,6 +43,8 @@
     <link href="{{ asset('assets/css/datatable-fixed-controls.css')}}" rel="stylesheet" type="text/css" />
     <!-- Badge Improvements CSS -->
     <link href="{{ asset('assets/css/badge-improvements.css')}}" rel="stylesheet" type="text/css" />
+    <!-- DataTable Sorting Icons CSS -->
+    <link href="{{ asset('assets/css/datatable-sorting-icons.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
     <!-- Google Fonts for Inter font family -->

@@ -63,17 +63,17 @@
                                     <thead>
                                         <tr>
                                             <th style="min-width: 50px;" class="text-center">#</th>
-                                            <th style="min-width: 120px;">PO Number</th>
-                                            <th style="min-width: 140px;">Defect Report Ref</th>
-                                            <th style="min-width: 120px;">Vehicle</th>
-                                            <th style="min-width: 120px;">Office/Town</th>
-                                            <th style="min-width: 120px;">Issue Date</th>
-                                            <th style="min-width: 120px;">Received By</th>
-                                            <th style="min-width: 100px;">Amount</th>
-                                            <th style="min-width: 100px;" class="text-center">Parts Count</th>
-                                            <th style="min-width: 100px;" class="text-center">Attachment</th>
-                                            <th style="min-width: 120px;">Created By</th>
-                                            <th style="min-width: 120px;" class="text-center">Actions</th>
+                                            <th style="min-width: 120px;"><i class="ri-file-text-line me-1"></i>PO Number</th>
+                                            <th style="min-width: 140px;"><i class="ri-file-copy-line me-1"></i>Defect Report Ref</th>
+                                            <th style="min-width: 120px;"><i class="ri-truck-line me-1"></i>Vehicle</th>
+                                            <th style="min-width: 120px;"><i class="ri-building-line me-1"></i>Office/Town</th>
+                                            <th style="min-width: 120px;" data-column-type="date"><i class="ri-calendar-line me-1"></i>Issue Date</th>
+                                            <th style="min-width: 120px;" data-column-type="user"><i class="ri-user-received-line me-1"></i>Received By</th>
+                                            <th style="min-width: 100px;"><i class="ri-money-dollar-circle-line me-1"></i>Amount</th>
+                                            <th style="min-width: 100px;" class="text-center"><i class="ri-shopping-cart-line me-1"></i>Parts Count</th>
+                                            <th style="min-width: 100px;" class="text-center"><i class="ri-attachment-line me-1"></i>Attachment</th>
+                                            <th style="min-width: 120px;" data-column-type="user"><i class="ri-user-add-line me-1"></i>Created By</th>
+                                            <th style="min-width: 120px;" class="text-center"><i class="ri-settings-line me-1"></i>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
