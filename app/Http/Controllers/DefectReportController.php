@@ -147,6 +147,17 @@ class DefectReportController extends Controller
     public function archieved()
     {
         $archievedDefectReports = DefectReport::with( 'vehicle','location','fleetManager','mvi','creator')->onlyTrashed()->get();
-            return view('defect_reports.archieved', compact('archievedDefectReports'));
+        return view('defect_reports.archieved', compact('archievedDefectReports'));
+    }
+
+    public function restoreArchieved($id)
+    {
+        $this->authorize('restore_defect_reports');
+        $defectReport = DefectReport::withTrashed()->find($id);
+        if (!$defectReport) {
+            return response()->json(['success' => false, 'message' => 'Defect report not found'], 404);
+        }
+        $defectReport->restore();
+        return response()->json(['success' => true, 'message' => 'Defect report restored successfully']);
     }
 }

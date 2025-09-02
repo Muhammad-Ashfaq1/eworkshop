@@ -107,7 +107,6 @@
                 const id = $(this).data('id');
                 restoreDefectReport(id);
             });
-            //resort DefectRepor
 
         });
 
@@ -123,7 +122,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/defect-reports.restore.archieved/${id}`,
+                        url: `/defect-reports/restore-archieved/${id}`,
                         type: "GET",
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr(

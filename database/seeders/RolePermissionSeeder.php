@@ -83,7 +83,7 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::CREATE_DEFECT_REPORTS,
             UserPermissions::READ_DEFECT_REPORTS,
             UserPermissions::UPDATE_DEFECT_REPORTS,
-            // UserPermissions::DELETE_DEFECT_REPORTS, // Admin cannot delete defect reports
+            UserPermissions::DELETE_DEFECT_REPORTS,
 
             // Reports and exports
             UserPermissions::VIEW_REPORTS,
