@@ -109,7 +109,40 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 
             case 'creator.name':
                 $query->leftJoin('users as creators', 'purchase_orders.created_by', '=', 'creators.id')
-                      ->orderBy('creators.name', $direction)
+                      ->orderByRaw("CONCAT(creators.first_name, ' ', creators.last_name) " . $direction)
+                      ->select('purchase_orders.*');
+                break;
+            case 'parts_count':
+                // Parts count sorting is complex due to relationship counting
+                // For now, we'll sort by created_at as a fallback
+                $query->orderBy('created_at', $direction);
+                break;
+                break;
+                break;
+            case 'po_no':
+                $query->orderBy('po_no', $direction);
+                break;
+                
+            case 'received_by':
+                $query->orderBy('received_by', $direction);
+                break;
+                
+            case 'acc_amount':
+                $query->orderBy('acc_amount', $direction);
+                break;
+                
+            case 'issue_date':
+                $query->orderBy('issue_date', $direction);
+                break;
+                
+            case 'defect_report_ref':
+                $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
+                      ->orderBy('defect_reports.reference_number', $direction)
+                      ->select('purchase_orders.*');
+                break;
+                
+            case 'parts_count':
+                $query->orderBy('works_count', $direction)
                       ->select('purchase_orders.*');
                 break;
                 
