@@ -17,9 +17,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="js-vehicle-table"
-                            class="table table-bordered table-striped align-middle table-nowrap">
+                    <div style="overflow-x: auto;">
+                        <table id="js-vehicle-table" class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
                                     <th style="min-width: 50px;" class="text-center">#</th>
@@ -141,8 +140,8 @@
             enhanceTableHeaders('#js-vehicle-table', headerConfig);
 
             var table = applyResponsiveDataTable('#js-vehicle-table', {
-        
-        
+
+
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
@@ -245,7 +244,7 @@
                                     <i class="ri-more-fill align-middle"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">`
-                                    
+
                             if (row.can_edit) {
                                 buttons +=
                                     `<li><a class="dropdown-item edit-vehicle-btn" href="#" data-id="${row.id}"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit</a></li>`;

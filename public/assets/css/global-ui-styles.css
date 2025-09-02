@@ -373,8 +373,8 @@ textarea.form-control {
 }
 
 .table thead th {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-    border: none !important;
+    background: #ffffff !important;
+    /* border: 1px solid #000000 !important; */
     padding: 10px 12px !important;
     font-weight: 600 !important;
     color: #374151 !important;
@@ -704,19 +704,19 @@ textarea.form-control {
         padding: 6px 12px !important;
         font-size: 12px !important;
     }
-    
+
     .card {
         border-radius: 6px !important;
     }
-    
+
     .form-control {
         padding: 6px 10px !important;
     }
-    
+
     .table {
         font-size: 11px !important;
     }
-    
+
     .table thead th,
     .table tbody td {
         padding: 8px 10px !important;
@@ -765,9 +765,9 @@ table.dataTable {
 }
 
 table.dataTable thead th {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    background: #ffffff !important;
     color: #374151 !important;
-    border: none !important;
+    /* border: 1px solid #000000 !important; */
     font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
@@ -953,22 +953,22 @@ table.dataTable tbody tr:hover td {
 }
 
 @keyframes slideUp {
-    from { 
+    from {
         opacity: 0;
         transform: translateY(20px);
     }
-    to { 
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
 @keyframes scaleIn {
-    from { 
+    from {
         opacity: 0;
         transform: scale(0.9);
     }
-    to { 
+    to {
         opacity: 1;
         transform: scale(1);
     }
@@ -1380,20 +1380,20 @@ a:hover {
     h1 {
         font-size: 2rem !important;
     }
-    
+
     h2 {
         font-size: 1.75rem !important;
     }
-    
+
     h3 {
         font-size: 1.5rem !important;
     }
-    
+
     .status-badge {
         font-size: 11px !important;
         padding: 5px 10px !important;
     }
-    
+
     .role-badge {
         font-size: 10px !important;
         padding: 3px 8px !important;
@@ -1572,7 +1572,7 @@ a:hover {
 }
 
 .table thead th {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    background: rgb(197, 197, 197);
     color: #1f2937 !important;
     font-weight: 700 !important;
     font-size: 14px !important;
@@ -1674,21 +1674,21 @@ a:hover {
         border-radius: 8px !important;
         margin: 0 -15px !important;
     }
-    
+
     .table {
         min-width: 600px !important;
     }
-    
+
     .table thead th,
     .table tbody td {
         padding: 10px 8px !important;
         font-size: 13px !important;
     }
-    
+
     .dataTables_wrapper {
         padding: 15px !important;
     }
-    
+
     .dataTables_wrapper .dataTables_length,
     .dataTables_wrapper .dataTables_filter {
         margin-bottom: 10px !important;
@@ -1699,17 +1699,17 @@ a:hover {
     .table {
         min-width: 500px !important;
     }
-    
+
     .table thead th,
     .table tbody td {
         padding: 8px 6px !important;
         font-size: 12px !important;
     }
-    
+
     .dropdown-menu {
         min-width: 150px !important;
     }
-    
+
     .dropdown-item {
         padding: 8px 12px !important;
         font-size: 13px !important;
@@ -2210,7 +2210,7 @@ a:hover {
     .dataTables_wrapper .dataTables_scrollBody {
         overflow-x: auto !important;
     }
-    
+
     .dataTables_wrapper table {
         min-width: 800px !important;
     }
@@ -2490,7 +2490,7 @@ a:hover {
 
 /* Ensure proper header background */
 .dataTables_wrapper .dataTables_scrollHeadInner table thead th {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    background: white;
     color: #1f2937 !important;
     font-weight: 700 !important;
     border-bottom: 2px solid #e2e8f0 !important;

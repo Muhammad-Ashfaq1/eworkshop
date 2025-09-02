@@ -1,6 +1,11 @@
 @extends('layout.main')
 
 @section('content')
+    <style>
+       #usersTable thead th {
+            font-size: 0.75rem !important;
+        }
+    </style>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -34,9 +39,9 @@
                     <div class="card-body">
                         <div class="table-responsive force-table-responsive table-scroll-indicator">
                             <div class="table-wrapper">
-                                <table id="usersTable"
+                            <table id="usersTable"
                                     class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                                    style="width:100%">
+                                    style="width:100%; font-weight: lighter !important; font-size: 0.2rem !important;">
                                     <thead>
                                         <tr>
                                             <th data-ordering="false">SR No.</th>
