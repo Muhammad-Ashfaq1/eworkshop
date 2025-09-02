@@ -148,7 +148,9 @@
         }
 
         function displayLogDetails(log) {
+            // Field labels for both Defect Reports and Purchase Orders
             const fieldLabels = {
+                // Defect Report fields
                 'reference_number': 'Reference Number',
                 'vehicle_id': 'Vehicle',
                 'location_id': 'Location',
@@ -158,7 +160,14 @@
                 'date': 'Date',
                 'attachment_url': 'Attachment',
                 'type': 'Type',
-                'created_by': 'Created By'
+                'created_by': 'Created By',
+                
+                // Purchase Order fields
+                'defect_report_id': 'Defect Report',
+                'po_no': 'PO Number',
+                'issue_date': 'Issue Date',
+                'received_by': 'Received By',
+                'acc_amount': 'Amount'
             };
 
             // Display before changes
