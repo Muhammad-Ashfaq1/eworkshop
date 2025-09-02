@@ -103,13 +103,13 @@
 
                 @role('super_admin|admin|deo')
                     <li class="nav-item">
-                        <a class="nav-link menu-link {{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'active' : '' }}"
+                        <a class="nav-link menu-link {{ (request()->routeIs('admin.location.*') && !request()->routeIs('admin.location.archieved')) || request()->routeIs('admin.vehicle.*') || request()->routeIs('admin.fleet-manager.*') ? 'active' : '' }}"
                             href="#sidebarDashboards" data-bs-toggle="collapse" role="button"
-                            aria-expanded="{{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'true' : 'false' }}"
+                            aria-expanded="{{ (request()->routeIs('admin.location.*') && !request()->routeIs('admin.location.archieved')) || request()->routeIs('admin.vehicle.*') || request()->routeIs('admin.fleet-manager.*') ? 'true' : 'false' }}"
                             aria-controls="sidebarDashboards">
                             <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Master Data</span>
                         </a>
-                        <div class="collapse menu-dropdown {{ request()->routeIs('admin.location.*') || request()->routeIs('admin.vehicle.*') ? 'show' : '' }}"
+                        <div class="collapse menu-dropdown {{ (request()->routeIs('admin.location.*') && !request()->routeIs('admin.location.archieved')) || request()->routeIs('admin.vehicle.*') || request()->routeIs('admin.fleet-manager.*') ? 'show' : '' }}"
                             id="sidebarDashboards">
                             <ul class="nav nav-sm flex-column">
                                 @can('read_locations')
@@ -191,24 +191,33 @@
                     </li>
                 @endcan
 
-
-                @role('admin|super_admin')
-                    <li class="nav-item">
-                        <a href="{{ route('admin.location.archieved') }}"
-                            class="nav-link {{ request()->routeIs('admin.location.archieved') ? 'active' : '' }}"
-                            data-key="t-analytics">
-                            <i class="ri-map-pin-line me-2"></i> Archieved Locations / Workshop
-                        </a>
-                    </li>
-                @endrole
-
                 @role('super_admin')
                     <li class="nav-item">
-                    <a href="{{ route('defect-reports.archieved') }}"
-                            class="nav-link menu-link"
-                            data-key="t-analytics">
-                            <i class="ri-file-damage-line"></i>Archived Defect Reports
+                        <a class="nav-link menu-link {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'active' : '' }}"
+                            href="#sidebarArchived" data-bs-toggle="collapse" role="button"
+                            aria-expanded="{{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'true' : 'false' }}"
+                            aria-controls="sidebarArchived">
+                            <i class="ri-archive-line"></i> <span data-key="t-archived">Archived Data</span>
                         </a>
+                        <div class="collapse menu-dropdown {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'show' : '' }}"
+                            id="sidebarArchived">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.location.archieved') }}"
+                                        class="nav-link {{ request()->routeIs('admin.location.archieved') ? 'active' : '' }}"
+                                        data-key="t-archived-locations">
+                                        <i class="ri-map-pin-line me-2"></i>Archived Locations / Workshop
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('defect-reports.archieved') }}"
+                                        class="nav-link {{ request()->routeIs('defect-reports.archieved') ? 'active' : '' }}"
+                                        data-key="t-archived-defect-reports">
+                                        <i class="ri-file-damage-line me-2"></i>Archived Defect Reports
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 @endrole
 
