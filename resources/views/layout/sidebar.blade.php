@@ -191,6 +191,15 @@
                     </li>
                 @endcan
 
+                @can('view_report_logs')
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}"
+                            href="{{ route('admin.logs.index') }}">
+                            <i class="ri-file-list-3-line"></i> <span data-key="t-report-logs">Report Logs</span>
+                        </a>
+                    </li>
+                @endcan
+
                 @role('super_admin')
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') ? 'active' : '' }}"
@@ -218,15 +227,6 @@
                                 </li>
                             </ul>
                         </div>
-                    </li>
-                @endrole
-
-                @role('super_admin')
-                    <li class="nav-item">
-                        <a class="nav-link menu-link"
-                            href="{{ route('admin.logs.index') }}">
-                            <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Report Logs</span>
-                        </a>
                     </li>
                 @endrole
 
