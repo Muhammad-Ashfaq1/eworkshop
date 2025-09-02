@@ -35,147 +35,73 @@
     <link href="{{ asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- Sidebar Custom CSS -->
     <link href="{{ asset('assets/css/sidebar-custom.css')}}" rel="stylesheet" type="text/css" />
-    <!-- Global UI Styles -->
-    <link href="{{ asset('assets/css/global-ui-styles.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Admin Panel Inspired Clean Styles (PRIORITY LOADING) -->
+    <link href="{{ asset('assets/css/admin-panel-style.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Admin Panel DataTable Styles -->
+    <link href="{{ asset('assets/css/admin-datatable-style.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
+    <!-- Google Fonts for Inter font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
+        /* Essential styles that need to be inline */
         .error {
-            color: #dc3545;
-            font-size: 0.875em;
-            }
-            input.error, select.error {
-            border-color: #dc3545;
+            color: #dc3545 !important;
+            font-size: 0.875em !important;
+        }
+        
+        input.error, select.error {
+            border-color: #dc3545 !important;
         }
 
-        /* Select2 Modal Fixes */
+        /* Select2 Modal Fixes - Essential for functionality */
         .select2-container--open {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
 
         .modal .select2-container {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
 
         .select2-dropdown {
-            z-index: 9999;
+            z-index: 9999 !important;
         }
 
-        /* Ensure Select2 width matches parent */
         .select2-container {
             width: 100% !important;
         }
 
-        /* Enhanced Responsive Table Styles */
+        /* Essential table responsive behavior - simplified */
         .table-responsive {
             overflow-x: auto !important;
             overflow-y: visible !important;
             width: 100% !important;
-            -webkit-overflow-scrolling: touch;
-            position: relative;
+            -webkit-overflow-scrolling: touch !important;
         }
 
         .table-nowrap {
-            white-space: nowrap;
+            white-space: nowrap !important;
         }
 
-        .table-responsive .table {
-            margin-bottom: 0;
-            width: auto !important;
-            min-width: 1400px !important; /* Ensure table is wide enough to trigger horizontal scroll */
-        }
-
-        /* Fix DataTables wrapper interference */
+        /* Essential DataTables functionality */
         .dataTables_wrapper {
             overflow: visible !important;
             width: 100% !important;
         }
 
-        .dataTables_wrapper .table-responsive {
-            overflow-x: auto !important;
-        }
-
-        /* Ensure proper scrolling behavior */
-        #js-defect-report-table {
-            table-layout: auto !important;
-            width: auto !important;
-        }
-
-        /* Fix any conflicting DataTables CSS */
         .dataTables_scrollBody {
             overflow: visible !important;
         }
 
-        /* Mobile responsive adjustments */
-        @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-
-            .table th, .table td {
-                padding: 0.5rem 0.25rem;
-            }
-        }
-
-        /* Ensure proper column min-widths are respected */
-        .table th[style*="min-width"], .table td[style*="min-width"] {
-            white-space: nowrap;
-        }
-
-        /* Small compact container sizing */
-        .page-content .container {
-            max-width: 1200px;
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .page-content .container {
-                max-width: 100%;
-                padding-left: 8px;
-                padding-right: 8px;
-            }
-        }
-
-        /* Enhanced Table Header Styling */
-        .table-dark th {
-            background-color: #495057 !important;
-            border-color: #6c757d !important;
-            color: #fff !important;
-            font-weight: 100;
-            font-size: 0.2rem;
-            letter-spacing: 0.5px;
-            text-transform: none;
-            vertical-align: middle;
-            position: sticky;
-            top: 0;
-            z-index: 20;
-            padding: 12px 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .table-dark th i {
-            opacity: 0.8;
-            font-size: 0.875rem;
-        }
-
-        /* Hover effect for sortable headers */
-        .table-dark th.sorting:hover,
-        .table-dark th.sorting_asc:hover,
-        .table-dark th.sorting_desc:hover {
-            background-color: #6c757d !important;
-            cursor: pointer;
-        }
-
-        /* Sorting indicators */
-        .table-dark th.sorting:after,
-        .table-dark th.sorting_asc:after,
-        .table-dark th.sorting_desc:after {
-            color: #fff !important;
-            opacity: 0.7;
+        /* Keep column min-widths functional */
+        .table th[style*="min-width"], 
+        .table td[style*="min-width"] {
+            white-space: nowrap !important;
         }
     </style>
     @yield('styles')
@@ -198,16 +124,11 @@
         <!-- Start right Content here -->
         <!-- ============================================================== -->
         <div class="main-content">
-
             <div class="page-content">
-                <div class="container">
-
+                <div class="container-fluid">
                     @yield('content')
-
-
-
                 </div>
-                <!-- container -->
+                <!-- container-fluid -->
             </div>
             <!-- End Page-content -->
 

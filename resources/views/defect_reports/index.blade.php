@@ -45,7 +45,7 @@
                             <div class="table-responsive">
                                 <table id="js-defect-report-table"
                                     class="table table-bordered table-striped align-middle table-nowrap">
-                                    <thead class="table-dark">
+                                    <thead>
                                         <tr>
                                             <th style="min-width: 50px;" class="text-center">
                                                 <i class="ri-hashtag"></i> #

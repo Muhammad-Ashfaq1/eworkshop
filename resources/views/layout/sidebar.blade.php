@@ -27,21 +27,28 @@
     <div class="dropdown sidebar-user m-1 rounded">
         <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="d-flex align-items-center gap-2">
-                <img class="rounded header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
+                @if(auth()->user()->image_url)
+                    <img class="rounded header-profile-user" src="{{ auth()->user()->image_url }}" alt="Header Avatar">
+                @else
+                    <img class="rounded header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
+                @endif
                 <span class="text-start">
-                    <span class="d-block fw-medium sidebar-user-name-text">{{ Auth::user()->name ?? 'Workshop User' }}</span>
+                    <span class="d-block fw-medium sidebar-user-name-text">{{ Auth::user()->first_name ?? Auth::user()->name ?? 'Workshop User' }} {{ Auth::user()->last_name ?? '' }}</span>
                     <span class="d-block fs-14 sidebar-user-name-sub-text"><i class="ri ri-circle-fill fs-10 text-success align-baseline"></i> <span class="align-middle">Online</span></span>
                 </span>
             </span>
         </button>
         <div class="dropdown-menu dropdown-menu-end">
             <!-- item-->
-            <h6 class="dropdown-header">Welcome {{ Auth::user()->name ?? 'Workshop User' }}!</h6>
-            <a class="dropdown-item" href="#"><i class="ri-user-line text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span></a>
-            <a class="dropdown-item" href="#"><i class="ri-settings-3-line text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span></a>
+            <h6 class="dropdown-header">Welcome {{ Auth::user()->first_name ?? Auth::user()->name ?? 'Workshop User' }}!</h6>
+            <a class="dropdown-item" href="{{ route('profile') }}">
+                <i class="ri-user-line text-muted fs-16 align-middle me-1"></i> 
+                <span class="align-middle">Profile</span>
+            </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="ri-logout-box-line text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Logout</span>
+                <i class="ri-logout-box-line text-muted fs-16 align-middle me-1"></i> 
+                <span class="align-middle">Logout</span>
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
