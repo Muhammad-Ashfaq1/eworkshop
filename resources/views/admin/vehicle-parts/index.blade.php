@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
+                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
                         <div class="table-wrapper">
                             <table id="js-vehicle-part-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-parts-datatable"
@@ -60,7 +60,7 @@
                                 <div class="col-xxl-6">
                                     <div>
                                         <label for="partName" class="form-label">Part Name <x-req /></label>
-                                        <input type="text" class="form-control" id="partName" name="name"
+                                        <input type="text" class="form-control enhanced-dropdown" id="partName" name="name"
                                             placeholder="Enter part name">
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
@@ -70,7 +70,7 @@
                                 <div class="col-xxl-6">
                                     <div>
                                         <label for="status" class="form-label">Status <x-req /></label>
-                                        <select name="is_active" id="myDropdown" class="form-control">
+                                        <select name="is_active" id="myDropdown" class="form-control enhanced-dropdown">
                                             <option value="" selected disabled>Select Status</option>
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
@@ -248,6 +248,11 @@
 
         function applyVehiclePartsDatatable() {
             var table = $('#js-vehicle-part-table').DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
@@ -304,8 +309,8 @@
                         name: "is_active",
                         render: function(data, type, row) {
                             return data == 1 ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
+                                '<span class="status-badge active with-icon"><i class="ri-check-line"></i>Active</span>' :
+                                '<span class="status-badge inactive with-icon"><i class="ri-close-line"></i>Inactive</span>';
                         }
                     },
                     {

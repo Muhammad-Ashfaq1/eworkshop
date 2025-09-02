@@ -109,7 +109,7 @@
                                 <div class="mb-3">
                                     <label for="defect_report_id" class="form-label">Defect Report Reference
                                         <x-req /></label>
-                                    <select class="form-select" id="defect_report_id" name="defect_report_id" required>
+                                    <select class="form-select enhanced-dropdown" id="defect_report_id" name="defect_report_id" required>
                                         <option value="" selected disabled>Select Defect Report Reference</option>
                                     </select>
                                     <div class="form-text">Only defect reports without existing purchase orders are shown
@@ -119,7 +119,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="po_no" class="form-label">PO Number <x-req /></label>
-                                    <input type="text" class="form-control" id="po_no" name="po_no"
+                                    <input type="text" class="form-control enhanced-dropdown" id="po_no" name="po_no"
                                         placeholder="Enter PO number" required>
                                 </div>
                             </div>
@@ -129,14 +129,14 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="issue_date" class="form-label">Issue Date <x-req /></label>
-                                    <input type="date" class="form-control" id="issue_date" name="issue_date"
+                                    <input type="date" class="form-control enhanced-dropdown" id="issue_date" name="issue_date"
                                         value="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="received_by" class="form-label">Received By <x-req /></label>
-                                    <input type="text" class="form-control" id="received_by" name="received_by"
+                                    <input type="text" class="form-control enhanced-dropdown" id="received_by" name="received_by"
                                         placeholder="Enter who received the order" required>
                                 </div>
                             </div>
@@ -146,14 +146,14 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="acc_amount" class="form-label">Account Amount <x-req /></label>
-                                    <input type="number" class="form-control" id="acc_amount" name="acc_amount"
+                                    <input type="number" class="form-control enhanced-dropdown" id="acc_amount" name="acc_amount"
                                         placeholder="Enter amount" step="0.01" min="0" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="attachment_url" class="form-label">Attach File</label>
-                                    <input type="file" class="form-control" id="attachment_url" name="attachment_url"
+                                    <input type="file" class="form-control enhanced-dropdown" id="attachment_url" name="attachment_url"
                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                     <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB
                                     </div>
@@ -177,7 +177,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <label class="form-label">Quantity <x-req /></label>
-                                            <input type="number" class="form-control" name="parts[0][quantity]"
+                                            <input type="number" class="form-control enhanced-dropdown" name="parts[0][quantity]"
                                                 placeholder="Enter quantity" min="1" value="1" required>
                                         </div>
                                         <div class="col-md-2 d-flex align-items-end">
@@ -276,13 +276,13 @@
                 ],
                 processing: true,
                 serverSide: true,
-                scrollX: true,
-                scrollY: '60vh',
-                scrollCollapse: true,
-                autoWidth: false,
-                responsive: false,
-                deferRender: true,
-                scroller: true,
+                scrollX: false,
+                
+                
+                
+                
+                
+                
                 ajax: {
                     url: "{{ route('purchase-orders.listing') }}",
                     type: "GET",
@@ -368,7 +368,7 @@
                         data: "works",
                         width: '100px',
                         render: function(data, type, row) {
-                            return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
+                            return data ? `<span class="status-badge active">${data.length}</span>` : '0';
                         }
                     },
                     {
@@ -505,7 +505,7 @@
                     </div>
                     <div class="col-md-5">
                         <label class="form-label">Quantity <x-req /></label>
-                        <input type="number" class="form-control" name="parts[${partIndex}][quantity]" placeholder="Enter quantity" min="1" value="1" required>
+                        <input type="number" class="form-control enhanced-dropdown" name="parts[${partIndex}][quantity]" placeholder="Enter quantity" min="1" value="1" required>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-part">
@@ -781,7 +781,7 @@
                         </div>
                         <div class="col-md-5">
                             <label class="form-label">Quantity</label>
-                            <input type="number" class="form-control" name="parts[${index}][quantity]" value="${work.quantity}" disabled>
+                            <input type="number" class="form-control enhanced-dropdown" name="parts[${index}][quantity]" value="${work.quantity}" disabled>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-danger btn-sm remove-part" style="display: none;">
@@ -896,7 +896,7 @@
                         </div>
                         <div class="col-md-5">
                             <label class="form-label">Quantity <x-req /></label>
-                            <input type="number" class="form-control" name="parts[${index}][quantity]" placeholder="Enter quantity" min="1" value="${work.quantity}" required>
+                            <input type="number" class="form-control enhanced-dropdown" name="parts[${index}][quantity]" placeholder="Enter quantity" min="1" value="${work.quantity}" required>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="button" class="btn btn-danger btn-sm remove-part" ${index === 0 ? 'style="display: none;"' : ''}>

@@ -42,11 +42,9 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="masters-datatable table-responsive">
-                                <div class="table-wrapper">
+                            <div class="table-responsive" style="overflow-x: auto; width: 100%;">
                                     <table id="js-defect-report-table"
-                                        class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable w-100"
-                                        style="width:100%">
+                                        class="table table-bordered table-striped align-middle">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -68,7 +66,6 @@
                                             <!-- Data will be loaded via AJAX -->
                                         </tbody>
                                     </table>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -95,7 +92,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="vehicle_id" class="form-label">Vehicle <x-req /></label>
-                                    <select class="form-select" id="vehicle_id" name="vehicle_id" required>
+                                    <select class="form-select enhanced-dropdown" id="vehicle_id" name="vehicle_id" required>
                                         <option value="" selected disabled>Select Vehicle</option>
                                     </select>
                                 </div>
@@ -103,7 +100,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="location_id" class="form-label">Office/Town <x-req /></label>
-                                    <select class="form-select" id="location_id" name="location_id" required>
+                                    <select class="form-select enhanced-dropdown" id="location_id" name="location_id" required>
                                         <option value="" selected disabled>Select Office/Town</option>
                                     </select>
                                 </div>
@@ -114,14 +111,14 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="driver_name" class="form-label">Driver Name <x-req /></label>
-                                    <input type="text" class="form-control" id="driver_name" name="driver_name"
+                                    <input type="text" class="form-control enhanced-dropdown" id="driver_name" name="driver_name"
                                         placeholder="Enter driver name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="date" class="form-label">Date <x-req /></label>
-                                    <input type="date" class="form-control" id="date" name="date"
+                                    <input type="date" class="form-control enhanced-dropdown" id="date" name="date"
                                         value="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
@@ -131,7 +128,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="fleet_manager_id" class="form-label">Fleet Manager <x-req /></label>
-                                    <select class="form-select" id="fleet_manager_id" name="fleet_manager_id" required>
+                                    <select class="form-select enhanced-dropdown" id="fleet_manager_id" name="fleet_manager_id" required>
                                         <option value="" selected disabled>Select Fleet Manager</option>
                                     </select>
                                 </div>
@@ -139,7 +136,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="mvi_id" class="form-label">MVI <x-req /></label>
-                                    <select class="form-select" id="mvi_id" name="mvi_id">
+                                    <select class="form-select enhanced-dropdown" id="mvi_id" name="mvi_id">
                                         <option value="" selected disabled>Select MVI</option>
                                     </select>
                                 </div>
@@ -150,7 +147,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="form-label">Report Type<x-req /></label>
-                                    <input type="text" class="form-control" value="Defect Report" readonly>
+                                    <input type="text" class="form-control enhanced-dropdown" value="Defect Report" readonly>
                                     <input type="hidden" id="type" name="type" value="defect_report">
                                     <div class="form-text">This will always be a Defect Report</div>
                                 </div>
@@ -158,7 +155,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="attachment_url" class="form-label">Attach File</label>
-                                    <input type="file" class="form-control" id="attachment_url" name="attachment_url"
+                                    <input type="file" class="form-control enhanced-dropdown" id="attachment_url" name="attachment_url"
                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                     <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB
                                     </div>
@@ -244,19 +241,6 @@
         function applyDefectReportsDatatable() {
             var table = $('#js-defect-report-table').DataTable({
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
-                // buttons: [
-                //     {
-                //         text: '<i class="fas fa-plus me-2"></i>Add New',
-                //         className: 'btn btn-primary',
-                //         action: function (e, dt, node, config) {
-                //             resetForm();
-                //             $('#defectReportModalLabel').text('Add Defect Report');
-                //             $('#defectReportSubmit').text('Create Defect Report');
-                //             $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
-                //             $('#defectReportModal').modal('show');
-                //         }
-                //     }
-                // ],
                 pageLength: 20,
                 searching: true,
                 lengthMenu: [
@@ -265,29 +249,50 @@
                 ],
                 processing: true,
                 serverSide: true,
-                scrollX: true,
-                scrollY: '60vh',
-                scrollCollapse: true,
-                autoWidth: false,
-                responsive: false, // Disable responsive to force scroll behavior
-                deferRender: true,
-                scroller: true,
                 ajax: {
                     url: "{{ route('defect-reports.listing') }}",
-                    type: "GET",
-                    complete: function() {
-                        // Force column adjustment after AJAX completes
-                        setTimeout(function() {
-                            if (table) {
-                                if (table.columns) {
-                                    table.columns.adjust();
-                                }
-                                if (table.fixedHeader && table.fixedHeader.adjust) {
-                                    table.fixedHeader.adjust();
-                                }
-                            }
-                        }, 100);
-                    }
+                    type: "GET"
+                },
+                initComplete: function() {
+                    // Destroy any DataTables wrappers that interfere
+                    $('#js-defect-report-table_wrapper .dataTables_scroll').remove();
+                    $('#js-defect-report-table_wrapper .dataTables_scrollHead').remove();
+                    $('#js-defect-report-table_wrapper .dataTables_scrollBody').remove();
+                    
+                    // Force container scroll
+                    $('.table-responsive').css({
+                        'overflow-x': 'auto !important',
+                        'overflow-y': 'visible !important',
+                        'width': '100% !important',
+                        'display': 'block !important'
+                    });
+                    
+                    // Force table width
+                    $('#js-defect-report-table').css({
+                        'min-width': '1600px !important',
+                        'width': '1600px !important',
+                        'table-layout': 'fixed !important'
+                    });
+                    
+                    // Force wrapper to not interfere
+                    $('#js-defect-report-table_wrapper').css({
+                        'overflow': 'visible !important',
+                        'width': '100% !important'
+                    });
+                },
+                drawCallback: function() {
+                    // Repeat on every draw
+                    setTimeout(function() {
+                        $('.table-responsive').css({
+                            'overflow-x': 'auto !important',
+                            'overflow-y': 'visible !important',
+                            'width': '100% !important'
+                        });
+                        $('#js-defect-report-table').css({
+                            'min-width': '1600px !important',
+                            'width': '1600px !important'
+                        });
+                    }, 100);
                 },
                 columns: [{
                         data: null,
@@ -370,7 +375,7 @@
                         data: "works",
                         width: '100px',
                         render: function(data, type, row) {
-                            return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
+                            return data ? `<span class="status-badge active">${data.length}</span>` : '0';
                         }
                     },
                     {

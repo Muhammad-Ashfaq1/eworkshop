@@ -32,7 +32,7 @@
 
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive force-table-responsive table-scroll-indicator">
                             <div class="table-wrapper">
                                 <table id="usersTable"
                                     class="table table-bordered dt-responsive nowrap table-striped align-middle"
@@ -142,7 +142,7 @@
                                         <label for="first_name" class="form-label">
                                             <i class="ri-user-line me-1"></i>First Name <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name"
+                                        <input type="text" class="form-control enhanced-dropdown" id="first_name" name="first_name"
                                             required>
                                         <div class="invalid-feedback"></div>
                                     </div>
@@ -152,7 +152,7 @@
                                         <label for="last_name" class="form-label">
                                             <i class="ri-user-line me-1"></i>Last Name <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name"
+                                        <input type="text" class="form-control enhanced-dropdown" id="last_name" name="last_name"
                                             required>
                                         <div class="invalid-feedback"></div>
                                     </div>
@@ -162,14 +162,14 @@
                                 <label for="email" class="form-label">
                                     <i class="ri-mail-line me-1"></i>Email <span class="text-danger">*</span>
                                 </label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control enhanced-dropdown" id="email" name="email" required>
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="phone_number" class="form-label">
                                     <i class="ri-phone-line me-1"></i>Phone Number
                                 </label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number">
+                                <input type="text" class="form-control enhanced-dropdown" id="phone_number" name="phone_number">
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="row">
@@ -177,7 +177,7 @@
                                     <div class="mb-3">
                                         <label for="role" class="form-label">Role <span
                                                 class="text-danger">*</span></label>
-                                        <select class="form-control" id="role" name="role" required>
+                                        <select class="form-control enhanced-dropdown" id="role" name="role" required>
                                             <option value="">Select Role</option>
                                             @foreach ($roles as $role)
                                                 <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
@@ -189,7 +189,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="is_active" class="form-label">Status</label>
-                                        <select class="form-control" id="is_active" name="is_active">
+                                        <select class="form-control enhanced-dropdown" id="is_active" name="is_active">
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
                                         </select>
@@ -202,7 +202,7 @@
                                         <div class="mb-3">
                                             <label for="password" class="form-label">Password <span
                                                     class="text-danger">*</span></label>
-                                            <input type="password" class="form-control" id="password" name="password">
+                                            <input type="password" class="form-control enhanced-dropdown" id="password" name="password">
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -210,7 +210,7 @@
                                         <div class="mb-3">
                                             <label for="password_confirmation" class="form-label">Confirm Password <span
                                                     class="text-danger">*</span></label>
-                                            <input type="password" class="form-control" id="password_confirmation"
+                                            <input type="password" class="form-control enhanced-dropdown" id="password_confirmation"
                                                 name="password_confirmation">
                                             <div class="invalid-feedback"></div>
                                         </div>
@@ -249,13 +249,13 @@
                             <div class="mb-3">
                                 <label for="new_password" class="form-label">New Password <span
                                         class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="new_password" name="password" required>
+                                <input type="password" class="form-control enhanced-dropdown" id="new_password" name="password" required>
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="new_password_confirmation" class="form-label">Confirm New Password <span
                                         class="text-danger">*</span></label>
-                                <input type="password" class="form-control" id="new_password_confirmation"
+                                <input type="password" class="form-control enhanced-dropdown" id="new_password_confirmation"
                                     name="password_confirmation" required>
                                 <div class="invalid-feedback"></div>
                             </div>

@@ -75,7 +75,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label for="firstnameInput" class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" id="firstnameInput"
+                                                    <input type="text" class="form-control enhanced-dropdown" id="firstnameInput"
                                                         name="first_name" placeholder="Enter your firstname"
                                                         value="{{ $user->first_name }}">
                                                 </div>
@@ -90,7 +90,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label for="lastnameInput" class="form-label">Last Name</label>
-                                                    <input type="text" class="form-control" id="lastnameInput"
+                                                    <input type="text" class="form-control enhanced-dropdown" id="lastnameInput"
                                                         name="last_name" placeholder="Enter your lastname"
                                                         value="{{ $user->last_name }}">
                                                 </div>
@@ -106,7 +106,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label for="phonenumberInput" class="form-label">Phone Number</label>
-                                                    <input type="text" class="form-control" id="phonenumberInput"
+                                                    <input type="text" class="form-control enhanced-dropdown" id="phonenumberInput"
                                                         name="phone_number" placeholder="Enter your phone number"
                                                         value="{{ $user->phone_number }}">
 
@@ -123,7 +123,7 @@
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label for="emailInput" class="form-label">Email Address</label>
-                                                    <input type="email" class="form-control" id="emailInput"
+                                                    <input type="email" class="form-control enhanced-dropdown" id="emailInput"
                                                         name="email" placeholder="Enter your email" readonly
                                                         value="{{ $user->email }}">
                                                 </div>
@@ -138,7 +138,7 @@
                                             <div class="col-lg-12">
                                                 <div class="mb-3">
                                                     <label for="imageInput" class="form-label">Profile Image</label>
-                                                    <input type="file" class="form-control" id="imageInput"
+                                                    <input type="file" class="form-control enhanced-dropdown" id="imageInput"
                                                         name="image_url" accept="image/*">
                                                     <div class="form-text">Choose an image file (JPEG, PNG, JPG, GIF). Max
                                                         size: 2MB</div>
@@ -179,7 +179,7 @@
                                             <div class="col-lg-4">
                                                 <div>
                                                     <label for="oldpasswordInput" class="form-label">Old Password*</label>
-                                                    <input type="password" class="form-control" name="current_password"
+                                                    <input type="password" class="form-control enhanced-dropdown" name="current_password"
                                                         id="oldpasswordInput" placeholder="Enter current password">
                                                 </div>
                                                 @error('current_password')
@@ -193,7 +193,7 @@
                                             <div class="col-lg-4">
                                                 <div>
                                                     <label for="newpasswordInput" class="form-label">New Password*</label>
-                                                    <input type="password" class="form-control" name="new_password"
+                                                    <input type="password" class="form-control enhanced-dropdown" name="new_password"
                                                         id="newpasswordInput" placeholder="Enter new password">
                                                 </div>
                                                 @error('new_password')
@@ -208,7 +208,7 @@
                                                 <div>
                                                     <label for="confirmpasswordInput" class="form-label">Confirm
                                                         Password*</label>
-                                                    <input type="password" class="form-control"
+                                                    <input type="password" class="form-control enhanced-dropdown"
                                                         name="new_password_confirmation" id="confirmpasswordInput"
                                                         placeholder="Confirm password">
                                                 </div>

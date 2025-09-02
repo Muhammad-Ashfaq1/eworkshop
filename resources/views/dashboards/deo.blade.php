@@ -86,7 +86,7 @@
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                                                 <span class="counter-value" data-target="{{ $defectStats['this_week'] }}">{{ $defectStats['this_week'] }}</span>
                                             </h4>
-                                            <span class="badge bg-info-subtle text-info mb-0">This Week</span>
+                                            <span class="status-badge active mb-0">This Week</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-info-subtle rounded fs-3">
@@ -111,7 +111,7 @@
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                                                 <span class="counter-value" data-target="{{ $defectStats['this_month'] }}">{{ $defectStats['this_month'] }}</span>
                                             </h4>
-                                            <span class="badge bg-success-subtle text-success mb-0">This Month</span>
+                                            <span class="status-badge active mb-0">This Month</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-success-subtle rounded fs-3">
@@ -136,7 +136,7 @@
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                                                 <span class="counter-value" data-target="{{ $defectStats['total'] }}">{{ $defectStats['total'] }}</span>
                                             </h4>
-                                            <span class="badge bg-warning-subtle text-warning mb-0">All Time</span>
+                                            <span class="status-badge pending mb-0">All Time</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-warning-subtle rounded fs-3">
@@ -198,7 +198,7 @@
                                 </div>
                                 <div class="card-body">
                                     @if($recentReports->count() > 0)
-                                        <div class="table-responsive">
+                                        <div class="table-responsive force-table-responsive table-scroll-indicator">
                                             <table class="table table-borderless table-centered align-middle">
                                                 <thead class="table-light">
                                                     <tr>
@@ -229,7 +229,7 @@
                                                             <span class="text-muted">{{ formatCreatedAt($report->created_at) }}</span>
                                                         </td>
                                                         <td>
-                                                            <span class="badge bg-success-subtle text-success">Completed</span>
+                                                            <span class="status-badge active with-icon"><i class="ri-check-line"></i>Completed</span>
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -269,7 +269,7 @@
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-1">Purchase Order Reports</h6>
                                                     <p class="text-muted mb-2">Create and manage purchase orders for vehicle parts and supplies.</p>
-                                                    <span class="badge bg-warning-subtle text-warning">Coming Soon</span>
+                                                    <span class="status-badge pending with-icon"><i class="ri-time-line"></i>Coming Soon</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -283,7 +283,7 @@
                                                 <div class="flex-grow-1">
                                                     <h6 class="mb-1">Advanced Analytics</h6>
                                                     <p class="text-muted mb-2">Detailed reports and analytics for better decision making.</p>
-                                                    <span class="badge bg-info-subtle text-info">Planned</span>
+                                                    <span class="status-badge active">Planned</span>
                                                 </div>
                                             </div>
                                         </div>

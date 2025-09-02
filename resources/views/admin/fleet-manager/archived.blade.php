@@ -9,7 +9,7 @@
                     <h5 class="card-title mb-0">Archived Fleet Managers</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive force-table-responsive table-scroll-indicator">
                         <table id="js-archived-fleet-managers-table"
                             class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
@@ -67,6 +67,11 @@
     <script>
         $(document).ready(function() {
             $('#js-archived-fleet-managers-table').DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
                 order: [
                     [5, 'desc']
                 ] // Sort by deleted_at descending

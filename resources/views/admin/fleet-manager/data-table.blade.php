@@ -6,9 +6,13 @@
             <td>{{ ucfirst($fleetManager->type) }}</td>
             <td>
                 @if ($fleetManager->is_active)
-                    <span class="badge bg-success">Active</span>
+                    <span class="status-badge active with-icon">
+                        <i class="ri-check-line"></i>Active
+                    </span>
                 @else
-                    <span class="badge bg-danger">Inactive</span>
+                    <span class="status-badge inactive with-icon">
+                        <i class="ri-close-line"></i>Inactive
+                    </span>
                 @endif
             </td>
             <td>{{ formatCreatedAt($fleetManager->created_at) }}</td>

@@ -86,7 +86,7 @@
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                                                 <span class="counter-value" data-target="{{ $stats['active_deos'] }}">{{ $stats['active_deos'] }}</span>
                                             </h4>
-                                            <span class="badge bg-success-subtle text-success mb-0">
+                                            <span class="status-badge active mb-0">
                                                 <i class="ri-arrow-up-line align-middle"></i> Active
                                             </span>
                                         </div>
@@ -113,7 +113,7 @@
                                             <h4 class="fs-22 fw-semibold ff-secondary mb-4">
                                                 <span class="counter-value" data-target="{{ $stats['pending_reports'] }}">{{ $stats['pending_reports'] }}</span>
                                             </h4>
-                                            <span class="badge bg-warning-subtle text-warning mb-0">Pending Review</span>
+                                            <span class="status-badge pending mb-0">Pending Review</span>
                                         </div>
                                         <div class="avatar-sm flex-shrink-0">
                                             <span class="avatar-title bg-warning-subtle rounded fs-3">

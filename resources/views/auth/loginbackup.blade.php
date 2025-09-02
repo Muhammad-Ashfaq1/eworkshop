@@ -16,7 +16,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="username" class="form-label">User Name</label>
-                                <input type="email" class="form-control" id="username"name="email"
+                                <input type="email" class="form-control enhanced-dropdown" id="username"name="email"
                                     placeholder="Enter username">
                                 @error('email')
                                     <div class="text-danger small">{{ $message }}</div>

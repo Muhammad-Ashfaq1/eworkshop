@@ -19,7 +19,7 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
+                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
                         <div class="table-wrapper">
                             <table id="js-fleet-manager-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
@@ -63,7 +63,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="fleetMangerName" class="form-label">Fleet Manger/Mvi Name <x-req /></label>
-                                    <input type="text" class="form-control" id="fleetManagerName" name="name"
+                                    <input type="text" class="form-control enhanced-dropdown" id="fleetManagerName" name="name"
                                         placeholder="Enter Fleet Manager/ Mvi Name" required>
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
@@ -74,7 +74,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="Type" class="form-label"> Type <x-req /></label>
-                                    <select name="type" id="js-type" class="form-control" required>
+                                    <select name="type" id="js-type" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Type</option>
                                         <option value="fleet_manager">FleetManager</option>
                                         <option value="mvi">Mvi</option>
@@ -87,7 +87,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="status" class="form-label">Status <x-req /></label>
-                                    <select name="is_active" id="js-is-active" class="form-control" required>
+                                    <select name="is_active" id="js-is-active" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Status</option>
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>

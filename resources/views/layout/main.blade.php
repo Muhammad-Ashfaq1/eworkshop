@@ -35,6 +35,8 @@
     <link href="{{ asset('assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- Sidebar Custom CSS -->
     <link href="{{ asset('assets/css/sidebar-custom.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Global UI Styles -->
+    <link href="{{ asset('assets/css/global-ui-styles.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
 
@@ -66,9 +68,16 @@
         .select2-container {
             width: 100% !important;
         }
+
+        /* Table Scroll Fix */
+        .table-responsive {
+            overflow-x: auto !important;
+        }
+        .table-responsive table {
+            min-width: 1000px !important;
+        }
     </style>
     @yield('styles')
-
 </head>
 
 <body>

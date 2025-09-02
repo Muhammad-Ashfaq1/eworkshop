@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive">
+                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
                         <div class="table-wrapper">
                             <table id="js-vehicle-table"
                                 class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-datatable"
@@ -63,14 +63,14 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="vehicleNumber" class="form-label">Vehicle Number <x-req /></label>
-                                    <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number"
+                                    <input type="text" class="form-control enhanced-dropdown" id="vehicleNumber" name="vehicle_number"
                                         placeholder="Enter Vehicle Number" required>
                                 </div>
                             </div>
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="category" class="form-label">Category <x-req /></label>
-                                    <select name="category" id="js-category" class="form-control" required>
+                                    <select name="category" id="js-category" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Category</option>
                                     </select>
                                 </div>
@@ -78,7 +78,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="condition" class="form-label">Condition <x-req /></label>
-                                    <select name="condition" id="js-condition" class="form-control" required>
+                                    <select name="condition" id="js-condition" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Condition</option>
                                         <option value="new">New</option>
                                         <option value="old">Old</option>
@@ -88,7 +88,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="town" class="form-label">Town <x-req /></label>
-                                    <select name="town" id="js-town" class="form-control" required>
+                                    <select name="town" id="js-town" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Town</option>
                                     </select>
                                 </div>
@@ -96,7 +96,7 @@
                             <div class="col-xxl-6">
                                 <div>
                                     <label for="status" class="form-label">Status <x-req /></label>
-                                    <select name="is_active" id="js-is-active" class="form-control" required>
+                                    <select name="is_active" id="js-is-active" class="form-control enhanced-dropdown" required>
                                         <option value="" selected disabled>Select Status</option>
                                         <option value="1">Active</option>
                                         <option value="0">Inactive</option>
@@ -128,6 +128,11 @@
             console.log('Table element found:', $('#js-vehicle-table').length);
 
             var table = $('#js-vehicle-table').DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
@@ -204,8 +209,8 @@
                         data: "is_active",
                         render: function(data, type, row) {
                             return data == 1 ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
+                                '<span class="status-badge active with-icon"><i class="ri-check-line"></i>Active</span>' :
+                                '<span class="status-badge inactive with-icon"><i class="ri-close-line"></i>Inactive</span>';
                         }
                     },
                     {

@@ -22,6 +22,8 @@
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
     <link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Global UI Styles -->
+    <link href="{{ asset('assets/css/global-ui-styles.css')}}" rel="stylesheet" type="text/css" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
@@ -118,6 +120,8 @@
 
 
             @yield('scripts')
+<script src="{{ asset("assets/js/datatable-scroll-fix.js") }}"></script>
+<script src="{{ asset("assets/js/datatable-scroll-persistence.js") }}"></script>
 </body>
 
 

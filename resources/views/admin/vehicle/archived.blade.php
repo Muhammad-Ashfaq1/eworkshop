@@ -9,7 +9,7 @@
                     <h5 class="card-title mb-0">Archived Vehicles</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive force-table-responsive table-scroll-indicator">
                         <table id="js-archived-vehicles-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                             <thead>
                                 <tr>
@@ -65,6 +65,11 @@
     <script>
         $(document).ready(function() {
             $('#js-archived-vehicles-table').DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
                 order: [[7, 'desc']] // Sort by deleted_at descending
             });
 

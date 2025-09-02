@@ -18,7 +18,7 @@
 
                     <div class="mb-3">
                         <label for="useremail" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="useremail"
+                        <input type="email" class="form-control enhanced-dropdown" id="useremail"
                             placeholder="Enter email address"name="email" value="{{ old('email') }}" required>
                         <div class="invalid-feedback">
                             Please enter email

@@ -18,7 +18,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="username" class="form-label">First Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username"
+                        <input type="text" class="form-control enhanced-dropdown" id="username" placeholder="Enter username"
                             name="first_name"required value="{{ old('first_name') }}">
                         <div class="invalid-feedback">
                             Please enter First Name
@@ -29,7 +29,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="username" class="form-label">Last Name<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control"name="last_name" id="username"
+                        <input type="text" class="form-control enhanced-dropdown"name="last_name" id="username"
                             placeholder="Enter username" value="{{ old('last_name') }}" required>
                         <div class="invalid-feedback">
                             Please enter LastName
@@ -40,7 +40,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="useremail" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="useremail"
+                        <input type="email" class="form-control enhanced-dropdown" id="useremail"
                             placeholder="Enter email address"name="email" value="{{ old('email') }}" required>
                         <div class="invalid-feedback">
                             Please enter email
@@ -50,7 +50,7 @@
                         @enderror
                         <div class="mb-3">
                             <label for="useremail" class="form-label">Phone Number<span class="text-danger">*</span></label>
-                            <input type="number" maxlength="12" value="{{ old('phone_number') }}" class="form-control"
+                            <input type="number" maxlength="12" value="{{ old('phone_number') }}" class="form-control enhanced-dropdown"
                                 id="useremail" placeholder="Enter email address"name="phone_number" required>
                             <div class="invalid-feedback">
                                 Please enter phone number

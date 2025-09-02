@@ -1,0 +1,2508 @@
+/* ===============================================
+   GLOBAL UI STYLES - SMOOTH LIGHT DESIGN
+   Consistent styling across entire application
+   =============================================== */
+
+/* ===============================================
+   OVERRIDE DARK THEMES - FORCE LIGHT DESIGN
+   =============================================== */
+
+/* Force light theme for all data tables */
+.dataTables_wrapper {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: #374151 !important;
+    background: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    color: #374151 !important;
+    padding: 8px 12px !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+}
+
+/* ===============================================
+   BUTTON STYLES - SMOOTH & MODERN
+   =============================================== */
+
+/* Primary Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid #059669 !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+    border-color: #047857 !important;
+}
+
+.btn-primary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2) !important;
+}
+
+.btn-primary:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Secondary Buttons */
+.btn-secondary {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #94a3b8 !important;
+    color: #334155 !important;
+}
+
+.btn-secondary:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.3) !important;
+}
+
+/* Success Buttons */
+.btn-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    border: 1px solid #16a34a !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2) !important;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* Danger Buttons */
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border: 1px solid #dc2626 !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2) !important;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Warning Buttons */
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    border: 1px solid #d97706 !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2) !important;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Info Buttons */
+.btn-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: 1px solid #2563eb !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2) !important;
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Light Buttons */
+.btn-light {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.btn-light:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Outline Buttons */
+.btn-outline-primary {
+    background: transparent !important;
+    border: 2px solid #10b981 !important;
+    color: #10b981 !important;
+    font-weight: 500 !important;
+    border-radius: 12px !important;
+    padding: 10px 22px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Small Buttons */
+.btn-sm {
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+}
+
+/* Large Buttons */
+.btn-lg {
+    padding: 16px 32px !important;
+    font-size: 18px !important;
+    border-radius: 14px !important;
+}
+
+/* ===============================================
+   FORM ELEMENTS - SMOOTH & MODERN
+   =============================================== */
+
+/* Form Controls */
+.form-control {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    color: #374151 !important;
+}
+
+.form-control:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+    transform: translateY(-1px) !important;
+}
+
+.form-control:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-bottom: 8px !important;
+    font-size: 14px !important;
+}
+
+/* Select Elements */
+.form-select {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    color: #374151 !important;
+}
+
+.form-select:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+}
+
+/* Textarea */
+.form-control[type="textarea"],
+textarea.form-control {
+    min-height: 120px !important;
+    resize: vertical !important;
+}
+
+/* Checkbox and Radio */
+.form-check-input {
+    width: 18px !important;
+    height: 18px !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 6px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-check-input:checked {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* ===============================================
+   CARDS - SMOOTH & MODERN
+   =============================================== */
+
+.card {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+}
+
+.card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
+    border-color: #cbd5e1 !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 20px 24px !important;
+    border-radius: 16px 16px 0 0 !important;
+    color: #374151 !important;
+}
+
+.card-body {
+    padding: 24px !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+.card-footer {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 20px 24px !important;
+    border-radius: 0 0 16px 16px !important;
+    color: #374151 !important;
+}
+
+/* ===============================================
+   TABLES - SMOOTH & MODERN (LIGHT THEME)
+   =============================================== */
+
+.table {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border: none !important;
+    padding: 16px 20px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.table tbody td {
+    padding: 16px 20px !important;
+    border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #6b7280 !important;
+    font-size: 14px !important;
+    background: #ffffff !important;
+}
+
+.table tbody tr:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(5, 150, 105, 0.02) 100%) !important;
+    transform: scale(1.01) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Table Striped */
+.table-striped tbody tr:nth-of-type(odd) {
+    background: rgba(16, 185, 129, 0.01) !important;
+}
+
+/* Table Hover */
+.table-hover tbody tr:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%) !important;
+}
+
+/* ===============================================
+   BADGES & PILLS - SMOOTH & MODERN
+   =============================================== */
+
+.badge {
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.badge-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+}
+
+.badge-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+}
+
+.badge-light {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* ===============================================
+   SWITCHES & TOGGLES - SMOOTH & MODERN
+   =============================================== */
+
+.form-switch .form-check-input {
+    width: 48px !important;
+    height: 24px !important;
+    border-radius: 12px !important;
+    background-color: #e2e8f0 !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #10b981 !important;
+    border-color: #10b981 !important;
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* ===============================================
+   ALERTS - SMOOTH & MODERN
+   =============================================== */
+
+.alert {
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    border-left: 4px solid !important;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%) !important;
+    color: #15803d !important;
+    border-left-color: #22c55e !important;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%) !important;
+    color: #dc2626 !important;
+    border-left-color: #ef4444 !important;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%) !important;
+    color: #d97706 !important;
+    border-left-color: #f59e0b !important;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%) !important;
+    color: #2563eb !important;
+    border-left-color: #3b82f6 !important;
+}
+
+/* ===============================================
+   MODALS - SMOOTH & MODERN
+   =============================================== */
+
+.modal-content {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    background: #ffffff !important;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 20px 24px !important;
+    color: #374151 !important;
+}
+
+.modal-body {
+    padding: 24px !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+.modal-footer {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border-top: 1px solid #e2e8f0 !important;
+    border-radius: 0 0 16px 16px !important;
+    padding: 20px 24px !important;
+    color: #374151 !important;
+}
+
+/* ===============================================
+   NAVIGATION - SMOOTH & MODERN
+   =============================================== */
+
+.nav-tabs {
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.nav-tabs .nav-link {
+    border: none !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 12px 20px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin-right: 4px !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #10b981 !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%) !important;
+    transform: translateY(-2px) !important;
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* ===============================================
+   DROPDOWNS - SMOOTH & MODERN
+   =============================================== */
+
+.dropdown-menu {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 8px 0 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.dropdown-item {
+    padding: 12px 20px !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 8px !important;
+    margin: 2px 8px !important;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%) !important;
+    color: #059669 !important;
+    transform: translateX(4px) !important;
+}
+
+/* ===============================================
+   PAGINATION - SMOOTH & MODERN
+   =============================================== */
+
+.pagination {
+    gap: 4px !important;
+}
+
+.page-link {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 10px 16px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    margin: 0 2px !important;
+    background: #ffffff !important;
+}
+
+.page-link:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%) !important;
+    color: #059669 !important;
+    border-color: #10b981 !important;
+    transform: translateY(-2px) !important;
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* ===============================================
+   PROGRESS BARS - SMOOTH & MODERN
+   =============================================== */
+
+.progress {
+    height: 8px !important;
+    border-radius: 8px !important;
+    background: #f1f5f9 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.progress-bar {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 8px !important;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ===============================================
+   LOADING SPINNERS - SMOOTH & MODERN
+   =============================================== */
+
+.spinner-border {
+    color: #10b981 !important;
+    border-width: 3px !important;
+}
+
+.spinner-border-sm {
+    width: 1rem !important;
+    height: 1rem !important;
+    border-width: 2px !important;
+}
+
+/* ===============================================
+   UTILITY CLASSES
+   =============================================== */
+
+.shadow-smooth {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.shadow-smooth-lg {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.border-smooth {
+    border: 1px solid #e2e8f0 !important;
+}
+
+.rounded-smooth {
+    border-radius: 12px !important;
+}
+
+.rounded-smooth-lg {
+    border-radius: 16px !important;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+
+@media (max-width: 768px) {
+    .btn {
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+    }
+    
+    .card {
+        border-radius: 12px !important;
+    }
+    
+    .form-control {
+        padding: 10px 14px !important;
+    }
+    
+    .table {
+        font-size: 13px !important;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 12px 16px !important;
+    }
+}
+
+/* ===============================================
+   FORCE LIGHT THEME OVERRIDES
+   =============================================== */
+
+/* Override any dark theme classes */
+.bg-dark,
+.table-dark,
+.text-white {
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+.table-dark th,
+.table-dark td {
+    background: #ffffff !important;
+    color: #374151 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Override dark card backgrounds */
+.card.bg-dark {
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+/* Override dark modal backgrounds */
+.modal-content.bg-dark {
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+/* ===============================================
+   DATATABLES SPECIFIC OVERRIDES
+   =============================================== */
+
+/* Force DataTables to use light theme */
+table.dataTable {
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+table.dataTable thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    color: #374151 !important;
+    border: none !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+table.dataTable tbody td {
+    background: #ffffff !important;
+    color: #6b7280 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+table.dataTable tbody tr:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(5, 150, 105, 0.02) 100%) !important;
+}
+
+table.dataTable tbody tr:hover td {
+    background: transparent !important;
+}
+
+/* DataTables wrapper styling */
+.dataTables_wrapper {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    padding: 20px !important;
+    margin: 20px 0 !important;
+}
+
+/* DataTables filter and length controls */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px !important;
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+    color: #374151 !important;
+    font-weight: 500 !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    color: #374151 !important;
+    padding: 8px 12px !important;
+    margin: 0 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dataTables_wrapper .dataTables_length select:focus,
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
+}
+
+/* DataTables info and pagination */
+.dataTables_wrapper .dataTables_info {
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    color: #6b7280 !important;
+    padding: 8px 12px !important;
+    margin: 0 2px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%) !important;
+    color: #059669 !important;
+    border-color: #10b981 !important;
+    transform: translateY(-2px) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* DataTables processing overlay */
+.dataTables_processing {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #374151 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* ===============================================
+   ADDITIONAL COMPONENT OVERRIDES
+   =============================================== */
+
+/* Override any remaining dark elements */
+.bg-primary,
+.bg-secondary,
+.bg-success,
+.bg-danger,
+.bg-warning,
+.bg-info,
+.bg-dark {
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+/* Override text colors */
+.text-primary,
+.text-secondary,
+.text-success,
+.text-danger,
+.text-warning,
+.text-info,
+.text-dark {
+    color: #374151 !important;
+}
+
+/* Override border colors */
+.border-primary,
+.border-secondary,
+.border-success,
+.border-danger,
+.border-warning,
+.border-info,
+.border-dark {
+    border-color: #e2e8f0 !important;
+}
+
+/* ===============================================
+   CUSTOM UTILITY CLASSES
+   =============================================== */
+
+.bg-light-custom {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+
+.text-light-custom {
+    color: #6b7280 !important;
+}
+
+.border-light-custom {
+    border-color: #e2e8f0 !important;
+}
+
+.shadow-light-custom {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.rounded-light-custom {
+    border-radius: 12px !important;
+}
+
+/* ===============================================
+   ANIMATION UTILITIES
+   =============================================== */
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===============================================
+   STATUS BADGES - ENHANCED STYLING
+   =============================================== */
+
+/* Status Badge Base */
+.status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.status-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.status-badge:hover::before {
+    left: 100%;
+}
+
+/* Active Status */
+.status-badge.active {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3) !important;
+}
+
+.status-badge.active:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Inactive Status */
+.status-badge.inactive {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+}
+
+.status-badge.inactive:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Pending Status */
+.status-badge.pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important;
+}
+
+.status-badge.pending:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important;
+}
+
+/* Draft Status */
+.status-badge.draft {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3) !important;
+}
+
+.status-badge.draft:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4) !important;
+}
+
+/* Approved Status */
+.status-badge.approved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.status-badge.approved:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Rejected Status */
+.status-badge.rejected {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
+}
+
+.status-badge.rejected:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Status Badge with Icon */
+.status-badge.with-icon {
+    padding: 6px 12px 6px 8px !important;
+}
+
+.status-badge.with-icon i {
+    margin-right: 6px !important;
+    font-size: 10px !important;
+}
+
+/* ===============================================
+   ENHANCED TYPOGRAPHY - DARKER FONTS
+   =============================================== */
+
+/* Main Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+}
+
+h1 {
+    font-size: 2.5rem !important;
+    color: #111827 !important;
+}
+
+h2 {
+    font-size: 2rem !important;
+    color: #111827 !important;
+}
+
+h3 {
+    font-size: 1.75rem !important;
+    color: #1f2937 !important;
+}
+
+h4 {
+    font-size: 1.5rem !important;
+    color: #1f2937 !important;
+}
+
+h5 {
+    font-size: 1.25rem !important;
+    color: #1f2937 !important;
+}
+
+h6 {
+    font-size: 1.125rem !important;
+    color: #1f2937 !important;
+}
+
+/* Body Text */
+body, p, div, span {
+    color: #374151 !important;
+    font-weight: 400 !important;
+    line-height: 1.6 !important;
+}
+
+/* Strong Text */
+strong, b {
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+}
+
+/* Links */
+a {
+    color: #10b981 !important;
+    text-decoration: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+a:hover {
+    color: #059669 !important;
+    text-decoration: underline !important;
+}
+
+/* Table Text */
+.table th {
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+}
+
+.table td {
+    color: #374151 !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+}
+
+/* Form Labels */
+.form-label {
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+}
+
+/* Card Headers */
+.card-header {
+    color: #1f2937 !important;
+}
+
+.card-header h1,
+.card-header h2,
+.card-header h3,
+.card-header h4,
+.card-header h5,
+.card-header h6 {
+    color: #111827 !important;
+    font-weight: 700 !important;
+}
+
+/* Modal Headers */
+.modal-header {
+    color: #1f2937 !important;
+}
+
+.modal-header h1,
+.modal-header h2,
+.modal-header h3,
+.modal-header h4,
+.modal-header h5,
+.modal-header h6 {
+    color: #111827 !important;
+    font-weight: 700 !important;
+}
+
+/* Navigation Text */
+.nav-link {
+    color: #374151 !important;
+    font-weight: 600 !important;
+}
+
+.nav-link.active {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Breadcrumb Text */
+.breadcrumb {
+    color: #6b7280 !important;
+}
+
+.breadcrumb-item {
+    color: #6b7280 !important;
+}
+
+.breadcrumb-item.active {
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+}
+
+/* ===============================================
+   ENHANCED BADGE STYLES
+   =============================================== */
+
+/* Role Badges */
+.role-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    border-radius: 16px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.role-badge.super-admin {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+}
+
+.role-badge.admin {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+}
+
+.role-badge.deo {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    color: #ffffff !important;
+}
+
+.role-badge.user {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+    color: #ffffff !important;
+}
+
+/* Priority Badges */
+.priority-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    border-radius: 16px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.priority-badge.high {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+}
+
+.priority-badge.medium {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+}
+
+.priority-badge.low {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+}
+
+/* ===============================================
+   ENHANCED TABLE STYLING WITH BADGES
+   =============================================== */
+
+/* Table with status badges */
+.table .status-badge {
+    margin: 0 !important;
+}
+
+.table .role-badge {
+    margin: 0 !important;
+}
+
+.table .priority-badge {
+    margin: 0 !important;
+}
+
+/* Table cell alignment for badges */
+.table td {
+    vertical-align: middle !important;
+}
+
+/* ===============================================
+   UTILITY CLASSES FOR STATUS
+   =============================================== */
+
+.text-status-active {
+    color: #16a34a !important;
+    font-weight: 600 !important;
+}
+
+.text-status-inactive {
+    color: #dc2626 !important;
+    font-weight: 600 !important;
+}
+
+.text-status-pending {
+    color: #d97706 !important;
+    font-weight: 600 !important;
+}
+
+.text-status-draft {
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+}
+
+.text-status-approved {
+    color: #059669 !important;
+    font-weight: 600 !important;
+}
+
+.text-status-rejected {
+    color: #dc2626 !important;
+    font-weight: 600 !important;
+}
+
+/* ===============================================
+   ENHANCED FOCUS STATES
+   =============================================== */
+
+.form-control:focus,
+.form-select:focus,
+.btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* ===============================================
+   RESPONSIVE TYPOGRAPHY
+   =============================================== */
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem !important;
+    }
+    
+    h2 {
+        font-size: 1.75rem !important;
+    }
+    
+    h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    .status-badge {
+        font-size: 11px !important;
+        padding: 5px 10px !important;
+    }
+    
+    .role-badge {
+        font-size: 10px !important;
+        padding: 3px 8px !important;
+    }
+}
+
+/* ===============================================
+   ENHANCED DROPDOWN STYLING
+   =============================================== */
+
+/* Form Select Dropdowns */
+.form-select, .form-control select, select.form-control {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    min-height: 48px !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 12px center !important;
+    background-repeat: no-repeat !important;
+    background-size: 16px !important;
+    padding-right: 40px !important;
+}
+
+.form-select:focus, .form-control select:focus, select.form-control:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+}
+
+.form-select:hover, .form-control select:hover, select.form-control:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    padding: 8px 0 !important;
+    margin-top: 8px !important;
+    min-width: 200px !important;
+    animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 8px !important;
+    margin: 2px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    transform: translateX(4px) !important;
+}
+
+.dropdown-item:active {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    color: #ffffff !important;
+}
+
+.dropdown-item i {
+    margin-right: 8px !important;
+    font-size: 16px !important;
+    width: 16px !important;
+    text-align: center !important;
+}
+
+/* Dropdown Toggle Button */
+.dropdown-toggle {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.dropdown-toggle:hover {
+    border-color: #10b981 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+.dropdown-toggle:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.dropdown-toggle::after {
+    border-top: 5px solid #6b7280 !important;
+    border-right: 5px solid transparent !important;
+    border-left: 5px solid transparent !important;
+    margin-left: 8px !important;
+}
+
+/* ===============================================
+   ENHANCED TABLE SCROLLING
+   =============================================== */
+
+/* Table Container with Horizontal Scroll */
+.table-responsive {
+    border-radius: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    margin-bottom: 20px !important;
+}
+
+/* Custom Scrollbar for Tables */
+.table-responsive::-webkit-scrollbar {
+    height: 8px !important;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+
+/* Table Styling with Fixed Headers */
+.table {
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    min-width: 800px !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    padding: 16px 12px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+}
+
+.table tbody td {
+    padding: 14px 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+.table tbody tr:hover {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    transform: scale(1.01) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* DataTables Specific Styling */
+.dataTables_wrapper {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    margin-bottom: 15px !important;
+}
+
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dataTables_wrapper .dataTables_length select:focus,
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* DataTables Pagination */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    margin: 0 2px !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border-color: #10b981 !important;
+    transform: translateY(-1px) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border-color: #10b981 !important;
+}
+
+/* ===============================================
+   RESPONSIVE TABLE IMPROVEMENTS
+   =============================================== */
+
+/* Mobile Table Responsiveness */
+@media (max-width: 768px) {
+    .table-responsive {
+        border-radius: 8px !important;
+        margin: 0 -15px !important;
+    }
+    
+    .table {
+        min-width: 600px !important;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 10px 8px !important;
+        font-size: 13px !important;
+    }
+    
+    .dataTables_wrapper {
+        padding: 15px !important;
+    }
+    
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 10px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .table {
+        min-width: 500px !important;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+    }
+    
+    .dropdown-menu {
+        min-width: 150px !important;
+    }
+    
+    .dropdown-item {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* ===============================================
+   FORM DROPDOWN ENHANCEMENTS
+   =============================================== */
+
+/* Select2 Dropdown Styling */
+.select2-container .select2-selection--single {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    height: 48px !important;
+    padding: 0 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.select2-container .select2-selection--single:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    color: #1f2937 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 44px !important;
+    padding-left: 0 !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+    height: 44px !important;
+    right: 12px !important;
+}
+
+.select2-dropdown {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.select2-results__option {
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    color: #374151 !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.select2-results__option--highlighted {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+}
+
+/* ===============================================
+   MODAL DROPDOWN STYLING
+   =============================================== */
+
+.modal .form-select,
+.modal .form-control select,
+.modal select.form-control {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    min-height: 48px !important;
+}
+
+.modal .form-select:focus,
+.modal .form-control select:focus,
+.modal select.form-control:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+}
+
+/* ===============================================
+   UTILITY CLASSES
+   =============================================== */
+
+/* Table Scroll Indicator */
+.table-scroll-indicator {
+    position: relative !important;
+}
+
+.table-scroll-indicator::after {
+    content: '← Scroll to see more →' !important;
+    position: absolute !important;
+    top: -25px !important;
+    right: 0 !important;
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Force Table Responsiveness */
+.force-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.force-table-responsive table {
+    min-width: 100% !important;
+    width: max-content !important;
+}
+
+/* ===============================================
+   DATATABLES SPECIFIC SCROLLING FIXES
+   =============================================== */
+
+/* DataTables Table Container */
+.dataTables_wrapper .dataTables_scroll {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHead {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHead table {
+    margin-bottom: 0 !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHead thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    padding: 16px 12px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody {
+    background: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody table {
+    margin-bottom: 0 !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody tbody td {
+    padding: 14px 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody tbody tr:hover {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    transform: scale(1.01) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* DataTables Scrollbar Styling */
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar {
+    height: 8px !important;
+    width: 8px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+
+/* Masters Datatable Specific */
+.masters-datatable {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+    overflow: hidden !important;
+}
+
+.masters-datatable .table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.masters-datatable .table-wrapper::-webkit-scrollbar {
+    height: 8px !important;
+}
+
+.masters-datatable .table-wrapper::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+}
+
+.masters-datatable .table-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+}
+
+.masters-datatable .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+
+/* Vehicle Datatable Specific */
+.vehicle-datatable {
+    min-width: 1000px !important;
+    width: 100% !important;
+}
+
+.vehicle-datatable th,
+.vehicle-datatable td {
+    white-space: nowrap !important;
+    min-width: 120px !important;
+}
+
+/* Location Datatable Specific */
+.location-datatable {
+    min-width: 800px !important;
+    width: 100% !important;
+}
+
+.location-datatable th,
+.location-datatable td {
+    white-space: nowrap !important;
+    min-width: 100px !important;
+}
+
+/* Fleet Manager Datatable Specific */
+.fleet-manager-datatable {
+    min-width: 900px !important;
+    width: 100% !important;
+}
+
+.fleet-manager-datatable th,
+.fleet-manager-datatable td {
+    white-space: nowrap !important;
+    min-width: 110px !important;
+}
+
+/* Vehicle Parts Datatable Specific */
+.vehicle-parts-datatable {
+    min-width: 1000px !important;
+    width: 100% !important;
+}
+
+.vehicle-parts-datatable th,
+.vehicle-parts-datatable td {
+    white-space: nowrap !important;
+    min-width: 120px !important;
+}
+
+/* ===============================================
+   MODAL FORM ENHANCEMENTS
+   =============================================== */
+
+/* Modal Dropdown Styling */
+.modal .form-select,
+.modal select.form-control {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    min-height: 48px !important;
+    width: 100% !important;
+}
+
+.modal .form-select:focus,
+.modal select.form-control:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+}
+
+.modal .form-select:hover,
+.modal select.form-control:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Modal Input Styling */
+.modal .form-control {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #1f2937 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    min-height: 48px !important;
+}
+
+.modal .form-control:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%) !important;
+}
+
+.modal .form-control:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Modal Label Styling */
+.modal .form-label {
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+}
+
+/* Modal Button Styling */
+.modal .btn {
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.modal .btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.modal .btn-primary:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.modal .btn-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.modal .btn-secondary:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3) !important;
+}
+
+/* ===============================================
+   DATATABLES SCROLL PERSISTENCE FIXES
+   =============================================== */
+
+/* Force DataTables to maintain scroll functionality */
+.dataTables_wrapper .dataTables_scroll,
+.dataTables_wrapper .dataTables_scrollHead,
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Ensure table containers maintain scroll after DataTables init */
+.masters-datatable.force-table-responsive,
+.table-responsive.force-table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Force DataTables table to be scrollable */
+.dataTables_wrapper table,
+.masters-datatable table,
+.vehicle-datatable,
+.location-datatable,
+.fleet-manager-datatable,
+.vehicle-parts-datatable {
+    min-width: 100% !important;
+    width: max-content !important;
+}
+
+/* Ensure DataTables doesn't override our scroll classes */
+.dataTables_wrapper .dataTables_scrollHeadInner,
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: visible !important;
+}
+
+/* Force scrollbar visibility */
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar {
+    height: 8px !important;
+    width: 8px !important;
+    display: block !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+    display: block !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 4px !important;
+    display: block !important;
+}
+
+/* Override DataTables responsive settings */
+.dataTables_wrapper .dataTables_scrollHeadInner table,
+.dataTables_wrapper .dataTables_scrollBody table {
+    width: 100% !important;
+    min-width: 800px !important;
+}
+
+/* Force table wrapper to maintain scroll */
+.dataTables_wrapper .dataTables_scrollHeadInner,
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+/* Ensure DataTables doesn't hide scrollbars */
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    max-height: none !important;
+}
+
+/* Force minimum widths for all DataTables */
+.dataTables_wrapper table {
+    min-width: 800px !important;
+}
+
+/* Vehicle specific minimum width */
+.vehicle-datatable {
+    min-width: 1000px !important;
+}
+
+/* Location specific minimum width */
+.location-datatable {
+    min-width: 800px !important;
+}
+
+/* Fleet Manager specific minimum width */
+.fleet-manager-datatable {
+    min-width: 900px !important;
+}
+
+/* Vehicle Parts specific minimum width */
+.vehicle-parts-datatable {
+    min-width: 1000px !important;
+}
+
+/* Force all table cells to maintain width */
+.dataTables_wrapper table th,
+.dataTables_wrapper table td {
+    white-space: nowrap !important;
+    min-width: 100px !important;
+}
+
+/* Override DataTables responsive breakpoints */
+@media screen and (max-width: 767px) {
+    .dataTables_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+    
+    .dataTables_wrapper table {
+        min-width: 800px !important;
+    }
+}
+
+/* Force scrollbar on all table containers */
+.table-responsive.force-table-responsive::-webkit-scrollbar {
+    height: 8px !important;
+    display: block !important;
+}
+
+.table-responsive.force-table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+    display: block !important;
+}
+
+.table-responsive.force-table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-radius: 4px !important;
+    display: block !important;
+}
+
+/* Ensure scrollbar is always visible */
+.table-responsive.force-table-responsive {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+/* Force table width to trigger scrollbar */
+.table-responsive.force-table-responsive table {
+    min-width: 100% !important;
+    width: max-content !important;
+}
+
+/* ===============================================
+   FIX DOUBLE SCROLLBAR ISSUE
+   =============================================== */
+
+/* Remove top scrollbar - keep only bottom one */
+.dataTables_wrapper .dataTables_scrollHead {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table {
+    margin-bottom: 0 !important;
+}
+
+/* Keep only bottom scrollbar */
+.dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Fix table headings alignment */
+.dataTables_wrapper .dataTables_scrollHeadInner table th,
+.dataTables_wrapper .dataTables_scrollBody table th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    padding: 16px 12px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure proper table structure */
+.dataTables_wrapper .dataTables_scrollHeadInner table,
+.dataTables_wrapper .dataTables_scrollBody table {
+    width: 100% !important;
+    min-width: 800px !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+/* Fix table body cells */
+.dataTables_wrapper .dataTables_scrollBody table td {
+    padding: 14px 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    color: #374151 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+/* Remove any duplicate scrollbars */
+.masters-datatable .dataTables_wrapper .dataTables_scrollHead {
+    overflow: hidden !important;
+}
+
+.masters-datatable .dataTables_wrapper .dataTables_scrollHeadInner {
+    overflow: hidden !important;
+}
+
+/* Ensure only one scrollbar at bottom */
+.table-responsive.force-table-responsive {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+.table-responsive.force-table-responsive .dataTables_wrapper {
+    overflow-x: hidden !important;
+}
+
+.table-responsive.force-table-responsive .dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+/* Fix table header alignment with body */
+.dataTables_wrapper .dataTables_scrollHeadInner table th {
+    padding: 16px 12px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+.dataTables_wrapper .dataTables_scrollBody table td {
+    padding: 14px 12px !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure proper column alignment */
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(1),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(1) {
+    text-align: center !important;
+    width: 60px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(2),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(2) {
+    text-align: left !important;
+    min-width: 120px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(3),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(3) {
+    text-align: left !important;
+    min-width: 150px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(4),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(4) {
+    text-align: left !important;
+    min-width: 200px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(5),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(5) {
+    text-align: left !important;
+    min-width: 120px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(6),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(6) {
+    text-align: left !important;
+    min-width: 120px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(7),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(7) {
+    text-align: center !important;
+    min-width: 100px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(8),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(8) {
+    text-align: center !important;
+    min-width: 100px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(9),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(9) {
+    text-align: center !important;
+    min-width: 120px !important;
+}
+
+.dataTables_wrapper .dataTables_scrollHeadInner table th:nth-child(10),
+.dataTables_wrapper .dataTables_scrollBody table td:nth-child(10) {
+    text-align: center !important;
+    min-width: 100px !important;
+}
+
+/* Fix status badge alignment */
+.dataTables_wrapper .dataTables_scrollBody table td .status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+}
+
+/* Fix action buttons alignment */
+.dataTables_wrapper .dataTables_scrollBody table td .dropdown {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Remove scroll indicator from top */
+.table-scroll-indicator::after {
+    display: none !important;
+}
+
+/* Add scroll indicator only at bottom */
+.table-responsive.force-table-responsive::after {
+    content: '← Scroll to see more →' !important;
+    position: absolute !important;
+    bottom: -25px !important;
+    right: 0 !important;
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2e8f0 !important;
+    z-index: 5 !important;
+}
+
+/* Ensure proper table container */
+.masters-datatable .dataTables_wrapper {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.masters-datatable .dataTables_wrapper .dataTables_scroll {
+    overflow: hidden !important;
+}
+
+.masters-datatable .dataTables_wrapper .dataTables_scrollHead {
+    overflow: hidden !important;
+}
+
+.masters-datatable .dataTables_wrapper .dataTables_scrollHeadInner {
+    overflow: hidden !important;
+}
+
+.masters-datatable .dataTables_wrapper .dataTables_scrollBody {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Fix for all table types */
+.vehicle-datatable,
+.location-datatable,
+.fleet-manager-datatable,
+.vehicle-parts-datatable {
+    min-width: 1000px !important;
+    width: 100% !important;
+}
+
+.vehicle-datatable th,
+.vehicle-datatable td,
+.location-datatable th,
+.location-datatable td,
+.fleet-manager-datatable th,
+.fleet-manager-datatable td,
+.vehicle-parts-datatable th,
+.vehicle-parts-datatable td {
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure proper header background */
+.dataTables_wrapper .dataTables_scrollHeadInner table thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1f2937 !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Fix table row hover */
+.dataTables_wrapper .dataTables_scrollBody table tbody tr:hover {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+    transform: none !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* Ensure proper spacing */
+.dataTables_wrapper .dataTables_scrollBody table tbody tr:last-child td {
+    border-bottom: none !important;
+}
