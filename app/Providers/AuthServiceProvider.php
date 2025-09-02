@@ -86,6 +86,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_locations');
         });
 
+        Gate::define('restore_locations', function ($user) {
+            return $user->hasPermissionTo('restore_locations');
+        });
+
         Gate::define('update_profile', function ($user) {
             return $user->hasPermissionTo('update_profile');
         });
@@ -133,6 +137,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete_fleet_manager', function ($user) {
             return $user->hasPermissionTo('delete_fleet_manager');
+        });
+
+        Gate::define('restore_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('restore_fleet_manager');
         });
 
         // MVI gates
@@ -208,6 +216,19 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_defect_reports');
         });
 
+        Gate::define('restore_defect_reports', function ($user) {
+            return $user->hasPermissionTo('restore_defect_reports');
+        });
+
+        // Report logs gates
+        Gate::define('view_report_logs', function ($user) {
+            return $user->hasPermissionTo('view_report_logs');
+        });
+
+        Gate::define('delete_report_logs', function ($user) {
+            return $user->hasPermissionTo('delete_report_logs');
+        });
+
         // Vehicle gates
         Gate::define('create_vehicles', function ($user) {
             return $user->hasPermissionTo('create_vehicles');
@@ -223,6 +244,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete_vehicles', function ($user) {
             return $user->hasPermissionTo('delete_vehicles');
+        });
+
+        Gate::define('restore_vehicles', function ($user) {
+            return $user->hasPermissionTo('restore_vehicles');
         });
 
         // Vehicle Parts gates
@@ -242,6 +267,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_vehicle_parts');
         });
 
+        Gate::define('restore_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('restore_vehicle_parts');
+        });
+
         // Vehicle Categories gates
         Gate::define('create_vehicle_categories', function ($user) {
             return $user->hasPermissionTo('create_vehicle_categories');
@@ -257,6 +286,27 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete_vehicle_categories', function ($user) {
             return $user->hasPermissionTo('delete_vehicle_categories');
+        });
+
+        // Purchase Order gates
+        Gate::define('create_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('create_purchase_orders');
+        });
+
+        Gate::define('read_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('read_purchase_orders');
+        });
+
+        Gate::define('update_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('update_purchase_orders');
+        });
+
+        Gate::define('delete_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('delete_purchase_orders');
+        });
+
+        Gate::define('restore_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('restore_purchase_orders');
         });
     }
 }

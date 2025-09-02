@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\FleetManagerController;
-use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\VehicleController;
-use App\Http\Controllers\Admin\VehiclePartController;
-use App\Http\Controllers\Admin\ReportsController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogsController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\VehicleController;
+use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\VehiclePartController;
+use App\Http\Controllers\Admin\FleetManagerController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // User Management Routes - Super Admin only
@@ -41,6 +42,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_vehicle_parts']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_vehicle_parts']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_vehicle_parts']);
+            Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_vehicle_parts']);
+            Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicle_parts']);
         });
 
     // Vehicle Routes
@@ -51,6 +54,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('store', 'store')->name('store')->middleware(['permission:create_vehicles']);
             Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_vehicles']);
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_vehicles']);
+            Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_vehicles']);
+            Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicles']);
         });
 
     // Fleet Manager Routes
@@ -59,6 +64,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::post('/store', 'store')->name('store')->middleware(['permission:create_fleet_manager']);
         Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_fleet_manager']);
         Route::get('edit/{id}', 'edit')->name('edit')->middleware(['permission:update_fleet_manager']);
+        Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_fleet_manager']);
+        Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_fleet_manager']);
     });
 
     // Reports Routes - Admin and Super Admin only
@@ -75,4 +82,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::post('/export', 'exportReport')->name('export')->middleware(['permission:export_data']);
         });
+
+        // Activity Logs - Super Admin only
+        Route::controller(LogsController::class)->prefix('logs')->name('logs.')->middleware(['permission:view_report_logs'])->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{id}', 'getLogDetails')->name('details');
+            Route::delete('/{id}', 'destroy')->name('destroy')->middleware('permission:delete_report_logs');
+        });
+
 });

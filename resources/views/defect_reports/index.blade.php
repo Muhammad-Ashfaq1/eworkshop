@@ -166,6 +166,8 @@
                                         <label class="form-label">Work Description <x-req /></label>
                                         <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                                         <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                                     </div>
                                     <div class="col-md-2 d-flex align-items-end">
                                         <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
@@ -467,6 +469,8 @@
                         <label class="form-label">Work Description <x-req /></label>
                         <input type="text" class="form-control work-description" name="works[${workIndex}][work]" placeholder="Enter work description" maxlength="300" required>
                         <input type="hidden" name="works[${workIndex}][type]" value="defect">
+                        <input type="hidden" name="works[${workIndex}][quantity]" value="">
+                        <input type="hidden" name="works[${workIndex}][vehicle_part_id]" value="">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-work">
@@ -660,7 +664,7 @@
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
                             <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" readonly="${isReadOnly}" required>
+                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" isReadOnly ? "readonly" : "" required>
                             <input type="hidden" name="works[${index}][type]" value="${work.type || 'defect'}">
                             <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
                             <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
@@ -681,6 +685,8 @@
                             <label class="form-label">Work Description <x-req /></label>
                             <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                             <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                             <input type="hidden" name="works[0][quantity]" value="">
                             <input type="hidden" name="works[0][vehicle_part_id]" value="">
                         </div>
@@ -714,6 +720,8 @@
                     <label class="form-label">Work Description <x-req /></label>
                     <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                     <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">

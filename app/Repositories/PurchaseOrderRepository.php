@@ -37,7 +37,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         }
 
         $query = PurchaseOrder::forUser($user)
-            ->with(['creator', 'works', 'defectReport.vehicle', 'defectReport.location']);
+            ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location']);
 
         // Apply search filter
         if (!empty($search['search'])) {
@@ -45,18 +45,18 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 $q->where('po_no', 'like', '%' . $search['search'] . '%')
                   ->orWhere('received_by', 'like', '%' . $search['search'] . '%')
                   ->orWhere('issue_date', 'like', '%' . $search['search'] . '%')
-                  ->orWhere('acc_amount', 'like', '%' . $search['search'] . '%')
                   ->orWhereHas('defectReport', function($defectQuery) use ($search) {
-                      $defectQuery->where('reference_number', 'like', '%' . $search['search'] . '%');
-                  })
-                  ->orWhereHas('defectReport.vehicle', function($vehicleQuery) use ($search) {
-                      $vehicleQuery->where('vehicle_number', 'like', '%' . $search['search'] . '%');
-                  })
-                  ->orWhereHas('defectReport.location', function($locationQuery) use ($search) {
-                      $locationQuery->where('name', 'like', '%' . $search['search'] . '%');
+                      $defectQuery->where('reference_number', 'like', '%' . $search['search'] . '%')
+                                  ->orWhereHas('vehicle', function($vehicleQuery) use ($search) {
+                                      $vehicleQuery->where('vehicle_number', 'like', '%' . $search['search'] . '%');
+                                  })
+                                  ->orWhereHas('location', function($locationQuery) use ($search) {
+                                      $locationQuery->where('name', 'like', '%' . $search['search'] . '%');
+                                  });
                   })
                   ->orWhereHas('creator', function($creatorQuery) use ($search) {
-                      $creatorQuery->where('name', 'like', '%' . $search['search'] . '%');
+                      $creatorQuery->where('first_name', 'like', '%' . $search['search'] . '%')
+                                   ->orWhere('last_name', 'like', '%' . $search['search'] . '%');
                   });
             });
         }
@@ -160,14 +160,21 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Update purchase order
-            $purchaseOrder->update([
-                'defect_report_id' => $data['defect_report_id'],
-                'po_no' => $data['po_no'],
-                'issue_date' => $data['issue_date'],
-                'received_by' => $data['received_by'],
-                'acc_amount' => $data['acc_amount'],
-            ]);
+            // Store original values BEFORE any modifications
+            $originalValues = $purchaseOrder->getAttributes();
+            
+            // Store the original values in the observer's static property
+            \App\Observers\PurchaseOrderObserver::setOriginalValues($purchaseOrder->id, $originalValues);
+            
+            // Update purchase order fields individually to preserve original values
+            $purchaseOrder->defect_report_id = $data['defect_report_id'];
+            $purchaseOrder->po_no = $data['po_no'];
+            $purchaseOrder->issue_date = $data['issue_date'];
+            $purchaseOrder->received_by = $data['received_by'];
+            $purchaseOrder->acc_amount = $data['acc_amount'];
+            
+            // Save the changes - this will trigger the observer with proper original values
+            $purchaseOrder->save();
 
             // Handle file upload if provided
             if (isset($data['attachment_url']) && $data['attachment_url']) {

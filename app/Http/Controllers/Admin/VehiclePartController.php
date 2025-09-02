@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVehiclePartRequest;
 use App\Interfaces\VehiclePartRepositoryInterface;
+use App\Models\VehiclePart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -62,6 +63,39 @@ class VehiclePartController extends Controller
             'success' => true,
             'message' => 'Vehicle Part retrieved successfully.',
             'vehiclePart' => $vehiclePart,
+        ]);
+    }
+
+    /**
+     * Show archived vehicle parts
+     */
+    public function archived()
+    {
+        $this->authorize('read_vehicle_parts');
+        $archivedVehicleParts = VehiclePart::onlyTrashed()->get();
+        return view('admin.vehicle-parts.archived', compact('archivedVehicleParts'));
+    }
+
+    /**
+     * Restore archived vehicle part
+     */
+    public function restoreArchived($id)
+    {
+        $this->authorize('restore_vehicle_parts');
+        $vehiclePart = VehiclePart::withTrashed()->find($id);
+        
+        if (!$vehiclePart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vehicle Part not found'
+            ], 404);
+        }
+        
+        $vehiclePart->restore();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Vehicle Part restored successfully'
         ]);
     }
 }

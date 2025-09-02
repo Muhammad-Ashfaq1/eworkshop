@@ -16,12 +16,12 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->call([
             RolePermissionSeeder::class,
-            DefaultUsersSeeder::class,
-            VehicleCategorySeeder::class,
-            LocationSeeder::class,
-            VehiclePartSeeder::class,
-            VehicleSeeder::class,
-            FleetManagerSeeder::class,
+            // DefaultUsersSeeder::class,
+            // VehicleCategorySeeder::class,
+            // LocationSeeder::class,
+            // VehiclePartSeeder::class,
+            // VehicleSeeder::class,
+            // FleetManagerSeeder::class,
         ]);
     }
 }
