@@ -204,6 +204,16 @@
 
                 @role('super_admin')
                     <li class="nav-item">
+                    <a href="{{ route('defect-reports.archieved') }}"
+                            class="nav-link menu-link"
+                            data-key="t-analytics">
+                            <i class="ri-file-damage-line"></i>Archived Defect Reports
+                        </a>
+                    </li>
+                @endrole
+
+                @role('super_admin')
+                    <li class="nav-item">
                         <a class="nav-link menu-link"
                             href="{{ route('admin.logs.index') }}">
                             <i class="ri-file-damage-line"></i> <span data-key="t-defect-reports">Report Logs</span>

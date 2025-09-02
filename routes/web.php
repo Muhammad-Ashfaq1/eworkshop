@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\DefectReportExport;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DefectReportController;
 use App\Http\Controllers\DropdownController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Models\DefectReport;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,8 +45,8 @@ Route::get('get-defect-reports', [DropdownController::class, 'getDefectReports']
 Route::get('get-vehicle-parts', [DropdownController::class, 'getVehicleParts'])->name('dropdown.getVehicleParts');
 
 // Defect Reports routes with permission middleware
-Route::middleware(['auth'])->group(function () {
-    Route::get('defect-reports', [DefectReportController::class, 'index'])->name('defect-reports.index')->middleware('permission:read_defect_reports');
+Route::middleware(['auth'])->controller(DefectReportController::class)->group(function () {
+    Route::get('defect-reports',  'index')->name('defect-reports.index')->middleware('permission:read_defect_reports');
     Route::get('defect-reports/create', [DefectReportController::class, 'create'])->name('defect-reports.create')->middleware('permission:create_defect_reports');
     Route::get('defect-reports/listing', [DefectReportController::class, 'getDefectReportListing'])->name('defect-reports.listing')->middleware('permission:read_defect_reports');
     Route::get('defect-reports/export', [DefectReportController::class, 'exportReports'])->name('defect-reports.export')->middleware('permission:export_data');
@@ -53,7 +55,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('defect-reports/{defectReport}/edit', [DefectReportController::class, 'edit'])->name('defect-reports.edit')->middleware('permission:read_defect_reports');
     Route::put('defect-reports/{defectReport}', [DefectReportController::class, 'update'])->name('defect-reports.update')->middleware('permission:update_defect_reports');
     Route::delete('defect-reports/{defectReport}', [DefectReportController::class, 'destroy'])->name('defect-reports.destroy')->middleware('permission:delete_defect_reports');
+    Route::get('archieved',[DefectReportController::class, 'archieved'])->name('defect-reports.archieved');
+    Route::post('restore-defect-reports-archieved',[DefectReportController::class, 'restoreArchieved'])->name('defect-reports.restore.archieved');
 });
+
+
+
 
 // Purchase Orders routes with permission middleware
 Route::middleware(['auth'])->group(function () {

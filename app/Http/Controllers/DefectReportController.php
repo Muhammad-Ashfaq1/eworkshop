@@ -143,4 +143,10 @@ class DefectReportController extends Controller
 
         return Excel::download(new DefectReportExport, 'defect_reports.xlsx');
     }
+
+    public function archieved()
+    {
+        $archievedDefectReports = DefectReport::with( 'vehicle','location','fleetManager','mvi','creator')->onlyTrashed()->get();
+            return view('defect_reports.archieved', compact('archievedDefectReports'));
+    }
 }
