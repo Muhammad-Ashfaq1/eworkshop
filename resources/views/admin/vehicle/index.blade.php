@@ -120,10 +120,6 @@
         });
 
         function applyVehiclesDatatable() {
-            console.log('Initializing vehicles DataTable...');
-            console.log('Table element found:', $('#js-vehicle-table').length);
-
-            // Configure header icons
             const headerConfig = [
                 { icon: 'ri-hashtag', className: 'text-center' },
                 { icon: 'ri-truck-line' },
@@ -137,12 +133,10 @@
             ];
 
             // Apply header enhancements
-            enhanceTableHeaders('#js-vehicle-table', headerConfig);
+            // enhanceTableHeaders('#js-vehicle-table');
 
-            var table = applyResponsiveDataTable('#js-vehicle-table', {
-
-
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+            var table = $('#js-vehicle-table').DataTable({
+                // dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
                 //         text: '<i class="fas fa-plus me-2"></i>Add New',
@@ -168,7 +162,6 @@
                     url: "{{ route('admin.vehicle.listing') }}",
                     type: "GET",
                     dataSrc: function(json) {
-                        console.log('AJAX response received:', json);
                         return json.data;
                     },
                     error: function(xhr, error, thrown) {
