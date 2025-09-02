@@ -459,6 +459,11 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-purchase-order-table');
+            
+            // Refresh sorting icons after DataTable initialization
+            setTimeout(function() {
+                refreshSortingIcons('#js-purchase-order-table');
+            }, 200);
 
             // Handle view action
             $(document).on('click', '.view-purchase-order-btn', function(e) {

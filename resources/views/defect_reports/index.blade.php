@@ -486,6 +486,11 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-defect-report-table');
+            
+            // Refresh sorting icons after DataTable initialization
+            setTimeout(function() {
+                refreshSortingIcons('#js-defect-report-table');
+            }, 200);
 
             // Handle view action
             $(document).on('click', '.view-defect-report-btn', function(e) {

@@ -43,8 +43,8 @@
     <link href="{{ asset('assets/css/datatable-fixed-controls.css')}}" rel="stylesheet" type="text/css" />
     <!-- Badge Improvements CSS -->
     <link href="{{ asset('assets/css/badge-improvements.css')}}" rel="stylesheet" type="text/css" />
-    <!-- DataTable Sorting Icons CSS -->
-    <link href="{{ asset('assets/css/datatable-sorting-icons.css')}}" rel="stylesheet" type="text/css" />
+    <!-- DataTable Sorting Icons CSS V2 -->
+    <link href="{{ asset('assets/css/datatable-sorting-icons-v2.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
     <!-- Google Fonts for Inter font family -->
@@ -209,6 +209,9 @@
     
     <!-- Badge System -->
     <script src="{{ asset('assets/js/badge-system.js') }}"></script>
+    
+    <!-- DataTable Sorting Fix -->
+    <script src="{{ asset('assets/js/datatable-sorting-fix.js') }}"></script>
 
     <!-- Common DataTable Responsive Configuration -->
 

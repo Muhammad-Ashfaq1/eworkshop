@@ -263,6 +263,11 @@
                 ]
             });
 
+            // Refresh sorting icons after DataTable initialization
+            setTimeout(function() {
+                refreshSortingIcons('#js-vehicle-table');
+            }, 200);
+
             // Handle edit action
             $(document).on('click', '.edit-vehicle-btn', function(e) {
                 e.preventDefault();
