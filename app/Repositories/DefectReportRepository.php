@@ -109,13 +109,13 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 break;
                 
             case 'fleet_manager.name':
-                $query->leftJoin('users as fleet_managers', 'defect_reports.fleet_manager_id', '=', 'fleet_managers.id')
+                $query->leftJoin('fleet_managers as fleet_managers', 'defect_reports.fleet_manager_id', '=', 'fleet_managers.id')
                       ->orderBy('fleet_managers.name', $direction)
                       ->select('defect_reports.*');
                 break;
                 
             case 'mvi.name':
-                $query->leftJoin('users as mvis', 'defect_reports.mvi_id', '=', 'mvis.id')
+                $query->leftJoin('fleet_managers as mvis', 'defect_reports.mvi_id', '=', 'mvis.id')
                       ->orderBy('mvis.name', $direction)
                       ->select('defect_reports.*');
                 break;
