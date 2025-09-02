@@ -28,10 +28,10 @@ class DefectReportObserver
     public function updated(DefectReport $defectReport): void
     {
          $user = Auth::user();
-
+       $old_report_data=$defectReport->getOriginal();
         ReportAudit::create([
             'modifier_id' => $user ? $user->id : null,
-            'before_changing_record' => $report->audit_before ?? [],
+            'before_changing_record' => $old_report_data ?? [],
             'after_changing_record' => $defectReport->getAttributes(),
             'type' => 'defect_report',
         ]);

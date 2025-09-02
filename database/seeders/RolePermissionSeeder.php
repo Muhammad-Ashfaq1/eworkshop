@@ -46,25 +46,26 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::CREATE_LOCATIONS,
             UserPermissions::READ_LOCATIONS,
             UserPermissions::UPDATE_LOCATIONS,
-            // UserPermissions::DELETE_LOCATIONS, // Admin cannot delete locations
+            UserPermissions::DELETE_LOCATIONS,
+            UserPermissions::RESTORE_LOCATIONS,
 
             // Vehicle management - can create, read, update but NOT delete
             UserPermissions::CREATE_VEHICLES,
             UserPermissions::READ_VEHICLES,
             UserPermissions::UPDATE_VEHICLES,
-            // UserPermissions::DELETE_VEHICLES, // Admin cannot delete vehicles
+            UserPermissions::DELETE_VEHICLES,
 
             // Vehicle Parts management - can create, read, update but NOT delete
             UserPermissions::CREATE_VEHICLE_PARTS,
             UserPermissions::READ_VEHICLE_PARTS,
             UserPermissions::UPDATE_VEHICLE_PARTS,
-            // UserPermissions::DELETE_VEHICLE_PARTS, // Admin cannot delete vehicle parts
+            // UserPermissions::DELETE_VEHICLE_PARTS,
 
             // Vehicle Categories management - can create, read, update but NOT delete
             UserPermissions::CREATE_VEHICLE_CATEGORIES,
             UserPermissions::READ_VEHICLE_CATEGORIES,
             UserPermissions::UPDATE_VEHICLE_CATEGORIES,
-            // UserPermissions::DELETE_VEHICLE_CATEGORIES, // Admin cannot delete vehicle categories
+            UserPermissions::DELETE_VEHICLE_CATEGORIES,
 
             // Fleet Manager management - can create, read, update but NOT delete
             UserPermissions::CREATE_FLEET_MANAGER,

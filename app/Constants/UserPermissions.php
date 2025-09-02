@@ -41,6 +41,7 @@ class UserPermissions
     const READ_LOCATIONS = 'read_locations';
     const UPDATE_LOCATIONS = 'update_locations';
     const DELETE_LOCATIONS = 'delete_locations';
+    const RESTORE_LOCATIONS = 'restore_locations';
 
     // Vehicle management permissions
     const CREATE_VEHICLES = 'create_vehicles';
@@ -144,6 +145,8 @@ class UserPermissions
             self::READ_LOCATIONS,
             self::UPDATE_LOCATIONS,
             self::DELETE_LOCATIONS,
+            self::RESTORE_LOCATIONS,
+
 
             // Vehicle management permissions
             self::CREATE_VEHICLES,
