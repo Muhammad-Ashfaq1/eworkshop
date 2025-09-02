@@ -59,6 +59,9 @@ class PurchaseOrderObserver
 
             ReportAudit::create([
                 'modifier_id' => $user ? $user->id : null,
+                'original_creator_id' => $purchaseOrder->created_by,
+                'record_id' => $purchaseOrder->id,
+                'record_type' => 'purchase_order',
                 'before_changing_record' => $originalData,
                 'after_changing_record' => $newData,
                 'before_changing_record_readable' => $originalReadable,
