@@ -24,7 +24,7 @@ class DefectReportObserver
      */
     public function created(DefectReport $defectReport): void
     {
-
+        // Do not create audit logs for new records - only track updates
     }
 
     /**
@@ -46,11 +46,13 @@ class DefectReportObserver
         // Get the original values from the static property
         $originalData = static::$originalValues[$defectReport->id] ?? [];
         $newData = $defectReport->getAttributes();
-
+        
         // Only create audit log if there are actual changes (excluding timestamps)
         $changedFields = $this->getChangedFields($originalData, $newData);
-
-        if (!empty($changedFields)) {
+        
+        // Only create audit log if there are actual changes AND we have original data
+        // This prevents audit logs for new records (which have no original data)
+        if (!empty($changedFields) && !empty($originalData)) {
             // Get human-readable values for better audit logs
             $originalReadable = $this->getHumanReadableValues($defectReport, $originalData);
             $newReadable = $this->getHumanReadableValues($defectReport, $newData);
@@ -64,7 +66,7 @@ class DefectReportObserver
                 'type' => 'defect_report',
             ]);
         }
-
+        
         // Clean up the static property
         unset(static::$originalValues[$defectReport->id]);
     }
@@ -100,12 +102,12 @@ class DefectReportObserver
     {
         $changedFields = [];
         $excludeFields = ['created_at', 'updated_at']; // Exclude timestamp fields
-
+        
         foreach ($newData as $key => $value) {
             if (in_array($key, $excludeFields)) {
                 continue;
             }
-
+            
             $originalValue = $originalData[$key] ?? null;
             if ($originalValue !== $value) {
                 $changedFields[$key] = [
@@ -114,7 +116,7 @@ class DefectReportObserver
                 ];
             }
         }
-
+        
         return $changedFields;
     }
 
@@ -124,7 +126,7 @@ class DefectReportObserver
     private function getHumanReadableValues($defectReport, $data)
     {
         $readableData = [];
-
+        
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'vehicle_id':
@@ -135,7 +137,7 @@ class DefectReportObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-
+                    
                 case 'location_id':
                     if ($value) {
                         $location = \App\Models\Location::find($value);
@@ -144,7 +146,7 @@ class DefectReportObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-
+                    
                 case 'fleet_manager_id':
                     if ($value) {
                         $fleetManager = \App\Models\FleetManager::find($value);
@@ -153,7 +155,7 @@ class DefectReportObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-
+                    
                 case 'mvi_id':
                     if ($value) {
                         $mvi = \App\Models\FleetManager::find($value);
@@ -162,7 +164,7 @@ class DefectReportObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-
+                    
                 case 'created_by':
                     if ($value) {
                         $creator = \App\Models\User::find($value);
@@ -171,25 +173,25 @@ class DefectReportObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-
+                    
                 case 'type':
                     $readableData[$key] = ucwords(str_replace('_', ' ', $value));
                     break;
-
+                    
                 case 'date':
                     $readableData[$key] = $value ? date('d/m/Y', strtotime($value)) : 'N/A';
                     break;
-
+                    
                 case 'attachment_url':
                     $readableData[$key] = $value ? 'File Attached' : 'No File';
                     break;
-
+                    
                 default:
                     $readableData[$key] = $value;
                     break;
             }
         }
-
+        
         return $readableData;
     }
 }
