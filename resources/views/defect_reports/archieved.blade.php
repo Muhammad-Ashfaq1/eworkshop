@@ -57,7 +57,7 @@
                                                     <td>{{ $archievedDefectReport->updated_at->format('d M Y, h:i A') }}
                                                     </td>
                                                     <td>
-
+                                                        @can('restore_defect_reports')
                                                         <div class="dropdown">
                                                             <button class="btn btn-soft-secondary btn-sm dropdown"
                                                                 type="button" data-bs-toggle="dropdown"
@@ -72,6 +72,7 @@
                                                                 </li>
                                                             </ul>
                                                         </div>
+                                                        @endcan
 
                                                     </td>
 
