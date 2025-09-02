@@ -108,7 +108,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['active_users'] }}">{{ $stats['active_users'] }}</span>
                                             </h4>
                                             <span class="status-badge active mb-0">
-                                                <i class="ri-check-line me-1"></i>Active
+                                                <i class="ri-check-line me-1 text-white"></i>Active
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">
@@ -137,7 +137,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['total_roles'] }}">{{ $stats['total_roles'] }}</span>
                                             </h4>
                                             <span class="status-badge pending mb-0">
-                                                <i class="ri-group-line me-1"></i>Roles System
+                                                <i class="ri-group-line me-1 text-white"></i>Roles System
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">

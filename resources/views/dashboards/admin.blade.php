@@ -137,7 +137,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['pending_reports'] }}">{{ $stats['pending_reports'] }}</span>
                                             </h4>
                                             <span class="status-badge pending mb-0">
-                                                <i class="ri-time-line me-1"></i>Pending Review
+                                                <i class="ri-time-line me-1 text-white"></i>Pending Review
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">
@@ -166,7 +166,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['reports_edited_today'] }}">{{ $stats['reports_edited_today'] }}</span>
                                             </h4>
                                             <span class="badge bg-info-subtle text-info mb-0">
-                                                <i class="ri-calendar-check-line me-1"></i>Today
+                                                <i class="ri-calendar-check-line me-1 text-white"></i>Today
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">

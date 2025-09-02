@@ -380,6 +380,8 @@
                     {
                         data: "fleet_manager",
                         name: 'fleet_manager.name',
+                        orderable: false,
+                        searchable: true,
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name);
@@ -424,12 +426,14 @@
                             return createCountBadge(data, 'Works');
                         },
                         className: 'text-center',
-                        orderable: true,
+                        orderable: false,
                         searchable: false
                     },
                     {
                         data: "creator",
                         name: 'creator',
+                        orderable: false,
+                        searchable: true,
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.first_name || '') + ' ' + (data.last_name || '');
@@ -440,6 +444,8 @@
                     {
                         data: "attachment_url",
                         name: 'attachment',
+                        orderable: false,
+                        searchable: false,
                         render: function(data, type, row) {
                             if (data) {
                                 return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>`;

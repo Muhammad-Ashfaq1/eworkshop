@@ -81,7 +81,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['defect_reports']['today'] }}">{{ $stats['defect_reports']['today'] }}</span>
                                             </h4>
                                             <span class="badge bg-primary-subtle text-primary mb-0">
-                                                <i class="ri-time-line me-1"></i>Today
+                                                <i class="ri-time-line me-1 text-white"></i>Today
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">
@@ -110,7 +110,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['purchase_orders']['today'] }}">{{ $stats['purchase_orders']['today'] }}</span>
                                             </h4>
                                             <span class="badge bg-info-subtle text-info mb-0">
-                                                <i class="ri-time-line me-1"></i>Today
+                                                <i class="ri-time-line me-1 text-white"></i>Today
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">
@@ -139,7 +139,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['defect_reports']['total'] }}">{{ $stats['defect_reports']['total'] }}</span>
                                             </h4>
                                             <span class="badge bg-success-subtle text-success mb-0">
-                                                <i class="ri-infinity-line me-1"></i>All Time
+                                                <i class="ri-infinity-line me-1 text-white"></i>All Time
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">
@@ -168,7 +168,7 @@
                                                 <span class="counter-value" data-target="{{ $stats['purchase_orders']['total'] }}">{{ $stats['purchase_orders']['total'] }}</span>
                                             </h4>
                                             <span class="badge bg-warning-subtle text-warning mb-0">
-                                                <i class="ri-infinity-line me-1"></i>All Time
+                                                <i class="ri-infinity-line me-1 text-white"></i>All Time
                                             </span>
                                         </div>
                                         <div class="avatar-lg flex-shrink-0">

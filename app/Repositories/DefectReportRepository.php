@@ -53,6 +53,12 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                   })
                   ->orWhereHas('creator', function($creatorQuery) use ($search) {
                       $creatorQuery->where('name', 'like', '%' . $search['search'] . '%');
+                  })
+                  ->orWhereHas('fleetManager', function($fleetManagerQuery) use ($search) {
+                      $fleetManagerQuery->where('name', 'like', '%' . $search['search'] . '%');
+                  })
+                  ->orWhereHas('mvi', function($mviQuery) use ($search) {
+                      $mviQuery->where('name', 'like', '%' . $search['search'] . '%');
                   });
             });
         }
