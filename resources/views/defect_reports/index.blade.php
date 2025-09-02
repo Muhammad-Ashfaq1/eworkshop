@@ -42,30 +42,30 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive" style="overflow-x: auto; width: 100%;">
-                                    <table id="js-defect-report-table"
-                                        class="table table-bordered table-striped align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Reference #</th>
-                                                <th>Vehicle</th>
-                                                <th>Office/Town</th>
-                                                <th>Driver Name</th>
-                                                <th>Fleet Manager</th>
-                                                <th>MVI</th>
-                                                <th>Date</th>
-                                                <th>Type</th>
-                                                <th>Works Count</th>
-                                                <th>Attachment</th>
-                                                <th>Created By</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be loaded via AJAX -->
-                                        </tbody>
-                                    </table>
+                            <div class="table-responsive">
+                                <table id="js-defect-report-table"
+                                    class="table table-bordered table-striped align-middle table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 50px;">#</th>
+                                            <th style="min-width: 120px;">Reference #</th>
+                                            <th style="min-width: 120px;">Vehicle</th>
+                                            <th style="min-width: 120px;">Office/Town</th>
+                                            <th style="min-width: 120px;">Driver Name</th>
+                                            <th style="min-width: 120px;">Fleet Manager</th>
+                                            <th style="min-width: 100px;">MVI</th>
+                                            <th style="min-width: 120px;">Date</th>
+                                            <th style="min-width: 100px;">Type</th>
+                                            <th style="min-width: 100px;">Works Count</th>
+                                            <th style="min-width: 120px;">Created By</th>
+                                            <th style="min-width: 100px;">Attachment</th>
+                                            <th style="min-width: 120px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -249,54 +249,17 @@
                 ],
                 processing: true,
                 serverSide: true,
+                scrollX: true,
+                scrollCollapse: true,
+                responsive: false,
+                autoWidth: false,
                 ajax: {
                     url: "{{ route('defect-reports.listing') }}",
                     type: "GET"
                 },
-                initComplete: function() {
-                    // Destroy any DataTables wrappers that interfere
-                    $('#js-defect-report-table_wrapper .dataTables_scroll').remove();
-                    $('#js-defect-report-table_wrapper .dataTables_scrollHead').remove();
-                    $('#js-defect-report-table_wrapper .dataTables_scrollBody').remove();
-                    
-                    // Force container scroll
-                    $('.table-responsive').css({
-                        'overflow-x': 'auto !important',
-                        'overflow-y': 'visible !important',
-                        'width': '100% !important',
-                        'display': 'block !important'
-                    });
-                    
-                    // Force table width
-                    $('#js-defect-report-table').css({
-                        'min-width': '1600px !important',
-                        'width': '1600px !important',
-                        'table-layout': 'fixed !important'
-                    });
-                    
-                    // Force wrapper to not interfere
-                    $('#js-defect-report-table_wrapper').css({
-                        'overflow': 'visible !important',
-                        'width': '100% !important'
-                    });
-                },
-                drawCallback: function() {
-                    // Repeat on every draw
-                    setTimeout(function() {
-                        $('.table-responsive').css({
-                            'overflow-x': 'auto !important',
-                            'overflow-y': 'visible !important',
-                            'width': '100% !important'
-                        });
-                        $('#js-defect-report-table').css({
-                            'min-width': '1600px !important',
-                            'width': '1600px !important'
-                        });
-                    }, 100);
-                },
                 columns: [{
                         data: null,
-                        width: '50px',
+                        name: 'serial',
                         render: function(data, type, row, meta) {
                             const start = meta.settings._iDisplayStart;
                             const pageLength = meta.settings._iDisplayLength;
@@ -305,38 +268,39 @@
                         },
                         orderable: false,
                         searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: "reference_number",
-                        width: '120px',
+                        name: 'reference_number',
                         render: function(data, type, row) {
                             return data || 'N/A';
                         }
                     },
                     {
                         data: "vehicle",
-                        width: '120px',
+                        name: 'vehicle',
                         render: function(data, type, row) {
                             return data ? data.vehicle_number : 'N/A';
                         }
                     },
                     {
                         data: "location",
-                        width: '120px',
+                        name: 'location',
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
                         }
                     },
                     {
                         data: "driver_name",
-                        width: '120px',
+                        name: 'driver_name',
                         render: function(data, type, row) {
                             return data || 'N/A';
                         }
                     },
                     {
                         data: "fleet_manager",
-                        width: '120px',
+                        name: 'fleet_manager',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name);
@@ -346,7 +310,7 @@
                     },
                     {
                         data: "mvi",
-                        width: '100px',
+                        name: 'mvi',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name)
@@ -356,14 +320,14 @@
                     },
                     {
                         data: "date",
-                        width: '120px',
+                        name: 'date',
                         render: function(data, type, row) {
                             return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                         }
                     },
                     {
                         data: "type",
-                        width: '100px',
+                        name: 'type',
                         render: function(data, type, row) {
                             const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
                             const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l
@@ -373,14 +337,15 @@
                     },
                     {
                         data: "works",
-                        width: '100px',
+                        name: 'works',
                         render: function(data, type, row) {
                             return data ? `<span class="status-badge active">${data.length}</span>` : '0';
-                        }
+                        },
+                        className: 'text-center'
                     },
                     {
                         data: "creator",
-                        width: '120px',
+                        name: 'creator',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.first_name || '') + ' ' + (data.last_name || '');
@@ -390,18 +355,20 @@
                     },
                     {
                         data: "attachment_url",
-                        width: '100px',
+                        name: 'attachment',
                         render: function(data, type, row) {
                             if (data) {
-                                return `<a href="${data}" target="_blank">View Attachment</a>`;
+                                return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>`;
                             }
                             return 'N/A';
-                        }
+                        },
+                        className: 'text-center'
                     },
                     {
                         data: null,
-                        width: '100px',
+                        name: 'actions',
                         orderable: false,
+                        searchable: false,
                         render: function(data, type, row) {
                             let buttons =
                                 `
@@ -424,21 +391,13 @@
 
                             buttons += `</ul></div>`;
                             return buttons;
-                        }
+                        },
+                        className: 'text-center'
                     }
                 ],
                 order: [
                     [7, 'desc']
-                ],
-                initComplete: function(settings, json) {
-                    // Force column adjustment after table is fully loaded
-                    if (this.api().columns) {
-                        this.api().columns.adjust();
-                    }
-                    if (this.api().fixedHeader && this.api().fixedHeader.adjust) {
-                        this.api().fixedHeader.adjust();
-                    }
-                }
+                ]
             });
 
             // Handle view action
@@ -461,18 +420,6 @@
                 const id = $(this).data('id');
                 deleteDefectReport(id);
             });
-
-            // Force table to show all columns after initialization
-            setTimeout(function() {
-                if (table) {
-                    if (table.columns) {
-                        table.columns.adjust().draw();
-                    }
-                    if (table.fixedHeader && table.fixedHeader.adjust) {
-                        table.fixedHeader.adjust();
-                    }
-                }
-            }, 500);
         }
 
         function loadDropdownData() {

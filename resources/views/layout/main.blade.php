@@ -69,12 +69,45 @@
             width: 100% !important;
         }
 
-        /* Table Scroll Fix */
+        /* Enhanced Responsive Table Styles */
         .table-responsive {
-            overflow-x: auto !important;
+            overflow-x: auto;
+            overflow-y: visible;
+            width: 100%;
         }
-        .table-responsive table {
-            min-width: 1000px !important;
+        
+        .table-nowrap {
+            white-space: nowrap;
+        }
+        
+        .table-responsive .table {
+            margin-bottom: 0;
+        }
+        
+        /* DataTables responsive styling */
+        .dataTables_wrapper .dataTables_scroll {
+            overflow: auto;
+        }
+        
+        .dataTables_wrapper .dataTables_scrollBody {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem 0.25rem;
+            }
+        }
+        
+        /* Ensure proper column min-widths are respected */
+        .table th[style*="min-width"], .table td[style*="min-width"] {
+            white-space: nowrap;
         }
     </style>
     @yield('styles')
