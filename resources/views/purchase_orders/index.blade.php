@@ -340,57 +340,76 @@
                     },
                     {
                         data: "defect_report",
-                        name: 'vehicle',
+                        name: 'defect_report.vehicle.vehicle_number',
                         render: function(data, type, row) {
                             return data && data.vehicle ? data.vehicle.vehicle_number : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "defect_report",
-                        name: 'location',
+                        name: 'defect_report.location.name',
                         render: function(data, type, row) {
                             return data && data.location ? data.location.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "issue_date",
                         name: 'issue_date',
                         render: function(data, type, row) {
-                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
-                        }
+                            if (!data) return 'N/A';
+                            if (type === 'sort' || type === 'type') return data;
+                            return moment(data).format('MMM DD, YYYY');
+                        },
+                        orderable: true,
+                        searchable: false
                     },
                     {
                         data: "received_by",
                         name: 'received_by',
                         render: function(data, type, row) {
                             return data || 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "acc_amount",
                         name: 'amount',
                         render: function(data, type, row) {
-                            return data ? '$' + parseFloat(data).toFixed(2) : 'N/A';
-                        }
+                            if (!data || data === 0) return 'N/A';
+                            if (type === 'sort' || type === 'type') return parseFloat(data);
+                            return '$' + parseFloat(data).toFixed(2);
+                        },
+                        orderable: true,
+                        searchable: false,
+                        className: 'text-end'
                     },
                     {
                         data: "works",
                         name: 'parts_count',
                         render: function(data, type, row) {
-                            return data ? `<span class="status-badge active">${data.length}</span>` : '0';
+                            return createCountBadge(data, 'Parts');
                         },
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: true,
+                        searchable: false
                     },
                     {
                         data: "attachment_url",
                         name: 'attachment',
                         render: function(data, type, row) {
                             if (data) {
-                                return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>`;
+                                return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-success"><i class="ri-eye-line me-1"></i>View</a>`;
                             }
-                            return 'N/A';
+                            return createAttachmentBadge(null);
                         },
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: "creator",

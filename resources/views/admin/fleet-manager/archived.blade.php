@@ -30,14 +30,14 @@
                                             <td>{{ $fleetManager->id }}</td>
                                             <td>{{ $fleetManager->name }}</td>
                                             <td>
-                                                <span
-                                                    class="badge bg-{{ $fleetManager->type === 'fleet_manager' ? 'primary' : 'info' }}">
+                                                <span class="badge bg-{{ $fleetManager->type === 'fleet_manager' ? 'primary-subtle text-primary' : 'info-subtle text-info' }}">
+                                                    <i class="{{ $fleetManager->type === 'fleet_manager' ? 'ri-user-settings-line' : 'ri-user-star-line' }} me-1"></i>
                                                     {{ ucwords(str_replace('_', ' ', $fleetManager->type)) }}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="badge bg-{{ $fleetManager->is_active ? 'success' : 'danger' }}">
+                                                <span class="badge bg-{{ $fleetManager->is_active ? 'success-subtle text-success' : 'danger-subtle text-danger' }}">
+                                                    <i class="{{ $fleetManager->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                     {{ $fleetManager->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\VehiclePartRepositoryInterface;
 use App\Models\VehiclePart;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class VehiclePartRepository implements VehiclePartRepositoryInterface
@@ -39,13 +40,12 @@ class VehiclePartRepository implements VehiclePartRepositoryInterface
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
 
-         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
-
-         $vehicle_parts = $query->skip($skip)->take($pageLength)->get();
-            // Add permission flags using can method
-        $vehicle_parts->each(function ($vehicle_part)  {
-            $vehicle_part->can_edit = auth()->user()->can('update_vehicle_parts');
-            $vehicle_part->can_delete = auth()->user()->can('delete_vehicle_parts');
+        $vehicle_parts = $query->skip($skip)->take($pageLength)->get();
+        
+        // Add permission flags using can method
+        $vehicle_parts->each(function ($vehicle_part) {
+            $vehicle_part->can_edit = Auth::user()->can('update_vehicle_parts');
+            $vehicle_part->can_delete = Auth::user()->can('delete_vehicle_parts');
         });
 
             $response['draw'] = $data['draw'];

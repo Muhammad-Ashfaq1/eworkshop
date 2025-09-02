@@ -31,7 +31,8 @@
                                                     <td>{{ $log->id }}</td>
                                                     <td>{{ $log->modifier->full_name ?? 'N/A' }}</td>
                                                     <td>
-                                                        <span class="badge bg-{{ $log->type === 'defect_report' ? 'primary' : 'success' }}">
+                                                        <span class="badge bg-{{ $log->type === 'defect_report' ? 'warning-subtle text-warning' : 'success-subtle text-success' }}">
+                                                            <i class="{{ $log->type === 'defect_report' ? 'ri-tools-line' : 'ri-shopping-cart-line' }} me-1"></i>
                                                             {{ ucwords(str_replace('_', ' ', $log->type)) }}
                                                         </span>
                                                     </td>

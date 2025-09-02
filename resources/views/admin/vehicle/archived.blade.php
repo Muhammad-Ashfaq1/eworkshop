@@ -34,7 +34,8 @@
                                             <td>{{ $vehicle->model ?? 'N/A' }}</td>
                                             <td>{{ $vehicle->year ?? 'N/A' }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $vehicle->is_active ? 'success' : 'danger' }}">
+                                                <span class="badge bg-{{ $vehicle->is_active ? 'success-subtle text-success' : 'danger-subtle text-danger' }}">
+                                                    <i class="{{ $vehicle->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                     {{ $vehicle->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>

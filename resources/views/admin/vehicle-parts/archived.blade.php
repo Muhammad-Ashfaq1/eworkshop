@@ -34,7 +34,8 @@
                                             <td>{{ $vehiclePart->description ?? 'N/A' }}</td>
                                             <td>{{ $vehiclePart->price ? '₹' . number_format($vehiclePart->price, 2) : 'N/A' }}</td>
                                             <td>
-                                                <span class="badge bg-{{ $vehiclePart->is_active ? 'success' : 'danger' }}">
+                                                <span class="badge bg-{{ $vehiclePart->is_active ? 'success-subtle text-success' : 'danger-subtle text-danger' }}">
+                                                    <i class="{{ $vehiclePart->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                     {{ $vehiclePart->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>

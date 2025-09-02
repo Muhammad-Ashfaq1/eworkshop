@@ -188,32 +188,37 @@
                     },
                     {
                         data: "location",
+                        name: "location.name",
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "category",
+                        name: "category.name", 
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "condition",
                         render: function(data, type, row) {
-                            if (!data) return 'N/A';
-                            const badgeClass = data === 'new' ? 'bg-success' : 'bg-warning';
-                            const displayText = data.charAt(0).toUpperCase() + data.slice(1);
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
+                            return createConditionBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "is_active",
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="status-badge active with-icon"><i class="ri-check-line"></i>Active</span>' :
-                                '<span class="status-badge inactive with-icon"><i class="ri-close-line"></i>Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",

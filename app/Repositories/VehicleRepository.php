@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\VehicleRepositoryInterface;
 use App\Models\Vehicle;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class VehicleRepository implements VehicleRepositoryInterface
@@ -38,9 +39,9 @@ class VehicleRepository implements VehicleRepositoryInterface
             });
         }
 
-        // Apply ordering
+        // Apply ordering with relationship support
         if (isset($search['column_name']) && isset($search['direction'])) {
-            $query->orderBy($search['column_name'], $search['direction']);
+            $this->applyOrderBy($query, $search['column_name'], $search['direction']);
         } else {
             $query->orderBy('id', 'desc');
         }
@@ -48,28 +49,46 @@ class VehicleRepository implements VehicleRepositoryInterface
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
 
         $vehicles = $query->skip($skip)->take($pageLength)->get();
-            // Add permission flags using can method
-        $vehicles->each(function ($vehicle)  {
-            $vehicle->can_edit = auth()->user()->can('update_vehicles');
-            $vehicle->can_delete = auth()->user()->can('delete_vehicles');
+        
+        // Add permission flags using can method
+        $vehicles->each(function ($vehicle) {
+            $vehicle->can_edit = Auth::user()->can('update_vehicles');
+            $vehicle->can_delete = Auth::user()->can('delete_vehicles');
         });
 
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] =$vehicles = $query->skip($skip)->take($pageLength)->get();
-
-// Add permission flags
-$vehicles->each(function ($vehicle) {
-    $vehicle->can_edit = auth()->user()->can('update_vehicles');
-    $vehicle->can_delete = auth()->user()->can('delete_vehicles');
-});
-
-$response['draw'] = $data['draw'];
-$response['recordsTotal'] = $recordsTotal;
-$response['recordsFiltered'] = $recordsFiltered;
-$response['data'] = $vehicles->toArray();
+        $response['data'] = $vehicles->toArray();
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    /**
+     * Apply ordering to query with relationship support
+     */
+    private function applyOrderBy($query, $columnName, $direction)
+    {
+        // Handle relationship sorting
+        switch ($columnName) {
+            case 'location.name':
+                $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
+                      ->orderBy('locations.name', $direction)
+                      ->select('vehicles.*');
+                break;
+                
+            case 'category.name':
+                $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
+                      ->orderBy('vehicle_categories.name', $direction)
+                      ->select('vehicles.*');
+                break;
+                
+            default:
+                // Handle direct column sorting
+                if (strpos($columnName, '.') === false) {
+                    $query->orderBy($columnName, $direction);
+                }
+                break;
+        }
     }
 
     public function getVehicleById($id)

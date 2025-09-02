@@ -299,10 +299,10 @@
                         data: "is_active",
                         name: "is_active",
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="status-badge active with-icon"><i class="ri-check-line"></i>Active</span>' :
-                                '<span class="status-badge inactive with-icon"><i class="ri-close-line"></i>Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",

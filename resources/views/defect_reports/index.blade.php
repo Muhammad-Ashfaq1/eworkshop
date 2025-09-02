@@ -354,17 +354,21 @@
                     },
                     {
                         data: "vehicle",
-                        name: 'vehicle',
+                        name: 'vehicle.vehicle_number',
                         render: function(data, type, row) {
                             return data ? data.vehicle_number : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "location",
-                        name: 'location',
+                        name: 'location.name',
                         render: function(data, type, row) {
                             return data ? data.name : 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "driver_name",
@@ -375,23 +379,27 @@
                     },
                     {
                         data: "fleet_manager",
-                        name: 'fleet_manager',
+                        name: 'fleet_manager.name',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name);
                             }
                             return 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "mvi",
-                        name: 'mvi',
+                        name: 'mvi.name',
                         render: function(data, type, row) {
                             if (data) {
                                 return (data.name)
                             }
                             return 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "date",
@@ -404,19 +412,20 @@
                         data: "type",
                         name: 'type',
                         render: function(data, type, row) {
-                            const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
-                            const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l
-                                .toUpperCase()) : 'N/A';
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
+                            return createTypeBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "works",
                         name: 'works',
                         render: function(data, type, row) {
-                            return data ? `<span class="status-badge active">${data.length}</span>` : '0';
+                            return createCountBadge(data, 'Works');
                         },
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: true,
+                        searchable: false
                     },
                     {
                         data: "creator",

@@ -63,10 +63,13 @@
                                                 <td>{{ $user->phone_number ?? 'N/A' }}</td>
                                                 <td>
                                                     @if ($user->roles->isNotEmpty())
-                                                        <span
-                                                            class="badge bg-primary">{{ ucfirst($user->roles->first()->name) }}</span>
+                                                        <span class="badge bg-primary-subtle text-primary">
+                                                            <i class="ri-user-settings-line me-1"></i>{{ ucfirst($user->roles->first()->name) }}
+                                                        </span>
                                                     @else
-                                                        <span class="badge bg-secondary">No Role</span>
+                                                        <span class="badge bg-light text-muted">
+                                                            <i class="ri-user-line me-1"></i>No Role
+                                                        </span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -77,8 +80,9 @@
                                                             {{ $user->is_active ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="status-{{ $user->id }}">
                                                             <span
-                                                                class="badge {{ $user->is_active ? 'bg-success' : 'bg-danger' }}"
+                                                                class="badge {{ $user->is_active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}"
                                                                 id="status-badge-{{ $user->id }}">
+                                                                <i class="{{ $user->is_active ? 'ri-check-line' : 'ri-close-line' }} me-1"></i>
                                                                 {{ $user->is_active ? 'Active' : 'Inactive' }}
                                                             </span>
                                                         </label>
@@ -555,9 +559,11 @@
                             // Update badge
                             const $badge = $(`#status-badge-${userId}`);
                             if (response.is_active) {
-                                $badge.removeClass('bg-danger').addClass('bg-success').text('Active');
+                                $badge.removeClass('bg-danger-subtle text-danger').addClass('bg-success-subtle text-success')
+                                      .html('<i class="ri-check-line me-1"></i>Active');
                             } else {
-                                $badge.removeClass('bg-success').addClass('bg-danger').text('Inactive');
+                                $badge.removeClass('bg-success-subtle text-success').addClass('bg-danger-subtle text-danger')
+                                      .html('<i class="ri-close-line me-1"></i>Inactive');
                             }
                             showSuccessMessage(response.message);
                         } else {

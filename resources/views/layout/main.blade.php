@@ -41,6 +41,8 @@
     <link href="{{ asset('assets/css/admin-datatable-style.css')}}" rel="stylesheet" type="text/css" />
     <!-- DataTable Fixed Controls CSS -->
     <link href="{{ asset('assets/css/datatable-fixed-controls.css')}}" rel="stylesheet" type="text/css" />
+    <!-- Badge Improvements CSS -->
+    <link href="{{ asset('assets/css/badge-improvements.css')}}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
     <!-- Google Fonts for Inter font family -->
@@ -202,6 +204,9 @@
     
     <!-- DataTable Utilities -->
     <script src="{{ asset('assets/js/datatable-utils.js') }}"></script>
+    
+    <!-- Badge System -->
+    <script src="{{ asset('assets/js/badge-system.js') }}"></script>
 
     <!-- Common DataTable Responsive Configuration -->
 

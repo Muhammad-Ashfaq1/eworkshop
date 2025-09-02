@@ -190,20 +190,24 @@
                         data: "location_type",
                         width: '120px',
                         render: function(data, type, row) {
-                            if (!data) return 'N/A';
-                            const badgeClass = data === 'town' ? 'bg-info' : 'bg-warning';
-                            const displayText = data.charAt(0).toUpperCase() + data.slice(1);
-                            return `<span class="badge ${badgeClass}">${displayText}</span>`;
-                        }
+                            const typeMap = {
+                                'town': { class: 'bg-info-subtle text-info', icon: 'ri-map-pin-line' },
+                                'city': { class: 'bg-warning-subtle text-warning', icon: 'ri-building-line' },
+                                'district': { class: 'bg-primary-subtle text-primary', icon: 'ri-government-line' }
+                            };
+                            return createTypeBadge(data, typeMap);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "is_active",
                         width: '100px',
                         render: function(data, type, row) {
-                            return data == 1 ?
-                                '<span class="status-badge active with-icon"><i class="ri-check-line"></i>Active</span>' :
-                                '<span class="status-badge inactive with-icon"><i class="ri-close-line"></i>Inactive</span>';
-                        }
+                            return createStatusBadge(data);
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "created_at",
