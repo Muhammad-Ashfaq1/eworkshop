@@ -378,16 +378,16 @@
                     },
                     {
                         data: "acc_amount",
-                        name: 'amount',
+                        name: 'acc_amount',
                         render: function(data, type, row) {
                             if (!data || data === 0) return 'N/A';
                             if (type === 'sort' || type === 'type') return parseFloat(data);
-                            return '$' + parseFloat(data).toFixed(2);
+                            return parseFloat(data).toFixed(2);
                         },
                         orderable: true,
                         searchable: false,
                         className: 'text-end'
-                    },
+                    }, 
                     {
                         data: "works",
                         name: 'parts_count',

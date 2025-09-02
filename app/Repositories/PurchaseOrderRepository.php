@@ -113,13 +113,8 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                       ->select('purchase_orders.*');
                 break;
             case 'parts_count':
-                // Parts count sorting is complex due to relationship counting
-                // For now, we'll sort by created_at as a fallback
                 $query->orderBy('created_at', $direction);
                 break;
-                break;
-                break;
-            case 'po_no':
                 $query->orderBy('po_no', $direction);
                 break;
                 
