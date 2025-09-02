@@ -255,25 +255,9 @@
                 { icon: 'ri-settings-line', className: 'text-center' }
             ];
 
-            enhanceTableHeaders('#js-vehicle-part-table', headerConfig);
+            // enhanceTableHeaders('#js-vehicle-part-table', headerConfig);
 
-            var table = applyResponsiveDataTable('#js-vehicle-part-table', {
-        
-        
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
-                // buttons: [
-                //     {
-                //         text: '<i class="fas fa-plus me-2"></i>Add New',
-                //         className: 'btn btn-primary',
-                //         action: function (e, dt, node, config) {
-                //             $('#js-modal-title').text('Add Vehicle Part');
-                //             $('#js-vehiclePart-id').val('');
-                //             $('#js-add-vehicle-part-form')[0].reset();
-                //             $('#js-add-vehicle-part-submit').text('Add');
-                //             $('#js-add-vehicle-part-modal').modal('show');
-                //         }
-                //     }
-                // ],
+            var table = $('#js-vehicle-part-table').DataTable({
                 pageLength: 20,
                 searching: true,
                 lengthMenu: [

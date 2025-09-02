@@ -122,11 +122,12 @@
     <script>
         $(document).ready(function() {
             $('#js-reports-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
-        
-        
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[4, 'desc']] // Sort by created_at descending
             });
         });

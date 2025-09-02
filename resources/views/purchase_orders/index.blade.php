@@ -280,10 +280,9 @@
             ];
 
             // Apply header enhancements
-            enhanceTableHeaders('#js-purchase-order-table', headerConfig);
+            // enhanceTableHeaders('#js-purchase-order-table', headerConfig);
 
-            var table = applyResponsiveDataTable('#js-purchase-order-table', {
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+            var table = $('#js-purchase-order-table').DataTable({
                 pageLength: 20,
                 searching: true,
                 lengthMenu: [
@@ -292,12 +291,6 @@
                 ],
                 processing: true,
                 serverSide: true,
-                
-                
-                
-                
-                
-                
                 ajax: {
                     url: "{{ route('purchase-orders.listing') }}",
                     type: "GET"

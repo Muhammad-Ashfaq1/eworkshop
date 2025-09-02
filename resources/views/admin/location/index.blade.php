@@ -115,7 +115,6 @@
 
         function applyLocationsDatatable() {
             var table = $('#js-location-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
                 // buttons: [
                 //     {
                 //         text: '<i class="fas fa-plus me-2"></i>Add New',

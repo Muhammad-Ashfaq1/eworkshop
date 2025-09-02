@@ -77,11 +77,15 @@
                 { icon: 'ri-settings-line', className: 'text-center' }
             ];
 
-            enhanceTableHeaders('#js-archived-vehicles-table', headerConfig);
+            // enhanceTableHeaders('#js-archived-vehicles-table', headerConfig);
 
-                         applyResponsiveDataTable('#js-archived-vehicles-table', {
-        
-        
+            $('#js-archived-vehicles-table').DataTable({
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[7, 'desc']] // Sort by deleted_at descending
             });
 

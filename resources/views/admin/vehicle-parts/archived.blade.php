@@ -75,11 +75,15 @@
                 { icon: 'ri-settings-line', className: 'text-center' }
             ];
 
-            enhanceTableHeaders('#js-archived-vehicle-parts-table', headerConfig);
+            // enhanceTableHeaders('#js-archived-vehicle-parts-table', headerConfig);
 
-            applyResponsiveDataTable('#js-archived-vehicle-parts-table', {
-        
-        
+            $('#js-archived-vehicle-parts-table').DataTable({
+                pageLength: 20,
+                searching: true,
+                lengthMenu: [
+                    [20, 30, 50, 100],
+                    ["20 entries", "30 entries", "50 entries", "100 entries"]
+                ],
                 order: [[7, 'desc']] // Sort by deleted_at descending
             });
 

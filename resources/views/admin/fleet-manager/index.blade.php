@@ -113,7 +113,14 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            quickResponsiveTable('#js-fleet-manager-table');
+            $('#js-fleet-manager-table').DataTable({
+            pageLength: 20,
+            searching: true,
+            lengthMenu: [
+                [20, 30, 50, 100],
+                ["20 entries", "30 entries", "50 entries", "100 entries"]
+            ]
+        });
 
 
             $('#js-fleet-manager-form').validate({
