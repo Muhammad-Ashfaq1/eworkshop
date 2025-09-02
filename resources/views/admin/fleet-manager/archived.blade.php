@@ -9,9 +9,9 @@
                     <h5 class="card-title mb-0">Archived Fleet Managers</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive force-table-responsive table-scroll-indicator">
+                    <div class="table-responsive">
                         <table id="js-archived-fleet-managers-table"
-                            class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -66,10 +66,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#js-archived-fleet-managers-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
+            quickResponsiveTable('#js-archived-fleet-managers-table', {
         
         
                 order: [

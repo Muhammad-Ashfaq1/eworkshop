@@ -125,6 +125,21 @@
             white-space: nowrap;
         }
         
+        /* Standard medium container sizing */
+        .page-content .container {
+            max-width: 1400px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .page-content .container {
+                max-width: 100%;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+        
         /* Enhanced Table Header Styling */
         .table-dark th {
             background-color: #495057 !important;
@@ -185,14 +200,14 @@
         <div class="main-content">
 
             <div class="page-content">
-                <div class="container-fluid">
+                <div class="container">
 
                     @yield('content')
 
 
 
                 </div>
-                <!-- container-fluid -->
+                <!-- container -->
             </div>
             <!-- End Page-content -->
 

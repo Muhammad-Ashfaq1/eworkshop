@@ -9,8 +9,8 @@
                     <h5 class="card-title mb-0">Archived Vehicle Parts</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive force-table-responsive table-scroll-indicator">
-                        <table id="js-archived-vehicle-parts-table" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <div class="table-responsive">
+                        <table id="js-archived-vehicle-parts-table" class="table table-bordered table-striped align-middle table-nowrap">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -64,10 +64,20 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#js-archived-vehicle-parts-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
+            // Configure header icons for archived vehicle parts
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-link' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-delete-bin-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            enhanceTableHeaders('#js-archived-vehicle-parts-table', headerConfig);
+
+            applyResponsiveDataTable('#js-archived-vehicle-parts-table', {
         
         
                 order: [[7, 'desc']] // Sort by deleted_at descending

@@ -16,27 +16,24 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable table-responsive force-table-responsive table-scroll-indicator">
-                        <div class="table-wrapper">
-                            <table id="js-vehicle-part-table"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle vehicle-parts-datatable"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Part Name</th>
-                                        <th>Slug</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
-                                        <th>Updated At</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table id="js-vehicle-part-table"
+                            class="table table-bordered table-striped align-middle table-nowrap">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 50px;" class="text-center">#</th>
+                                    <th style="min-width: 150px;">Part Name</th>
+                                    <th style="min-width: 120px;">Slug</th>
+                                    <th style="min-width: 100px;">Status</th>
+                                    <th style="min-width: 120px;">Created At</th>
+                                    <th style="min-width: 120px;">Updated At</th>
+                                    <th style="min-width: 120px;" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be loaded via AJAX -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -247,10 +244,20 @@
         });
 
         function applyVehiclePartsDatatable() {
-            var table = $('#js-vehicle-part-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
+            // Configure header icons for vehicle parts
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-tools-line' },
+                { icon: 'ri-link' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-calendar-event-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            enhanceTableHeaders('#js-vehicle-part-table', headerConfig);
+
+            var table = applyResponsiveDataTable('#js-vehicle-part-table', {
         
         
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',

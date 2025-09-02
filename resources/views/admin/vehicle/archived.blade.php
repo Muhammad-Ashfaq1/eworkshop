@@ -64,10 +64,22 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#js-archived-vehicles-table').DataTable({
-        scrollX: false,
-        
-        scrollCollapse: false,
+            // Configure header icons for archived vehicles
+            const headerConfig = [
+                { icon: 'ri-hashtag', className: 'text-center' },
+                { icon: 'ri-truck-line' },
+                { icon: 'ri-bookmark-line' },
+                { icon: 'ri-car-line' },
+                { icon: 'ri-calendar-2-line' },
+                { icon: 'ri-checkbox-circle-line' },
+                { icon: 'ri-calendar-line' },
+                { icon: 'ri-delete-bin-line' },
+                { icon: 'ri-settings-line', className: 'text-center' }
+            ];
+
+            enhanceTableHeaders('#js-archived-vehicles-table', headerConfig);
+
+                         applyResponsiveDataTable('#js-archived-vehicles-table', {
         
         
                 order: [[7, 'desc']] // Sort by deleted_at descending
