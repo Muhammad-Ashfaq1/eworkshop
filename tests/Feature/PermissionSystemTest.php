@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
+use App\Models\DefectReport;
 
 class PermissionSystemTest extends TestCase
 {
@@ -48,6 +49,75 @@ class PermissionSystemTest extends TestCase
         $deo->givePermissionTo([
             'read_locations', 'read_vehicles', 'read_defect_reports',
             'create_defect_reports', 'view_reports'
+        ]);
+    }
+
+    public function test_super_admin_can_perform_defect_report_crud()
+    {
+        // Create super admin user
+        $superAdmin = User::factory()->create();
+        $superAdminRole = Role::where('name', 'super_admin')->first();
+        $superAdmin->assignRole($superAdminRole);
+
+        // Create a defect report
+        $defectReport = DefectReport::factory()->create([
+            'created_by' => User::factory()->create()->id,
+        ]);
+
+        // Test that super admin can view defect reports
+        $this->actingAs($superAdmin)
+            ->get('/defect-reports')
+            ->assertStatus(200);
+
+        // Test that super admin can view defect report listing
+        $this->actingAs($superAdmin)
+            ->get('/defect-reports/listing')
+            ->assertStatus(200);
+
+        // Test that super admin can edit defect report (returns JSON)
+        $this->actingAs($superAdmin)
+            ->get("/defect-reports/{$defectReport->id}/edit")
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        // Test that super admin can delete defect report
+        $this->actingAs($superAdmin)
+            ->delete("/defect-reports/{$defectReport->id}")
+            ->assertStatus(200);
+    }
+
+    public function test_super_admin_can_update_defect_report()
+    {
+        // Create super admin user
+        $superAdmin = User::factory()->create();
+        $superAdminRole = Role::where('name', 'super_admin')->first();
+        $superAdmin->assignRole($superAdminRole);
+
+        // Create a defect report
+        $defectReport = DefectReport::factory()->create([
+            'created_by' => User::factory()->create()->id,
+        ]);
+
+        // Test that super admin can update defect report
+        $this->actingAs($superAdmin)
+            ->put("/defect-reports/{$defectReport->id}", [
+                'driver_name' => 'Updated Driver Name',
+                'date' => '2025-08-28',
+                'type' => 'defect_report',
+                'works' => [
+                    [
+                        'work' => 'Updated work description',
+                        'type' => 'defect'
+                    ]
+                ]
+            ])
+            ->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        // Verify the update was successful
+        $this->assertDatabaseHas('defect_reports', [
+            'id' => $defectReport->id,
+            'driver_name' => 'Updated Driver Name',
         ]);
     }
 

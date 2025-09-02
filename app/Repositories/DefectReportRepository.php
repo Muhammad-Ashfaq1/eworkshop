@@ -15,15 +15,25 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 {
     public function getDefectReportListing($data, $user): JsonResponse
     {
+        // Set default values for DataTables parameters
+        $data = array_merge([
+            'start' => 0,
+            'length' => 10,
+            'draw' => 1,
+            'search' => ['value' => ''],
+            'order' => [],
+            'columns' => []
+        ], $data);
+
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
         $pageLength = $data['length'];
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
         $search['search'] = $data['search']['value']; // gets the search value from request
 
-        if (isset($data['order'])) {
+        if (isset($data['order']) && !empty($data['order'])) {
             $index = $data['order'][0]['column'];
             $search['direction'] = $data['order'][0]['dir'];
-            $search['column_name'] = $data['columns'][$index]['name'];
+            $search['column_name'] = $data['columns'][$index]['name'] ?? 'created_at';
         }
 
         $query = DefectReport::forUser($user)
@@ -56,10 +66,18 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
 
+        $defectReports = $query->skip($skip)->take($pageLength)->get();
+
+        // Add permission flags using can method
+        $defectReports->each(function ($defectReport) use ($user) {
+            $defectReport->can_edit = $user->can('update_defect_reports');
+            $defectReport->can_delete = $user->can('delete_defect_reports');
+        });
+
         $response['draw'] = $data['draw'];
         $response['recordsTotal'] = $recordsTotal;
         $response['recordsFiltered'] = $recordsFiltered;
-        $response['data'] = $query->skip($skip)->take($pageLength)->get()->toArray();
+        $response['data'] = $defectReports->toArray();
 
         return response()->json($response, Response::HTTP_OK);
     }
@@ -100,8 +118,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                         'defect_report_id' => $defectReport->id,
                         'work' => $workData['work'],
                         'type' => $workData['type'],
-                        'quantity' => $workData['quantity'] ?? null,
-                        'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
+                        'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
+                        'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                     ]);
                 }
             }
@@ -140,26 +158,33 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            // Update defect report
-            $defectReport->update([
-                'vehicle_id' => $data['vehicle_id'],
-                'location_id' => $data['location_id'],
-                'driver_name' => $data['driver_name'],
-                'fleet_manager_id' => $data['fleet_manager_id'],
-                'mvi_id' => $data['mvi_id'],
-                'date' => $data['date'],
-                'type' => $data['type'],
-            ]);
+            // Store original values BEFORE any modifications
+            $originalValues = $defectReport->getAttributes();
+            
+            // Store the original values in the observer's static property
+            \App\Observers\DefectReportObserver::setOriginalValues($defectReport->id, $originalValues);
+            
+            // Update defect report fields individually to preserve original values
+            $defectReport->vehicle_id = $data['vehicle_id'];
+            $defectReport->location_id = $data['location_id'];
+            $defectReport->driver_name = $data['driver_name'];
+            $defectReport->fleet_manager_id = $data['fleet_manager_id'];
+            $defectReport->mvi_id = $data['mvi_id'];
+            $defectReport->date = $data['date'];
+            $defectReport->type = $data['type'];
+            
+            // Save the changes - this will trigger the observer with proper original values
+            $defectReport->save();
 
-            // Handle file upload
-            if (isset($data['attach_file']) && $data['attach_file']) {
+            // Handle file upload if provided
+            if (isset($data['attachment_url']) && $data['attachment_url']) {
                 // Delete old file if exists
-                if ($defectReport->attach_file) {
-                    FileUploadManager::deleteFile($defectReport->attach_file);
+                if ($defectReport->attachment_url) {
+                    FileUploadManager::deleteFile($defectReport->attachment_url);
                 }
 
-                $file = FileUploadManager::uploadFile($data['attach_file'], 'defect_reports/');
-                $defectReport->update(['attach_file' => $file['path']]);
+                $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
+                $defectReport->update(['attachment_url' => $file['path']]);
             }
 
             // Delete existing works and create new ones
@@ -171,8 +196,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                         'defect_report_id' => $defectReport->id,
                         'work' => $workData['work'],
                         'type' => $workData['type'],
-                        'quantity' => $workData['quantity'] ?? null,
-                        'vehicle_part_id' => $workData['vehicle_part_id'] ?? null,
+                        'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
+                        'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                     ]);
                 }
             }
@@ -210,8 +235,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             }
 
             // Delete attached file if exists
-            if ($defectReport->attach_file) {
-                FileUploadManager::deleteFile($defectReport->attach_file);
+            if ($defectReport->attachment_url) {
+                FileUploadManager::deleteFile($defectReport->attachment_url);
             }
 
             $defectReport->delete();

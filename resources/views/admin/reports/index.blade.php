@@ -19,6 +19,7 @@
                         <div class="col-md-3">
                             <label for="reportType" class="form-label">Report Type <x-req /></label>
                             <select class="form-control" id="reportType" name="reportType">
+                                <option value="" selected disabled>Select Report Type</option>
                                 <option value="vehicles">Vehicles Report</option>
                                 <option value="defect_reports">Defect Reports</option>
                                 <option value="vehicle_parts">Vehicle Parts</option>
@@ -671,33 +672,23 @@
     function generateDefectReportFilters() {
         return `
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <label for="defectType" class="form-label">Defect Type</label>
-                    <select class="form-control" id="defectType" name="defectType">
-                        <option value="">All Types</option>
-                        ${generateOptions(filterOptions.defect_reports?.types || [])}
-                    </select>
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="defectVehicle" class="form-label">Vehicle</label>
                     <select class="form-control" id="defectVehicle" name="defectVehicle">
                         <option value="">All Vehicles</option>
                         ${generateOptions(filterOptions.defect_reports?.vehicles || {})}
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="defectLocation" class="form-label">Location</label>
                     <select class="form-control" id="defectLocation" name="defectLocation">
                         <option value="">All Locations</option>
                         ${generateOptions(filterOptions.defect_reports?.locations || {})}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label for="defectCreatedBy" class="form-label">Created By</label>
-                    <select class="form-control" id="defectCreatedBy" name="defectCreatedBy">
-                        <option value="">All Users</option>
-                        ${generateOptions(filterOptions.defect_reports?.users || {})}
-                    </select>
+                <div class="col-md-4">
+                    <label for="defectDate" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="defectDate" name="defectDate">
                 </div>
             </div>
         `;
@@ -766,10 +757,9 @@
                 filters.is_active = $('#vehicleStatus').val();
                 break;
             case 'defect_reports':
-                filters.type = $('#defectType').val();
                 filters.vehicle_id = $('#defectVehicle').val();
                 filters.location_id = $('#defectLocation').val();
-                filters.created_by = $('#defectCreatedBy').val();
+                filters.defect_date = $('#defectDate').val();
                 break;
             case 'vehicle_parts':
                 filters.is_active = $('#partStatus').val();
@@ -885,19 +875,71 @@
         const filters = collectFilters();
         
         // Show loading message
-        toastr.info('Preparing export...', 'Please wait');
+        toastr.info('Preparing CSV export...', 'Please wait');
         
-        // For now, just show a success message
-        // In the future, this could download a file
-        setTimeout(() => {
-            toastr.success('Export functionality will be implemented soon!', 'Export');
-        }, 1000);
+        // Make AJAX call to export endpoint
+        $.ajax({
+            url: "{{ route('admin.reports.export') }}",
+            type: 'POST',
+            data: filters,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Create and download CSV file
+                    downloadCSV(response.data, generateFileName(filters));
+                    toastr.success('Export completed successfully!', 'Export');
+                } else {
+                    toastr.error(response.message || 'Export failed', 'Export Error');
+                }
+            },
+            error: function(xhr) {
+                toastr.error('Export failed. Please try again.', 'Export Error');
+                console.error('Export error:', xhr);
+            }
+        });
+    }
+
+    function downloadCSV(csvContent, filename) {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
         
-        // You could also make an AJAX call to the export endpoint
-        // $.post("{{ route('admin.reports.export') }}", filters)
-        //     .done(function(response) {
-        //         // Handle export response
-        //     });
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function generateFileName(filters) {
+        const timestamp = new Date().toISOString().slice(0, 10);
+        const reportType = filters.report_type || 'report';
+        
+        let fileName = `${reportType}_${timestamp}`;
+        
+        // Add filter information to filename
+        if (filters.vehicle_id) {
+            fileName += '_vehicle_' + filters.vehicle_id;
+        }
+        if (filters.location_id) {
+            fileName += '_location_' + filters.location_id;
+        }
+        if (filters.date_from) {
+            fileName += '_from_' + filters.date_from;
+        }
+        if (filters.date_to) {
+            fileName += '_to_' + filters.date_to;
+        }
+        if (filters.search) {
+            fileName += '_search_' + filters.search.replace(/[^a-zA-Z0-9]/g, '_');
+        }
+        
+        return fileName + '.csv';
     }
 </script>
 @endsection

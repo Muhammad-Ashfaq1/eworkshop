@@ -9,18 +9,21 @@
                     <h5 class="card-title mb-0">FleetManager / Mvi</h5>
                     @if(auth()->user()->can('create_fleet_manager'))
                         <div class="float-end">
+                            @can('create_fleet_manager')
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#js-fleet-manager-modal">
                                 Add New FleetManager/Mvi
                             </button>
+                            @endcan
                         </div>
                     @endif
                 </div>
                 <div class="card-body">
-                    <div class="masters-datatable">
-                        <table id="js-fleet-manager-table"
-                            class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
-                            style="width:100%">
+                    <div class="masters-datatable table-responsive">
+                        <div class="table-wrapper">
+                            <table id="js-fleet-manager-table"
+                                class="table table-bordered dt-responsive nowrap table-striped align-middle location-datatable"
+                                style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -36,6 +39,7 @@
                                 @include('admin.fleet-manager.data-table')
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

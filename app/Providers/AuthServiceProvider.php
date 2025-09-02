@@ -86,6 +86,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_locations');
         });
 
+        Gate::define('restore_locations', function ($user) {
+            return $user->hasPermissionTo('restore_locations');
+        });
+
         Gate::define('update_profile', function ($user) {
             return $user->hasPermissionTo('update_profile');
         });
@@ -133,6 +137,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete_fleet_manager', function ($user) {
             return $user->hasPermissionTo('delete_fleet_manager');
+        });
+
+        Gate::define('restore_fleet_manager', function ($user) {
+            return $user->hasPermissionTo('restore_fleet_manager');
         });
 
         // MVI gates
@@ -189,6 +197,116 @@ class AuthServiceProvider extends ServiceProvider
         // Super admin gate - has all permissions
         Gate::define('super_admin', function ($user) {
             return $user->hasRole('super_admin');
+        });
+
+        // Defect Report gates
+        Gate::define('create_defect_reports', function ($user) {
+            return $user->hasPermissionTo('create_defect_reports');
+        });
+
+        Gate::define('read_defect_reports', function ($user) {
+            return $user->hasPermissionTo('read_defect_reports');
+        });
+
+        Gate::define('update_defect_reports', function ($user) {
+            return $user->hasPermissionTo('update_defect_reports');
+        });
+
+        Gate::define('delete_defect_reports', function ($user) {
+            return $user->hasPermissionTo('delete_defect_reports');
+        });
+
+        Gate::define('restore_defect_reports', function ($user) {
+            return $user->hasPermissionTo('restore_defect_reports');
+        });
+
+        // Report logs gates
+        Gate::define('view_report_logs', function ($user) {
+            return $user->hasPermissionTo('view_report_logs');
+        });
+
+        Gate::define('delete_report_logs', function ($user) {
+            return $user->hasPermissionTo('delete_report_logs');
+        });
+
+        // Vehicle gates
+        Gate::define('create_vehicles', function ($user) {
+            return $user->hasPermissionTo('create_vehicles');
+        });
+
+        Gate::define('read_vehicles', function ($user) {
+            return $user->hasPermissionTo('read_vehicles');
+        });
+
+        Gate::define('update_vehicles', function ($user) {
+            return $user->hasPermissionTo('update_vehicles');
+        });
+
+        Gate::define('delete_vehicles', function ($user) {
+            return $user->hasPermissionTo('delete_vehicles');
+        });
+
+        Gate::define('restore_vehicles', function ($user) {
+            return $user->hasPermissionTo('restore_vehicles');
+        });
+
+        // Vehicle Parts gates
+        Gate::define('create_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('create_vehicle_parts');
+        });
+
+        Gate::define('read_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('read_vehicle_parts');
+        });
+
+        Gate::define('update_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('update_vehicle_parts');
+        });
+
+        Gate::define('delete_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('delete_vehicle_parts');
+        });
+
+        Gate::define('restore_vehicle_parts', function ($user) {
+            return $user->hasPermissionTo('restore_vehicle_parts');
+        });
+
+        // Vehicle Categories gates
+        Gate::define('create_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('create_vehicle_categories');
+        });
+
+        Gate::define('read_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('read_vehicle_categories');
+        });
+
+        Gate::define('update_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('update_vehicle_categories');
+        });
+
+        Gate::define('delete_vehicle_categories', function ($user) {
+            return $user->hasPermissionTo('delete_vehicle_categories');
+        });
+
+        // Purchase Order gates
+        Gate::define('create_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('create_purchase_orders');
+        });
+
+        Gate::define('read_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('read_purchase_orders');
+        });
+
+        Gate::define('update_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('update_purchase_orders');
+        });
+
+        Gate::define('delete_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('delete_purchase_orders');
+        });
+
+        Gate::define('restore_purchase_orders', function ($user) {
+            return $user->hasPermissionTo('restore_purchase_orders');
         });
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLocationRequest;
 use App\Interfaces\LocationRepositoryInterface;
+use App\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -83,5 +84,28 @@ class LocationController extends Controller
     {
         $this->authorize('delete_locations');
         return $this->locationRepository->deleteLocation($id);
+    }
+
+
+    public function archieved()
+    {
+        $archievedLocations = Location::onlyTrashed()->get();
+        return view('admin.location.archieved', compact('archievedLocations'));
+    }
+
+    public function restore($id)
+    {
+        $location = Location::onlyTrashed()->find($id);
+        if (!$location) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Location not found'
+            ], 404);
+        }
+        $location->restore();
+        return response()->json([
+            'success' => true,
+            'message' => 'Location restored successfully'
+        ], 200);
     }
 }

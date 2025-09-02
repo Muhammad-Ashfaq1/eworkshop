@@ -67,6 +67,37 @@ class FleetManagerController extends Controller
             'message' => 'Fleet Manager/Mvi not found'
         ]);
     }
+
+    /**
+     * Show archived fleet managers
+     */
+    public function archived()
+    {
+        $this->authorize('read_fleet_manager');
+        $archivedFleetManagers = FleetManager::onlyTrashed()->get();
+        return view('admin.fleet-manager.archived', compact('archivedFleetManagers'));
+    }
+
+    /**
+     * Restore archived fleet manager
+     */
+    public function restoreArchived($id)
+    {
+        $this->authorize('restore_fleet_manager');
+        $fleetManager = FleetManager::withTrashed()->find($id);
+        
+        if (!$fleetManager) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fleet Manager not found'
+            ], 404);
+        }
+        
+        $fleetManager->restore();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Fleet Manager restored successfully'
+        ]);
+    }
 }
-
-

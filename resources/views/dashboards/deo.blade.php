@@ -226,7 +226,7 @@
                                                             <span class="text-muted">{{ $report->driver_name }}</span>
                                                         </td>
                                                         <td>
-                                                            <span class="text-muted">{{ $report->created_at->format('d/m/Y') }}</span>
+                                                            <span class="text-muted">{{ formatCreatedAt($report->created_at) }}</span>
                                                         </td>
                                                         <td>
                                                             <span class="badge bg-success-subtle text-success">Completed</span>

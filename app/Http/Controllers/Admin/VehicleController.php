@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VehicleRequest;
 use App\Interfaces\VehicleRepositoryInterface;
+use App\Models\Vehicle;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -63,5 +64,38 @@ class VehicleController extends Controller
     {
         $this->authorize('delete_vehicles');
         return $this->vehicleRepository->deleteVehicle($id);
+    }
+
+    /**
+     * Show archived vehicles
+     */
+    public function archived()
+    {
+        $this->authorize('read_vehicles');
+        $archivedVehicles = Vehicle::with(['category'])->onlyTrashed()->get();
+        return view('admin.vehicle.archived', compact('archivedVehicles'));
+    }
+
+    /**
+     * Restore archived vehicle
+     */
+    public function restoreArchived($id)
+    {
+        $this->authorize('restore_vehicles');
+        $vehicle = Vehicle::withTrashed()->find($id);
+        
+        if (!$vehicle) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vehicle not found'
+            ], 404);
+        }
+        
+        $vehicle->restore();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Vehicle restored successfully'
+        ]);
     }
 }

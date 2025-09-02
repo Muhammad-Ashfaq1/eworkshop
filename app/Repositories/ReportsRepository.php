@@ -24,10 +24,9 @@ class ReportsRepository implements ReportsRepositoryInterface
                 'statuses' => [1 => 'Active', 0 => 'Inactive']
             ],
             'defect_reports' => [
-                'types' => ['mechanical', 'electrical', 'body', 'other'],
                 'vehicles' => Vehicle::pluck('vehicle_number', 'id'),
                 'locations' => Location::pluck('name', 'id'),
-                'users' => User::role(['fleet_manager', 'mvi'])->get()->mapWithKeys(function($user) {
+                'users' => User::role(['admin', 'deo'])->get()->mapWithKeys(function($user) {
                     return [$user->id => $user->full_name];
                 })
             ],
@@ -448,15 +447,99 @@ class ReportsRepository implements ReportsRepositoryInterface
                     throw new \Exception('Invalid report type');
             }
 
-            // For now, return the data as JSON
-            // In the future, this could generate CSV, PDF, or Excel files
-            return $data;
+            // Convert data to CSV format
+            $csvContent = $this->convertToCSV($data->getData(true)['data'], $reportType);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $csvContent,
+                'message' => 'Report exported successfully'
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to export report: ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private function convertToCSV(array $data, string $reportType): string
+    {
+        if (empty($data)) {
+            return "No data available\n";
+        }
+
+        $headers = $this->getCSVHeaders($reportType);
+        $csvContent = implode(',', $headers) . "\n";
+
+        foreach ($data as $row) {
+            $csvRow = $this->formatCSVRow($row, $reportType);
+            $csvContent .= implode(',', $csvRow) . "\n";
+        }
+
+        return $csvContent;
+    }
+
+    private function getCSVHeaders(string $reportType): array
+    {
+        switch ($reportType) {
+            case 'vehicles':
+                return ['ID', 'Vehicle Number', 'Location', 'Category', 'Condition', 'Status', 'Created At'];
+            case 'defect_reports':
+                return ['ID', 'Reference Number', 'Vehicle', 'Location', 'Driver Name', 'Date', 'Type', 'Created At'];
+            case 'vehicle_parts':
+                return ['ID', 'Name', 'Description', 'Status', 'Created At'];
+            case 'locations':
+                return ['ID', 'Name', 'Slug', 'Type', 'Status', 'Created At'];
+            default:
+                return ['ID', 'Data'];
+        }
+    }
+
+    private function formatCSVRow(array $row, string $reportType): array
+    {
+        switch ($reportType) {
+            case 'vehicles':
+                return [
+                    $row['id'] ?? '',
+                    $row['vehicle_number'] ?? '',
+                    $row['location']['name'] ?? '',
+                    $row['category']['name'] ?? '',
+                    $row['condition'] ?? '',
+                    $row['is_active'] ? 'Active' : 'Inactive',
+                    $row['created_at'] ?? ''
+                ];
+            case 'defect_reports':
+                return [
+                    $row['id'] ?? '',
+                    $row['reference_number'] ?? '',
+                    $row['vehicle']['vehicle_number'] ?? '',
+                    $row['location']['name'] ?? '',
+                    $row['driver_name'] ?? '',
+                    $row['date'] ?? '',
+                    $row['type'] ?? '',
+                    $row['created_at'] ?? ''
+                ];
+            case 'vehicle_parts':
+                return [
+                    $row['id'] ?? '',
+                    $row['name'] ?? '',
+                    $row['description'] ?? '',
+                    $row['is_active'] ? 'Active' : 'Inactive',
+                    $row['created_at'] ?? ''
+                ];
+            case 'locations':
+                return [
+                    $row['id'] ?? '',
+                    $row['name'] ?? '',
+                    $row['slug'] ?? '',
+                    $row['location_type'] ?? '',
+                    $row['is_active'] ? 'Active' : 'Inactive',
+                    $row['created_at'] ?? ''
+                ];
+            default:
+                return [json_encode($row)];
         }
     }
 
@@ -489,10 +572,6 @@ class ReportsRepository implements ReportsRepositoryInterface
 
     private function applyDefectReportFilters($query, array $filters): void
     {
-        if (!empty($filters['type'])) {
-            $query->where('type', $filters['type']);
-        }
-
         if (!empty($filters['vehicle_id'])) {
             $query->where('vehicle_id', $filters['vehicle_id']);
         }
@@ -501,8 +580,8 @@ class ReportsRepository implements ReportsRepositoryInterface
             $query->where('location_id', $filters['location_id']);
         }
 
-        if (!empty($filters['created_by'])) {
-            $query->where('created_by', $filters['created_by']);
+        if (!empty($filters['defect_date'])) {
+            $query->where('date', $filters['defect_date']);
         }
 
         if (!empty($filters['date_from'])) {

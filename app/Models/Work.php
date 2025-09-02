@@ -12,6 +12,7 @@ class Work extends Model
 
     protected $fillable = [
         'defect_report_id',
+        'purchase_order_id',
         'work',
         'type',
         'quantity',
@@ -22,6 +23,11 @@ class Work extends Model
     public function defectReport()
     {
         return $this->belongsTo(DefectReport::class);
+    }
+
+    public function purchaseOrder()
+    {
+        return $this->belongsTo(PurchaseOrder::class);
     }
 
     public function vehiclePart()

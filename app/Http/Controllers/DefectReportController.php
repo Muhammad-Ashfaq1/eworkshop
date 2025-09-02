@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\DefectReportExport;
 use App\Http\Requests\DefectReportRequest;
+use App\Http\Requests\UpdateDefectReportRequest;
 use App\Interfaces\DefectReportRepositoryInterface;
 use App\Models\DefectReport;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +27,7 @@ class DefectReportController extends Controller
     public function index()
     {
         $this->authorize('read_defect_reports');
-        
+
         $user = Auth::user();
 
         // Get defect reports based on user role
@@ -43,7 +44,7 @@ class DefectReportController extends Controller
     public function getDefectReportListing(Request $request): JsonResponse
     {
         $this->authorize('read_defect_reports');
-        
+
         $user = Auth::user();
         return $this->defectReportRepository->getDefectReportListing($request->all(), $user);
     }
@@ -55,7 +56,7 @@ class DefectReportController extends Controller
     {
         $this->authorize('create_defect_reports');
 
-        return $this->defectReportRepository->createDefectReport($request->all());
+        return $this->defectReportRepository->createDefectReport($request->validated());
     }
 
     /**
@@ -64,7 +65,7 @@ class DefectReportController extends Controller
     public function edit($id)
     {
         $this->authorize('read_defect_reports');
-        
+
         $defectReport = $this->defectReportRepository->getDefectReportById($id);
 
         if (!$defectReport) {
@@ -76,12 +77,6 @@ class DefectReportController extends Controller
 
         // Check if user can view this specific report
         $user = Auth::user();
-        if (!$this->canViewReport($user, $defectReport)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to view this defect report.'
-            ], 403);
-        }
 
         return response()->json([
             'success' => true,
@@ -92,21 +87,13 @@ class DefectReportController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(DefectReportRequest $request, DefectReport $defectReport)
+    public function update(UpdateDefectReportRequest $request, DefectReport $defectReport)
     {
         $this->authorize('update_defect_reports');
 
         $user = Auth::user();
 
-        // Check if user can update this specific report
-        if (!$this->canViewReport($user, $defectReport)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to update this defect report.'
-            ], 403);
-        }
-
-        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->all());
+        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->validated());
     }
 
     /**
@@ -115,17 +102,7 @@ class DefectReportController extends Controller
     public function destroy(DefectReport $defectReport)
     {
         $this->authorize('delete_defect_reports');
-
         $user = Auth::user();
-
-        // Check if user can delete this specific report
-        if (!$this->canViewReport($user, $defectReport)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to delete this defect report.'
-            ], 403);
-        }
-
         return $this->defectReportRepository->deleteDefectReport($defectReport->id);
     }
 
@@ -134,13 +111,23 @@ class DefectReportController extends Controller
      */
     private function canViewReport($user, $defectReport)
     {
-        if ($user->hasRole('super_admin') || $user->hasRole('admin')) {
+        // Super admin and admin can view all reports
+        if ($user->can('read_defect_reports')) {
             return true;
-        } elseif ($user->hasRole('deo')) {
+        }
+
+        // DEO can only view their own reports
+        if ($user->hasRole('deo')) {
             return $defectReport->created_by == $user->id;
-        } elseif ($user->hasRole('fleet_manager')) {
+        }
+
+        // Fleet manager can view reports assigned to them
+        if ($user->hasRole('fleet_manager')) {
             return $defectReport->fleet_manager_id == $user->id;
-        } elseif ($user->hasRole('mvi')) {
+        }
+
+        // MVI can view reports assigned to them
+        if ($user->hasRole('mvi')) {
             return $defectReport->mvi_id == $user->id;
         }
 
@@ -153,7 +140,24 @@ class DefectReportController extends Controller
     public function exportReports()
     {
         $this->authorize('export_data');
-        
+
         return Excel::download(new DefectReportExport, 'defect_reports.xlsx');
+    }
+
+    public function archieved()
+    {
+        $archievedDefectReports = DefectReport::with( 'vehicle','location','fleetManager','mvi','creator')->onlyTrashed()->get();
+        return view('defect_reports.archieved', compact('archievedDefectReports'));
+    }
+
+    public function restoreArchieved($id)
+    {
+        $this->authorize('restore_defect_reports');
+        $defectReport = DefectReport::withTrashed()->find($id);
+        if (!$defectReport) {
+            return response()->json(['success' => false, 'message' => 'Defect report not found'], 404);
+        }
+        $defectReport->restore();
+        return response()->json(['success' => true, 'message' => 'Defect report restored successfully']);
     }
 }

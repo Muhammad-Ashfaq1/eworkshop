@@ -11,8 +11,8 @@
                     <span class="badge bg-danger">Inactive</span>
                 @endif
             </td>
-            <td>{{ $fleetManager->created_at->format('Y-m-d H:i') }}</td>
-            <td>{{ $fleetManager->updated_at->format('Y-m-d H:i') }}</td>
+            <td>{{ formatCreatedAt($fleetManager->created_at) }}</td>
+            <td>{{ formatUpdatedAt($fleetManager->updated_at) }}</td>
             <td>
                 <div class="dropdown d-inline-block">
                     <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown"

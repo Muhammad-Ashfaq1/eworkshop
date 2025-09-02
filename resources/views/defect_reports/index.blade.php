@@ -39,28 +39,31 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="masters-datatable">
-                            <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Reference #</th>
-                                        <th>Vehicle</th>
-                                        <th>Office/Town</th>
-                                        <th>Driver Name</th>
-                                        <th>Fleet Manager</th>
-                                        <th>MVI</th>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Works Count</th>
-                                        <th>Created By</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data will be loaded via AJAX -->
-                                </tbody>
-                            </table>
+                        <div class="masters-datatable table-responsive">
+                            <div class="table-wrapper">
+                                <table id="js-defect-report-table" class="table table-bordered dt-responsive nowrap table-striped align-middle defect-reports-datatable w-100" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Reference #</th>
+                                            <th>Vehicle</th>
+                                            <th>Office/Town</th>
+                                            <th>Driver Name</th>
+                                            <th>Fleet Manager</th>
+                                            <th>MVI</th>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Works Count</th>
+                                            <th>Attachment</th>
+                                            <th>Created By</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be loaded via AJAX -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,7 +129,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="mvi_id" class="form-label">MVI</label>
+                                <label for="mvi_id" class="form-label">MVI <x-req /></label>
                                 <select class="form-select" id="mvi_id" name="mvi_id">
                                     <option value="" selected disabled>Select MVI</option>
                                 </select>
@@ -137,11 +140,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="type" class="form-label">Report Type</label>
-                                <select class="form-select" id="type" name="type">
-                                    <option value="defect_report">Defect Report</option>
-                                    <option value="purchase_order">Purchase Order</option>
-                                </select>
+                                <label for="form-label">Report Type<x-req /></label>
+                                <input type="text" class="form-control" value="Defect Report" readonly>
+                                <input type="hidden" id="type" name="type" value="defect_report">
+                                <div class="form-text">This will always be a Defect Report</div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -164,6 +166,8 @@
                                         <label class="form-label">Work Description <x-req /></label>
                                         <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                                         <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                                     </div>
                                     <div class="col-md-2 d-flex align-items-end">
                                         <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
@@ -205,6 +209,21 @@
         });
     });
 
+    function updateValidationRules() {
+        const isEdit = $('#defect_report_id').val() ? true : false;
+        const $attachmentField = $('#attachment_url');
+        
+        if (isEdit) {
+            // Remove required validation for attachment when editing
+            $attachmentField.rules('remove', 'required');
+            $attachmentField.removeClass('error');
+            $attachmentField.siblings('.error').remove();
+        } else {
+            // Add required validation for attachment when creating new
+            $attachmentField.rules('add', { required: true });
+        }
+    }
+
     function applyDefectReportsDatatable() {
         var table = $('#js-defect-report-table').DataTable({
             dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
@@ -226,13 +245,34 @@
             lengthMenu: [[20, 30, 50, 100], ["20 entries", "30 entries", "50 entries", "100 entries"]],
             processing: true,
             serverSide: true,
+            scrollX: true,
+            scrollY: '60vh',
+            scrollCollapse: true,
+            autoWidth: false,
+            responsive: false, // Disable responsive to force scroll behavior
+            deferRender: true,
+            scroller: true,
             ajax: {
                 url: "{{ route('defect-reports.listing') }}",
-                type: "GET"
+                type: "GET",
+                complete: function() {
+                    // Force column adjustment after AJAX completes
+                    setTimeout(function() {
+                        if (table) {
+                            if (table.columns) {
+                                table.columns.adjust();
+                            }
+                            if (table.fixedHeader && table.fixedHeader.adjust) {
+                                table.fixedHeader.adjust();
+                            }
+                        }
+                    }, 100);
+                }
             },
             columns: [
                 {
                     data: null,
+                    width: '50px',
                     render: function (data, type, row, meta) {
                         const start = meta.settings._iDisplayStart;
                         const pageLength = meta.settings._iDisplayLength;
@@ -244,30 +284,35 @@
                 },
                 {
                     data: "reference_number",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "vehicle",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? data.vehicle_number : 'N/A';
                     }
                 },
                 {
                     data: "location",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data ? data.name : 'N/A';
                     }
                 },
                 {
                     data: "driver_name",
+                    width: '120px',
                     render: function (data, type, row) {
                         return data || 'N/A';
                     }
                 },
                 {
                     data: "fleet_manager",
+                    width: '120px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.name);
@@ -277,6 +322,7 @@
                 },
                 {
                     data: "mvi",
+                    width: '100px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.name)
@@ -286,12 +332,14 @@
                 },
                 {
                     data: "date",
+                    width: '120px',
                     render: function (data, type, row) {
-                        return data ? moment(data).format('DD/MM/YYYY') : 'N/A';
+                        return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                     }
                 },
                 {
                     data: "type",
+                    width: '100px',
                     render: function (data, type, row) {
                         const badgeClass = data === 'defect_report' ? 'bg-warning' : 'bg-info';
                         const displayText = data ? data.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A';
@@ -300,12 +348,14 @@
                 },
                 {
                     data: "works",
+                    width: '100px',
                     render: function (data, type, row) {
                         return data ? `<span class="badge bg-info">${data.length}</span>` : '0';
                     }
                 },
                 {
                     data: "creator",
+                    width: '120px',
                     render: function (data, type, row) {
                         if (data) {
                             return (data.first_name || '') + ' ' + (data.last_name || '');
@@ -314,7 +364,18 @@
                     }
                 },
                 {
+                    data: "attachment_url",
+                    width: '100px',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return `<a href="${data}" target="_blank">View Attachment</a>`;
+                        }
+                        return 'N/A';
+                    }
+                },
+                {
                     data: null,
+                    width: '100px',
                     orderable: false,
                     render: function (data, type, row) {
                         let buttons = `
@@ -338,7 +399,16 @@
                     }
                 }
             ],
-            order: [[7, 'desc']]
+            order: [[7, 'desc']],
+            initComplete: function(settings, json) {
+                // Force column adjustment after table is fully loaded
+                if (this.api().columns) {
+                    this.api().columns.adjust();
+                }
+                if (this.api().fixedHeader && this.api().fixedHeader.adjust) {
+                    this.api().fixedHeader.adjust();
+                }
+            }
         });
 
         // Handle view action
@@ -361,6 +431,18 @@
             const id = $(this).data('id');
             deleteDefectReport(id);
         });
+
+        // Force table to show all columns after initialization
+        setTimeout(function() {
+            if (table) {
+                if (table.columns) {
+                    table.columns.adjust().draw();
+                }
+                if (table.fixedHeader && table.fixedHeader.adjust) {
+                    table.fixedHeader.adjust();
+                }
+            }
+        }, 500);
     }
 
     function loadDropdownData() {
@@ -387,6 +469,8 @@
                         <label class="form-label">Work Description <x-req /></label>
                         <input type="text" class="form-control work-description" name="works[${workIndex}][work]" placeholder="Enter work description" maxlength="300" required>
                         <input type="hidden" name="works[${workIndex}][type]" value="defect">
+                        <input type="hidden" name="works[${workIndex}][quantity]" value="">
+                        <input type="hidden" name="works[${workIndex}][vehicle_part_id]" value="">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-work">
@@ -405,22 +489,20 @@
     }
 
     function setupFormValidation() {
-
-        var report_id = $('#defect_report_id').val();
-
-        var rules = {
+        $('#defectReportForm').validate({
+            rules: {
                 vehicle_id: { required: true },
                 location_id: { required: true },
                 driver_name: { required: true, minlength: 2 },
                 date: { required: true },
                 fleet_manager_id: { required: true },
-                'works[0][work]': { required: true, minlength: 5 }
-            };
-            if(!report_id){
-                rules.attachment_url = { required: true };
-            }
-        $('#defectReportForm').validate({
-            rules: rules,
+                'works[0][work]': { required: true, minlength: 5 },
+                attachment_url: { 
+                    required: function() {
+                        return $('#defect_report_id').val() === '';
+                    }
+                }
+            },
             messages: {
                 vehicle_id: { required: "Please select a vehicle" },
                 location_id: { required: "Please select a location" },
@@ -428,12 +510,12 @@
                 date: { required: "Please select a date" },
                 fleet_manager_id: { required: "Please select a fleet manager" },
                 'works[0][work]': { required: "Please enter work description", minlength: "Work description must be at least 5 characters" },
-                attachment_url : { required : "Please add defect Report file"}
+                attachment_url: { required: "Please add defect Report file" }
             },
             submitHandler: function(form) {
                 const formData = new FormData(form);
                 const url = $(form).attr('action');
-                const method = $('#defect_report_id').val() ? 'PUT' : 'POST';
+                const method = $('#defect_report_id').val() ? 'POST' : 'POST'; // Always POST, method override handles PUT
 
                 $.ajax({
                     url: url,
@@ -466,7 +548,9 @@
                         }
                     },
                     complete: function() {
-                        $('#defectReportSubmit').prop('disabled', false).text('Create Defect Report');
+                        const isEdit = $('#defect_report_id').val() ? true : false;
+                        const buttonText = isEdit ? 'Update Defect Report' : 'Create Defect Report';
+                        $('#defectReportSubmit').prop('disabled', false).text(buttonText);
                     }
                 });
             }
@@ -495,6 +579,12 @@
                 $('#defectReportModalLabel').text(`Edit Defect Report #${report.id}`);
                 $('#defectReportSubmit').text('Update Defect Report').show();
                 $('#defectReportForm').attr('action', `/defect-reports/${id}`);
+                // Add method override for PUT request
+                if (!$('#defectReportForm input[name="_method"]').length) {
+                    $('#defectReportForm').append('<input type="hidden" name="_method" value="PUT">');
+                } else {
+                    $('#defectReportForm input[name="_method"]').val('PUT');
+                }
                 $('#defectReportModal').modal('show');
             } else {
                 toastr.error(response.message);
@@ -538,6 +628,9 @@
     function populateForm(report, isReadOnly) {
         $('#defect_report_id').val(report.id);
 
+        // Update validation rules based on edit mode
+        updateValidationRules();
+
         // Handle Select2 dropdowns properly
         if (isReadOnly) {
             $('#vehicle_id').val(report.vehicle_id).prop('disabled', true).trigger('change');
@@ -552,8 +645,15 @@
         }
 
         $('#driver_name').val(report.driver_name).prop('readonly', isReadOnly);
-        $('#date').val(report.date).prop('readonly', isReadOnly);
-        $('#type').val(report.type).prop('disabled', isReadOnly);
+        
+        // Format date properly for input field (YYYY-MM-DD)
+        if (report.date) {
+            const date = new Date(report.date);
+            const formattedDate = date.toISOString().split('T')[0];
+            $('#date').val(formattedDate).prop('readonly', isReadOnly);
+        }
+        
+        $('#type').val('defect_report');
         $('#attachment_url').prop('disabled', isReadOnly);
 
         // Populate works
@@ -564,8 +664,10 @@
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
                             <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work}" readonly="${isReadOnly}" required>
-                            <input type="hidden" name="works[${index}][type]" value="${work.type}">
+                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" isReadOnly ? "readonly" : "" required>
+                            <input type="hidden" name="works[${index}][type]" value="${work.type || 'defect'}">
+                            <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
+                            <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
                             ${!isReadOnly ? `<button type="button" class="btn btn-danger btn-sm remove-work"><i class="ri-delete-bin-line"></i></button>` : ''}
@@ -574,6 +676,29 @@
                 `;
                 $('#works-container').append(workItem);
             });
+        } else {
+            // If no works, add at least one empty work item for editing
+            if (!isReadOnly) {
+                const workItem = `
+                    <div class="work-item row mb-3">
+                        <div class="col-md-10">
+                            <label class="form-label">Work Description <x-req /></label>
+                            <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
+                            <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
+                            <input type="hidden" name="works[0][quantity]" value="">
+                            <input type="hidden" name="works[0][vehicle_part_id]" value="">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                $('#works-container').append(workItem);
+            }
         }
 
         if (isReadOnly) {
@@ -587,12 +712,16 @@
         $('#defectReportForm')[0].reset();
         $('#defect_report_id').val('');
         $('#defectReportForm').attr('action', "{{ route('defect-reports.store') }}");
+        // Remove method override
+        $('#defectReportForm input[name="_method"]').remove();
         $('#works-container').html(`
             <div class="work-item row mb-3">
                 <div class="col-md-10">
                     <label class="form-label">Work Description <x-req /></label>
                     <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                     <input type="hidden" name="works[0][type]" value="defect">
+                                        <input type="hidden" name="works[0][quantity]" value="">
+                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
@@ -605,8 +734,13 @@
         // Reset Select2 dropdowns
         $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
         $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
+        // Ensure type field is always defect_report
+        $('#type').val('defect_report');
         $('#add-work').show();
         $('#defectReportSubmit').show();
+        
+        // Update validation rules after reset
+        updateValidationRules();
     }
 </script>
 @endsection

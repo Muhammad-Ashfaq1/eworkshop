@@ -36,8 +36,6 @@ class DefectReport extends Model
     // constants for roles
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
-    const ROLE_FLEET_MANAGER = 'fleet_manager';
-    const ROLE_MVI = 'mvi';
     const ROLE_DEO = 'deo';
 
     protected static function boot()
@@ -57,7 +55,7 @@ class DefectReport extends Model
     public static function generateReferenceNumber()
     {
         do {
-            $reference = 'DR-' . date('Y') . '-' . strtoupper(Str::random(6));
+            $reference = 'DR-'. strtoupper(Str::random(5));
         } while (self::where('reference_number', $reference)->exists());
         
         return $reference;
@@ -97,6 +95,25 @@ class DefectReport extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Get field labels for display
+     */
+    public static function getFieldLabels()
+    {
+        return [
+            'reference_number' => 'Reference Number',
+            'vehicle_id' => 'Vehicle',
+            'location_id' => 'Location',
+            'driver_name' => 'Driver Name',
+            'fleet_manager_id' => 'Fleet Manager',
+            'mvi_id' => 'MVI',
+            'date' => 'Date',
+            'attachment_url' => 'Attachment',
+            'type' => 'Type',
+            'created_by' => 'Created By',
+        ];
+    }
+
     public function works()
     {
         return $this->hasMany(Work::class);
@@ -110,6 +127,11 @@ class DefectReport extends Model
     public function purchaseOrderWorks()
     {
         return $this->hasMany(Work::class)->purchaseOrders();
+    }
+
+    public function purchaseOrders()
+    {
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     // Scopes for role-based filtering
