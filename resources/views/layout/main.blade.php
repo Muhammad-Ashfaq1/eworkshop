@@ -125,18 +125,18 @@
             white-space: nowrap;
         }
         
-        /* Standard medium container sizing */
+        /* Small compact container sizing */
         .page-content .container {
-            max-width: 1400px;
-            padding-left: 15px;
-            padding-right: 15px;
+            max-width: 1200px;
+            padding-left: 12px;
+            padding-right: 12px;
         }
         
         @media (max-width: 768px) {
             .page-content .container {
                 max-width: 100%;
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-left: 8px;
+                padding-right: 8px;
             }
         }
         
