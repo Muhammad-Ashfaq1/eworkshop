@@ -64,14 +64,14 @@ Route::middleware(['auth'])->controller(DefectReportController::class)->prefix('
 // Purchase Orders routes with permission middleware
 Route::middleware(['auth'])->controller(PurchaseOrderController::class)->prefix('purchase-orders')->name('purchase-orders.')->group(function () {
     Route::get('/', 'index')->name('index')->middleware('permission:read_purchase_orders');
-    Route::get('listing' ,'getPurchaseOrderListing')->name('listing')->middleware('permission:read_purchase_orders');
+    Route::get('/listing' ,'getPurchaseOrderListing')->name('listing')->middleware('permission:read_purchase_orders');
     Route::post('/', 'store')->name('store')->middleware('permission:create_purchase_orders');
-    Route::get('{purchaseOrder}', 'show')->name('show')->middleware('permission:read_purchase_orders');
-    Route::get('{purchaseOrder}/edit', 'edit')->name('edit')->middleware('permission:read_purchase_orders');
-    Route::put('{purchaseOrder}','update')->name('update')->middleware('permission:update_purchase_orders');
-    Route::delete('{purchaseOrder}','destroy')->name('destroy')->middleware('permission:delete_purchase_orders');
-    Route::get('archived','archived')->name('archived')->middleware('permission:read_purchase_orders');
-    Route::post('restore-archived/{id}','restoreArchived')->name('restore.archived')->middleware('permission:restore_purchase_orders');
+    Route::get('/archived','archived')->name('archived')->middleware('permission:read_purchase_orders');
+    Route::post('/restore-archived/{id}','restoreArchived')->name('restore.archived')->middleware('permission:restore_purchase_orders');
+    Route::get('/{purchaseOrder}', 'show')->name('show')->middleware('permission:read_purchase_orders');
+    Route::get('/{purchaseOrder}/edit', 'edit')->name('edit')->middleware('permission:read_purchase_orders');
+    Route::put('/{purchaseOrder}','update')->name('update')->middleware('permission:update_purchase_orders');
+    Route::delete('/{purchaseOrder}','destroy')->name('destroy')->middleware('permission:delete_purchase_orders');
 });
 
 // Role-specific dashboard routes
