@@ -50,12 +50,12 @@
                                 <small>Start by creating a purchase order for a defect report that doesn't already have
                                     one.</small>
                             </div>
-                            
+
                             <!-- DataTable Controls Area (Fixed) -->
                             <div id="datatable-controls-wrapper">
                                 <!-- DataTable controls will be moved here -->
                             </div>
-                            
+
                             <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-purchase-order-table"
@@ -81,7 +81,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <!-- DataTable Info and Pagination Area (Fixed) -->
                             <div id="datatable-bottom-wrapper">
                                 <!-- DataTable info and pagination will be moved here -->
@@ -177,14 +177,14 @@
                                 <h6 class="mb-3">Parts</h6>
                                 <div id="parts-container">
                                     <div class="part-item row mb-3">
-                                        <div class="col-md-5">
+                                        <div class="col-md-8">
                                             <label class="form-label">Vehicle Part <x-req /></label>
                                             <select class="form-select vehicle-part-select"
                                                 name="parts[0][vehicle_part_id]" required>
                                                 <option value="" selected disabled>Select Vehicle Part</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <label class="form-label">Quantity <x-req /></label>
                                             <input type="number" class="form-control enhanced-dropdown" name="parts[0][quantity]"
                                                 placeholder="Enter quantity" min="1" value="1" required>
@@ -387,7 +387,7 @@
                         orderable: true,
                         searchable: false,
                         className: 'text-end'
-                    }, 
+                    },
                     {
                         data: "works",
                         name: 'parts_count',
@@ -459,7 +459,7 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-purchase-order-table');
-            
+
             // Refresh sorting icons after DataTable initialization
             setTimeout(function() {
                 refreshSortingIcons('#js-purchase-order-table');

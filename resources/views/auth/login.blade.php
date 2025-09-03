@@ -13,20 +13,24 @@
 <body>
     <div class="container">
         <div class="left-section">
-            <div class="government-logo">
-                <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government of Pakistan Logo"
-                    class="gov-logo">
-            </div>
+            <div class="left-content-wrapper">
+                <div class="government-logo">
+                    <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government of Pakistan Logo"
+                        class="gov-logo">
+                </div>
 
-            <div class="content">
-                <h1 class="main-heading">Sign in to LWMC E-Workshop</h1>
+                <div class="content-wrapper">
+                    <div class="content">
+                        <h1 class="main-heading">Login to LWMC E-Workshop</h1>
+                    </div>
 
-                <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}"
-                    alt="Waste management workers illustration" class="workers-img">
-
+                    <div class="image-wrapper">
+                        <img src="{{ asset('assets/images/waste-management.png') }}"
+                            alt="Waste management workers illustration" class="workers-img">
+                    </div>
+                </div>
             </div>
         </div>
-
         <div class="right-section">
             <div class="login-form-container">
                 <div class="portal-header">
