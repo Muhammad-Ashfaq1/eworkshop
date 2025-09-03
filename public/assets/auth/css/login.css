@@ -33,7 +33,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    background-color: rgb(125,217,194) ;
+    background-color: rgb(154,219,207);
 }
 
 .government-logo {

@@ -21,7 +21,7 @@
             <div class="content">
                 <h1 class="main-heading">Sign in to LWMC E-Workshop</h1>
 
-                <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}"
+                <img src="{{ asset('assets/images/waste.png') }}"
                     alt="Waste management workers illustration" class="workers-img">
 
             </div>
