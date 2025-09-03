@@ -42,12 +42,12 @@
             <!-- item-->
             <h6 class="dropdown-header">Welcome {{ Auth::user()->first_name ?? Auth::user()->name ?? 'Workshop User' }}!</h6>
             <a class="dropdown-item" href="{{ route('profile') }}">
-                <i class="ri-user-line text-muted fs-16 align-middle me-1"></i> 
+                <i class="ri-user-line text-muted fs-16 align-middle me-1"></i>
                 <span class="align-middle">Profile</span>
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="ri-logout-box-line text-muted fs-16 align-middle me-1"></i> 
+                <i class="ri-logout-box-line text-muted fs-16 align-middle me-1"></i>
                 <span class="align-middle">Logout</span>
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -88,7 +88,7 @@
                 <!-- Workshop Management -->
                 @role('super_admin|admin|deo')
                     <li class="menu-title"><span data-key="t-workshop-management">Workshop Management</span></li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ (request()->routeIs('admin.location.*') && !request()->routeIs('admin.location.archieved')) || request()->routeIs('admin.vehicle.*') || request()->routeIs('admin.fleet-manager.*') ? 'active' : '' }}"
                             href="#sidebarMasterData" data-bs-toggle="collapse" role="button"
@@ -115,6 +115,15 @@
                                     </a>
                                 </li>
                                 @endcan
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.vehicle-categories.index') }}"
+                                        class="nav-link ">
+                                        <i class="ri-car-line align-bottom me-1"></i>Vehicle Categories
+                                    </a>
+                                </li>
+
+
                                 @can('read_vehicles')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.vehicle.index') }}"
@@ -178,7 +187,7 @@
                 <!-- Archive Section -->
                 @role('super_admin')
                     <li class="menu-title"><span data-key="t-archive">Archive</span></li>
-                    
+
                     <li class="nav-item">
                         <a class="nav-link menu-link {{ request()->routeIs('admin.location.archieved') || request()->routeIs('defect-reports.archieved') || request()->routeIs('admin.vehicle.archived') || request()->routeIs('admin.vehicle.part.archived') || request()->routeIs('admin.fleet-manager.archived') || request()->routeIs('purchase-orders.archived') ? 'active' : '' }}"
                             href="#sidebarArchived" data-bs-toggle="collapse" role="button"
@@ -207,6 +216,14 @@
                                         <i class="ri-settings-3-line align-bottom me-1"></i>Archived Vehicle Parts
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.vehicle-categories.archieved') }}"
+                                        class="nav-link {{ request()->routeIs('admin.vehicle.categories.archieved') ? 'active' : '' }}">
+                                        <i class="ri-settings-3-line align-bottom me-1"></i>Archived Vehicle Categories
+                                    </a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a href="{{ route('admin.fleet-manager.archived') }}"
                                         class="nav-link {{ request()->routeIs('admin.fleet-manager.archived') ? 'active' : '' }}">

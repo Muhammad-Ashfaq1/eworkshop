@@ -15,7 +15,7 @@ class FleetManagerController extends Controller
         $fleetManagers = FleetManager::latest()->get();
         return view('admin.fleet-manager.index',compact('fleetManagers'));
     }
-    
+
     public function store(FleetMviStoreRequest $request)
     {
         $this->authorize('create_fleet_manager');
@@ -30,7 +30,7 @@ class FleetManagerController extends Controller
 
        return $this->getLatestRecords('Record Save Successfully!');
     }
-    
+
     public function destroy($id)
     {
         $this->authorize('delete_fleet_manager');
@@ -51,7 +51,7 @@ class FleetManagerController extends Controller
             'html'=>view('admin.fleet-manager.data-table',compact('fleetManagers'))->render(),
         ]) ;
     }
-    
+
     public function edit($id)
     {
         $this->authorize('read_fleet_manager');
@@ -85,16 +85,16 @@ class FleetManagerController extends Controller
     {
         $this->authorize('restore_fleet_manager');
         $fleetManager = FleetManager::withTrashed()->find($id);
-        
+
         if (!$fleetManager) {
             return response()->json([
                 'success' => false,
                 'message' => 'Fleet Manager not found'
             ], 404);
         }
-        
+
         $fleetManager->restore();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Fleet Manager restored successfully'

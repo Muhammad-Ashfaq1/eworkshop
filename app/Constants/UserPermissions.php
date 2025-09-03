@@ -63,6 +63,7 @@ class UserPermissions
     const READ_VEHICLE_CATEGORIES = 'read_vehicle_categories';
     const UPDATE_VEHICLE_CATEGORIES = 'update_vehicle_categories';
     const DELETE_VEHICLE_CATEGORIES = 'delete_vehicle_categories';
+    const RESTORE_VEHICLE_CATEGORIES = 'restore_vehicle_categories';
 
     // Fleet management permissions
     const MANAGE_FLEET = 'manage_fleet';
@@ -164,6 +165,7 @@ class UserPermissions
             self::UPDATE_VEHICLES,
             self::DELETE_VEHICLES,
             self::RESTORE_VEHICLES,
+            self::RESTORE_VEHICLE_CATEGORIES,
 
             // Vehicle Parts management permissions
             self::CREATE_VEHICLE_PARTS,
