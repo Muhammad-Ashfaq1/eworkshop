@@ -23,7 +23,9 @@
                     </a>
                 </div>
 
-                <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger material-shadow-none" id="topnav-hamburger-icon">
+                <button type="button"
+                    class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger material-shadow-none"
+                    id="topnav-hamburger-icon">
                     <span class="hamburger-icon">
                         <span></span>
                         <span></span>
@@ -31,22 +33,16 @@
                     </span>
                 </button>
 
-                <!-- App Search-->
-                <form class="app-search d-none d-md-block">
-                    <div class="position-relative">
-                        <input type="text" class="form-control" placeholder="Search..." autocomplete="off" id="search-options" value="">
-                        <span class="mdi mdi-magnify search-widget-icon"></span>
-                        <span class="mdi mdi-close-circle search-widget-icon search-widget-icon-close d-none" id="search-close-options"></span>
-                    </div>
-                </form>
             </div>
 
             <div class="d-flex align-items-center">
                 <div class="dropdown ms-sm-3 header-item topbar-user">
-                    <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            @if(auth()->user()->image_url)
-                                <img class="rounded-circle header-profile-user" src="{{ auth()->user()->image_url }}" alt="Header Avatar">
+                            @if (auth()->user()->image_url)
+                                <img class="rounded-circle header-profile-user" src="{{ auth()->user()->image_url }}"
+                                    alt="Header Avatar">
                             @else
                                 <div class="avatar-xs">
                                     <div class="avatar-title rounded-circle bg-primary text-white">
@@ -55,8 +51,11 @@
                                 </div>
                             @endif
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ ucfirst(auth()->user()->getRoleNames()->first()) }}</span>
+                                <span
+                                    class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->first_name }}
+                                    {{ auth()->user()->last_name }}</span>
+                                <span
+                                    class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ ucfirst(auth()->user()->getRoleNames()->first()) }}</span>
                             </span>
                         </span>
                     </button>
@@ -68,7 +67,8 @@
                             <span class="align-middle">Profile</span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <a class="dropdown-item" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle" data-key="t-logout">Logout</span>
                         </a>
