@@ -60,7 +60,7 @@
             color: #dc3545 !important;
             font-size: 0.875em !important;
         }
-        
+
         input.error, select.error {
             border-color: #dc3545 !important;
         }
@@ -105,9 +105,40 @@
         }
 
         /* Keep column min-widths functional */
-        .table th[style*="min-width"], 
+        .table th[style*="min-width"],
         .table td[style*="min-width"] {
             white-space: nowrap !important;
+        }
+
+        /* Custom Select2 height adjustments */
+        .select2-container .select2-selection--single {
+            height: 38px !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-left: 12px !important;
+            padding-right: 20px !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__placeholder {
+            line-height: 36px !important;
+            color: #6c757d !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            right: 8px !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow b {
+            border-color: #6c757d transparent transparent transparent !important;
+            border-width: 5px 4px 0 4px !important;
+        }
+
+        .select2-container--open .select2-selection--single .select2-selection__arrow b {
+            border-color: transparent transparent #6c757d transparent !important;
+            border-width: 0 4px 5px 4px !important;
         }
     </style>
     @yield('styles')
@@ -203,13 +234,13 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="{{ asset('assets/admin/js/custom.js') }}"></script>
-    
+
     <!-- DataTable Utilities -->
     <script src="{{ asset('assets/js/datatable-utils.js') }}"></script>
-    
+
     <!-- Badge System -->
     <script src="{{ asset('assets/js/badge-system.js') }}"></script>
-    
+
     <!-- DataTable Sorting Fix -->
     <script src="{{ asset('assets/js/datatable-sorting-fix.js') }}"></script>
 
