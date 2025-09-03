@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\VehicleCategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\VehicleCategory;
 use App\Http\Controllers\Controller;
@@ -12,9 +13,9 @@ class VehicleCategoriesController extends Controller
         $vehicle_categories=VehicleCategory::latest()->get();
         return view('admin.vehicle-categories.index',compact('vehicle_categories'));
     }
-    public function store(Request $request)
+    public function store(VehicleCategoryRequest $request)
     {
-            
+
              $vehicle_category_id=$request->vehicle_category_id ?? null;
             VehicleCategory::updateOrCreate(
             ['id' => $vehicle_category_id],
