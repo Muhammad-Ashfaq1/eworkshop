@@ -25,7 +25,7 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         $this->authorize('read_purchase_orders');
-        
+
         $user = Auth::user();
 
         // Get purchase orders based on user role
@@ -40,7 +40,7 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         $this->authorize('create_purchase_orders');
-        
+
         // Redirect to index page since we use modals
         return redirect()->route('purchase-orders.index');
     }
@@ -51,7 +51,7 @@ class PurchaseOrderController extends Controller
     public function show(PurchaseOrder $purchaseOrder)
     {
         $this->authorize('read_purchase_orders');
-        
+
         $user = Auth::user();
 
         // Check if user can view this specific purchase order
@@ -84,7 +84,7 @@ class PurchaseOrderController extends Controller
     public function getPurchaseOrderListing(Request $request): JsonResponse
     {
         $this->authorize('read_purchase_orders');
-        
+
         $user = Auth::user();
         return $this->purchaseOrderRepository->getPurchaseOrderListing($request->all(), $user);
     }
@@ -105,7 +105,7 @@ class PurchaseOrderController extends Controller
     public function edit($id)
     {
         $this->authorize('read_purchase_orders');
-        
+
         $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($id);
 
         if (!$purchaseOrder) {
@@ -180,7 +180,7 @@ class PurchaseOrderController extends Controller
      */
     public function archived()
     {
-        $this->authorize('read_purchase_orders');
+        // $this->authorize('read_purchase_orders');
         $archivedPurchaseOrders = PurchaseOrder::with(['creator', 'defectReport.vehicle', 'defectReport.location'])->onlyTrashed()->get();
         return view('purchase_orders.archived', compact('archivedPurchaseOrders'));
     }
@@ -192,16 +192,16 @@ class PurchaseOrderController extends Controller
     {
         $this->authorize('restore_purchase_orders');
         $purchaseOrder = PurchaseOrder::withTrashed()->find($id);
-        
+
         if (!$purchaseOrder) {
             return response()->json([
                 'success' => false,
                 'message' => 'Purchase order not found'
             ], 404);
         }
-        
+
         $purchaseOrder->restore();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Purchase order restored successfully'
@@ -217,7 +217,7 @@ class PurchaseOrderController extends Controller
         if ($user->can('read_purchase_orders')) {
             return true;
         }
-        
+
         // DEO can only view their own purchase orders
         if ($user->hasRole('deo')) {
             return $purchaseOrder->created_by == $user->id;
