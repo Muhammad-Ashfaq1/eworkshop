@@ -22,7 +22,7 @@ class VehicleCategoryController extends Controller
             [
                 'name' => $request->name ?? null,
                 'is_active' => $request->is_active ?? null
-             ]);
+            ]);
 
        return $this->getLatestRecords('Record Saved Successfully!');
     }
@@ -70,8 +70,6 @@ class VehicleCategoryController extends Controller
         $archivedVehicleCategories = VehicleCategory::onlyTrashed()->get();
         return view('admin.vehicle-categories.archieved', compact('archivedVehicleCategories'));
     }
-
-    //restore archived
 
     public function restoreArchived($id)
     {
