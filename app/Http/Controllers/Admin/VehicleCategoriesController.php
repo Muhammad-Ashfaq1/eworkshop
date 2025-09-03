@@ -14,8 +14,9 @@ class VehicleCategoriesController extends Controller
     }
     public function store(Request $request)
     {
+            
              $vehicle_category_id=$request->vehicle_category_id ?? null;
-        VehicleCategory::updateOrCreate(
+            VehicleCategory::updateOrCreate(
             ['id' => $vehicle_category_id],
             [
                 'name' => $request->vehicle_category_name,

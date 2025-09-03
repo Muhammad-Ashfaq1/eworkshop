@@ -3,7 +3,7 @@
 
 @section('content')
 
-<div class="row">
+    <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
@@ -14,7 +14,7 @@
                                 data-bs-target="#js-add-vehicle-categories-modal">
                                 Add New Category
                             </button>
-                            @endcan
+                        @endcan
 
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                                 </tr>
                             </thead>
                             <tbody id="js-vehicle-categories-table-body">
-                               @include('admin.vehicle-categories.data-table')
+                                @include('admin.vehicle-categories.data-table')
                             </tbody>
                         </table>
                     </div>
@@ -52,14 +52,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('admin.vehicle-categories.store') }}" id="js-add-vehicle-categories-form" method="POST">
+                        <form action="{{ route('admin.vehicle-categories.store') }}" id="js-add-vehicle-categories-form"
+                            method="POST">
                             @csrf
-                            <input type="text" id="js-vehicleCategory-id" name="vehicle_category_id" value="" hidden>
+                            <input type="text" id="js-vehicleCategory-id" name="vehicle_category_id" value=""
+                                hidden>
                             <div class="row g-3">
                                 <div class="col-xxl-6">
                                     <div>
                                         <label for="VehicleCategoryName" class="form-label">Category Name <x-req /></label>
-                                        <input type="text" class="form-control enhanced-dropdown" id="vehicleCategoryName" name="vehicle_category_name"
+                                        <input type="text" class="form-control enhanced-dropdown"
+                                            id="vehicleCategoryName" name="vehicle_category_name"
                                             placeholder="Enter Vechicle Category name">
                                         @error('vehicle_category_name')
                                             <span class="text-danger">{{ $message }}</span>
@@ -74,7 +77,7 @@
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
                                         </select>
-                                           @error('is_active')
+                                        @error('is_active')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -97,139 +100,53 @@
 @endsection
 @section('scripts')
 @section('scripts')
-<script>
-$(document).ready(function(){
-    // Initialize DataTable
-    $('#js-vehicle-categories-table').DataTable();
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#js-vehicle-categories-table').DataTable();
 
-    // Validate & submit form
-    $('#js-add-vehicle-categories-form').validate({
-        rules: {
-            vehicle_category_name: {
-                required: true,
-                minlength: 2
-            },
-            is_active: {
-                required: true
-            }
-        },
-        messages: {
-            vehicle_category_name: {
-                required: "Please enter category name",
-                minlength: "Name must be at least 2 characters long"
-            },
-            is_active: {
-                required: "Please select a status"
-            }
-        },
-        submitHandler: function(form) {
-            var data = $(form).serialize();
-            var url = $(form).attr('action');   // set action in form tag in Blade
-            var method = $(form).attr('method');
-
-            $.ajax({
-                url: url,
-                method: method,
-                data: data,
-                success: function(response) {
-                    if (response.success) {
-                        // Hide modal
-                        $('#js-add-vehicle-categories-modal').modal('hide');
-
-                        // Reset form
-                        $('#js-add-vehicle-categories-form')[0].reset();
-                        $('#js-vehicleCategory-id').val('');
-                        $('#js-add-vehicle-categories-submit').text('Add');
-
-                        // Reload table body
-                        $('#js-vehicle-categories-table-body').html(response.html);
-
-                        toastr.success(response.message);
-                    } else {
-                        toastr.error(response.message);
+            // Validate & submit form
+            $('#js-add-vehicle-categories-form').validate({
+                rules: {
+                    vehicle_category_name: {
+                        required: true,
+                        minlength: 2
+                    },
+                    is_active: {
+                        required: true
                     }
                 },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        const errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
-                            toastr.error(value[0]);
-                        });
-                    } else {
-                        toastr.error('An error occurred. Please try again.');
+                messages: {
+                    vehicle_category_name: {
+                        required: "Please enter category name",
+                        minlength: "Name must be at least 2 characters long"
+                    },
+                    is_active: {
+                        required: "Please select a status"
                     }
                 },
-                complete: function() {
-                    $('#js-add-vehicle-categories-part-submit').prop('disabled', false).text('Add Vehicle Category');
-                }
-            });
-            return false; // prevent default
-        }
-    });
-});
+                submitHandler: function(form) {
+                    var data = $(form).serialize();
+                    var url = $(form).attr('action'); // set action in form tag in Blade
+                    var method = $(form).attr('method');
 
-//Edit Vechicle Categories
-
-$(document).on('click', '.edit-vehicle-categories-btn', function(e) {
-    e.preventDefault();
-
-    var url = $(this).attr('href');
-    $.ajax({
-        url: url,
-        type: 'GET',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
-        },
-        success: function(response) {
-            if (response.success) {
-                var vehicleCategory = response.data;
-
-                // Fill modal form with fetched data
-                $('#js-vehicleCategory-id').val(vehicleCategory.id);
-                $('#vehicleCategoryName').val(vehicleCategory.name);
-                $('#js-is-active').val(vehicleCategory.is_active);
-
-                // Change modal title & button text for edit
-                $('#js-modal-title').text('Edit Vehicle Category');
-                $('#js-add-vehicle-categories-submit').text('Update');
-
-                // Show modal
-                $('#js-add-vehicle-categories-modal').modal('show');
-            } else {
-                toastr.error('Failed to fetch data. Please try again.');
-            }
-        },
-        error: function(xhr) {
-            toastr.error('An error occurred. Please try again.');
-        }
-    });
-
-//Vehicle category delete
-
-  $(document).on('click', '#js-vehicle-categories-delete-btn', function(e) {
-            e.preventDefault();
-            var url = $(this).attr('href');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
                     $.ajax({
                         url: url,
-                        type: 'DELETE',
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]')
-                                .attr('content'));
-                        },
+                        method: method,
+                        data: data,
                         success: function(response) {
                             if (response.success) {
-                                $('#js-vehicle-categories-table-body').html();
+                                // Hide modal
+                                $('#js-add-vehicle-categories-modal').modal('hide');
+
+                                // Reset form
+                                $('#js-add-vehicle-categories-form')[0].reset();
+                                $('#js-vehicleCategory-id').val('');
+                                $('#js-add-vehicle-categories-submit').text('Add');
+
+                                // Reload table body
                                 $('#js-vehicle-categories-table-body').html(response.html);
+
                                 toastr.success(response.message);
                             } else {
                                 toastr.error(response.message);
@@ -244,18 +161,108 @@ $(document).on('click', '.edit-vehicle-categories-btn', function(e) {
                             } else {
                                 toastr.error('An error occurred. Please try again.');
                             }
+                        },
+                        complete: function() {
+                            $('#js-add-vehicle-categories-part-submit').prop('disabled',
+                                false).text('Add Vehicle Category');
                         }
                     });
+                    return false; // prevent default
                 }
+            });
+        });
+
+        //Edit Vechicle Categories
+
+        $(document).on('click', '.edit-vehicle-categories-btn', function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var vehicleCategory = response.data;
+
+                        // Fill modal form with fetched data
+                        $('#js-vehicleCategory-id').val(vehicleCategory.id);
+                        $('#vehicleCategoryName').val(vehicleCategory.name);
+                        var is_active = vehicleCategory.is_active ? 1 : 0;
+                        $('#js-is-active').val(is_active);
+
+                        // Change modal title & button text for edit
+                        $('#js-modal-title').text('Edit Vehicle Category');
+                        $('#js-add-vehicle-categories-submit').text('Update');
+
+                        // Show modal
+                        $('#js-add-vehicle-categories-modal').modal('show');
+                    } else {
+                        toastr.error('Failed to fetch data. Please try again.');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
+
+            //Vehicle category delete
+
+            $(document).on('click', '#js-vehicle-categories-delete-btn', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                        'meta[name="csrf-token"]')
+                                    .attr('content'));
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    $('#js-vehicle-categories-table-body').html();
+                                    $('#js-vehicle-categories-table-body').html(response
+                                        .html);
+                                    toastr.success(response.message);
+                                } else {
+                                    toastr.error(response.message);
+                                }
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    const errors = xhr.responseJSON.errors;
+                                    $.each(errors, function(key, value) {
+                                        toastr.error(value[0]);
+                                    });
+                                } else {
+                                    toastr.error(
+                                    'An error occurred. Please try again.');
+                                }
+                            }
+                        });
+                    }
+                });
+
+
             });
 
 
         });
-
-
-});
-
-</script>
+    </script>
 @endsection
 
 @endsection()
