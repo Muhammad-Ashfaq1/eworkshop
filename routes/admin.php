@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\VehiclePartController;
 use App\Http\Controllers\Admin\FleetManagerController;
+use App\Http\Controllers\Admin\VehicleCategoriesController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // User Management Routes - Super Admin only
@@ -56,6 +57,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::delete('destroy/{id}', 'destroy')->name('destroy')->middleware(['permission:delete_vehicles']);
             Route::get('archived', 'archived')->name('archived')->middleware(['permission:read_vehicles']);
             Route::post('restore-archived/{id}', 'restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicles']);
+        });
+
+    //vehicle Categories
+       Route::controller(VehicleCategoriesController::class)->prefix('vehicle-categories')
+        ->name('vehicle-categories.')->group(function () {
+        Route::get('/','index')->name('index');
+        Route::post('/store','store')->name('store');
+        Route::get('/edit/{id}','edit')->name('edit');
+        Route::delete('/destroy/{id}','destroy')->name('destroy');
+        Route::get('archieved','archieved')->name('archieved');
+        Route::post('restore-archived/{id}','restoreArchived')->name('restore.archived');
+
         });
 
     // Fleet Manager Routes
