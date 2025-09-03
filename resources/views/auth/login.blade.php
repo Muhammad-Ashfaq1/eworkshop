@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citizen Waste Management Portal - Sign In</title>
+    <title>Waste Management Portal - Sign In</title>
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
     <link href="{{ asset('assets/auth/css/login.css') }}" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 </head>
@@ -18,8 +19,7 @@
             </div>
 
             <div class="content">
-                <h1 class="main-heading">Sign in to Citizen Waste Management Portal</h1>
-                <p class="subtitle">Access billing, complaints and service requests</p>
+                <h1 class="main-heading">Sign in to LWMC E-Workshop</h1>
 
                 <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}"
                     alt="Waste management workers illustration" class="workers-img">
@@ -32,8 +32,8 @@
                 <div class="portal-header">
                     <img src="{{ 'assets/auth/images/recycle-icon.png' }}" alt="Recycle icon" class="recycle-logo">
                     <div class="portal-title">
-                        <h2 class="urdu-title">شہری پورٹل</h2>
-                        <h3 class="english-title">Citizen Portal</h3>
+                        <h2 class="urdu-title"></h2>
+                        <h3 class="english-title"></h3>
                     </div>
                 </div>
 
