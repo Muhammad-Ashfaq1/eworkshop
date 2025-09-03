@@ -49,7 +49,7 @@ class PurchaseOrder extends Model
         if ($user->hasRole('super_admin') || $user->hasRole('admin')) {
             return $query;
         } elseif ($user->hasRole('deo')) {
-            return $query->where('created_by', $user->id); // Only their own POs
+            return $query->where('purchase_orders.created_by', $user->id); // Only their own POs
         }
 
         return $query->where('id', 0);

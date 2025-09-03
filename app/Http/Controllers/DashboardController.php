@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Constants\UserRoles;
+use App\Models\DefectReport;
+use App\Models\Location;
+use App\Models\PurchaseOrder;
+use App\Models\ReportAudit;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -59,15 +64,29 @@ class DashboardController extends Controller
         $this->authorize(UserRoles::SUPER_ADMIN);
 
         $user = Auth::user();
+        $stats = $user->getDashboardStats();
+        
+        // Additional super admin specific stats
+        $adminStats = [
+            'total_users' => User::count(),
+            'active_users' => User::where('is_active', true)->count(),
+            'total_deos' => User::role(UserRoles::DEO)->count(),
+            'total_admins' => User::role(UserRoles::ADMIN)->count(),
+            'total_roles' => \Spatie\Permission\Models\Role::count(),
+            'total_permissions' => \Spatie\Permission\Models\Permission::count(),
+            'total_defect_reports' => DefectReport::count(),
+            'total_purchase_orders' => PurchaseOrder::count(),
+            'recent_audits' => ReportAudit::with(['modifier', 'originalCreator'])
+                ->latest()
+                ->take(10)
+                ->get(),
+        ];
+        
         $data = [
             'title' => 'Super Admin Dashboard',
             'user' => $user,
-            'stats' => [
-                'total_users' => \App\Models\User::count(),
-                'active_users' => \App\Models\User::where('is_active', true)->count(),
-                'total_roles' => \Spatie\Permission\Models\Role::count(),
-                'total_permissions' => \Spatie\Permission\Models\Permission::count(),
-            ],
+            'stats' => array_merge($stats, $adminStats),
+            'recentReports' => $user->getRecentReports(),
         ];
 
         return view('dashboards.super_admin', $data);
@@ -83,14 +102,31 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        $stats = $user->getDashboardStats();
+        
+        // Additional admin specific stats
+        $adminStats = [
+            'total_deos' => User::role(UserRoles::DEO)->count(),
+            'active_deos' => User::role(UserRoles::DEO)->where('is_active', true)->count(),
+            'total_locations' => Location::count(),
+            'total_defect_reports' => DefectReport::count(),
+            'total_purchase_orders' => PurchaseOrder::count(),
+            'pending_reports' => 0, // Can be updated based on actual business logic for "pending"
+            'reports_edited_today' => ReportAudit::where('modifier_id', $user->id)
+                ->whereDate('created_at', today())
+                ->count(),
+            'recent_edited_reports' => ReportAudit::where('modifier_id', $user->id)
+                ->with(['originalCreator'])
+                ->latest()
+                ->take(5)
+                ->get(),
+        ];
+
         $data = [
             'title' => 'Admin Dashboard',
             'user' => $user,
-            'stats' => [
-                'total_locations' => 0, // Add actual count when location model is available
-                'active_deos' => \App\Models\User::role(UserRoles::DEO)->where('is_active', true)->count(),
-                'pending_reports' => 0, // Add actual count when reports are available
-            ],
+            'stats' => array_merge($stats, $adminStats),
+            'recentReports' => $user->getRecentReports(),
         ];
 
         return view('dashboards.admin', $data);
@@ -106,45 +142,36 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        // Get defect report statistics for the current DEO
-        $today = now()->startOfDay();
-        $weekStart = now()->startOfWeek();
-        $monthStart = now()->startOfMonth();
-
-        $defectStats = [
-            'today' => \App\Models\DefectReport::where('created_by', $user->id)
-                ->where('created_at', '>=', $today)
+        $stats = $user->getDashboardStats();
+        
+        // Additional DEO specific stats
+        $deoStats = [
+            'reports_edited_by_admin' => ReportAudit::where('original_creator_id', $user->id)
+                ->whereHas('modifier', function($query) {
+                    $query->whereHas('roles', function($roleQuery) {
+                        $roleQuery->whereIn('name', ['admin', 'super_admin']);
+                    });
+                })
                 ->count(),
-            'this_week' => \App\Models\DefectReport::where('created_by', $user->id)
-                ->where('created_at', '>=', $weekStart)
-                ->count(),
-            'this_month' => \App\Models\DefectReport::where('created_by', $user->id)
-                ->where('created_at', '>=', $monthStart)
-                ->count(),
-            'total' => \App\Models\DefectReport::where('created_by', $user->id)->count(),
+            'recent_admin_edits' => ReportAudit::where('original_creator_id', $user->id)
+                ->whereHas('modifier', function($query) {
+                    $query->whereHas('roles', function($roleQuery) {
+                        $roleQuery->whereIn('name', ['admin', 'super_admin']);
+                    });
+                })
+                ->with(['modifier'])
+                ->latest()
+                ->take(5)
+                ->get(),
         ];
-
-        // Get recent defect reports
-        $recentReports = \App\Models\DefectReport::where('created_by', $user->id)
-            ->with(['vehicle', 'location', 'fleetManager', 'mvi'])
-            ->latest()
-            ->take(5)
-            ->get();
 
         $data = [
             'title' => 'Data Entry Operator Dashboard',
             'user' => $user,
-            'defectStats' => $defectStats,
-            'recentReports' => $recentReports,
-            'stats' => [
-                'defect_reports_today' => $defectStats['today'],
-                'defect_reports_week' => $defectStats['this_week'],
-                'defect_reports_month' => $defectStats['this_month'],
-                'total_defect_reports' => $defectStats['total'],
-            ],
+            'stats' => array_merge($stats, $deoStats),
+            'recentReports' => $user->getRecentReports(),
         ];
 
         return view('dashboards.deo', $data);
     }
-    
 }

@@ -18,7 +18,7 @@
                     <div class="row mb-4">
                         <div class="col-md-3">
                             <label for="reportType" class="form-label">Report Type <x-req /></label>
-                            <select class="form-control" id="reportType" name="reportType">
+                            <select class="form-control enhanced-dropdown" id="reportType" name="reportType">
                                 <option value="" selected disabled>Select Report Type</option>
                                 <option value="vehicles">Vehicles Report</option>
                                 <option value="defect_reports">Defect Reports</option>
@@ -28,7 +28,7 @@
                         </div>
                         <div class="col-md-3">
                             <label for="dateRange" class="form-label">Date Range</label>
-                            <select class="form-control" id="dateRange" name="dateRange">
+                            <select class="form-control enhanced-dropdown" id="dateRange" name="dateRange">
                                 <option value="">All Time</option>
                                 <option value="today">Today</option>
                                 <option value="yesterday">Yesterday</option>
@@ -41,11 +41,11 @@
                         </div>
                         <div class="col-md-3">
                             <label for="dateFrom" class="form-label">From Date</label>
-                            <input type="date" class="form-control" id="dateFrom" name="dateFrom">
+                            <input type="date" class="form-control enhanced-dropdown" id="dateFrom" name="dateFrom">
                         </div>
                         <div class="col-md-3">
                             <label for="dateTo" class="form-label">To Date</label>
-                            <input type="date" class="form-control" id="dateTo" name="dateTo">
+                            <input type="date" class="form-control enhanced-dropdown" id="dateTo" name="dateTo">
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="searchTerm" class="form-label">Search</label>
-                            <input type="text" class="form-control" id="searchTerm" name="searchTerm" placeholder="Search in results...">
+                            <input type="text" class="form-control enhanced-dropdown" id="searchTerm" name="searchTerm" placeholder="Search in results...">
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
                             <button type="button" class="btn btn-primary me-2" id="js-generate-report-btn">
@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive force-table-responsive table-scroll-indicator">
                                         <table id="js-reports-table" class="table table-bordered table-striped">
                                             <thead>
                                                 <tr>
@@ -200,6 +200,11 @@
         const columns = getDataTableColumns();
         
         reportsDataTable = $('#js-reports-table').DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
             processing: false,
             serverSide: false, // Start with client-side to show empty state
             data: [], // Start with empty data
@@ -254,6 +259,11 @@
             
             // Initialize DataTable with error handling
             reportsDataTable = tableElement.DataTable({
+        scrollX: false,
+        
+        scrollCollapse: false,
+        
+        
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -283,7 +293,7 @@
                 pageLength: 10,
                 lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
                 order: [[0, 'asc']],
-                responsive: false, // Disable responsive to avoid DOM manipulation issues
+                 // Disable responsive to avoid DOM manipulation issues
                 language: {
                     processing: '<i class="ri-loader-4-line me-1"></i>Loading...',
                     emptyTable: 'No data available',
@@ -477,7 +487,7 @@
                         name: 'type',
                         render: function(data, type, row) {
                             if (!data) return 'N/A';
-                            return `<span class="badge bg-info">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                            return `<span class="status-badge active">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
                         }
                     },
                     {
@@ -639,28 +649,28 @@
             <div class="row mb-4">
                 <div class="col-md-3">
                     <label for="vehicleCategory" class="form-label">Vehicle Category</label>
-                    <select class="form-control" id="vehicleCategory" name="vehicleCategory">
+                    <select class="form-control enhanced-dropdown" id="vehicleCategory" name="vehicleCategory">
                         <option value="">All Categories</option>
                         ${generateOptions(filterOptions.vehicles?.categories || {})}
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="vehicleLocation" class="form-label">Location</label>
-                    <select class="form-control" id="vehicleLocation" name="vehicleLocation">
+                    <select class="form-control enhanced-dropdown" id="vehicleLocation" name="vehicleLocation">
                         <option value="">All Locations</option>
                         ${generateOptions(filterOptions.vehicles?.locations || {})}
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="vehicleCondition" class="form-label">Condition</label>
-                    <select class="form-control" id="vehicleCondition" name="vehicleCondition">
+                    <select class="form-control enhanced-dropdown" id="vehicleCondition" name="vehicleCondition">
                         <option value="">All Conditions</option>
                         ${generateOptions(filterOptions.vehicles?.conditions || [])}
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="vehicleStatus" class="form-label">Status</label>
-                    <select class="form-control" id="vehicleStatus" name="vehicleStatus">
+                    <select class="form-control enhanced-dropdown" id="vehicleStatus" name="vehicleStatus">
                         <option value="">All Statuses</option>
                         ${generateOptions(filterOptions.vehicles?.statuses || {})}
                     </select>
@@ -674,21 +684,21 @@
             <div class="row mb-4">
                 <div class="col-md-4">
                     <label for="defectVehicle" class="form-label">Vehicle</label>
-                    <select class="form-control" id="defectVehicle" name="defectVehicle">
+                    <select class="form-control enhanced-dropdown" id="defectVehicle" name="defectVehicle">
                         <option value="">All Vehicles</option>
                         ${generateOptions(filterOptions.defect_reports?.vehicles || {})}
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="defectLocation" class="form-label">Location</label>
-                    <select class="form-control" id="defectLocation" name="defectLocation">
+                    <select class="form-control enhanced-dropdown" id="defectLocation" name="defectLocation">
                         <option value="">All Locations</option>
                         ${generateOptions(filterOptions.defect_reports?.locations || {})}
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="defectDate" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="defectDate" name="defectDate">
+                    <input type="date" class="form-control enhanced-dropdown" id="defectDate" name="defectDate">
                 </div>
             </div>
         `;
@@ -699,7 +709,7 @@
             <div class="row mb-4">
                 <div class="col-md-3">
                     <label for="partStatus" class="form-label">Status</label>
-                    <select class="form-control" id="partStatus" name="partStatus">
+                    <select class="form-control enhanced-dropdown" id="partStatus" name="partStatus">
                         <option value="">All Statuses</option>
                         ${generateOptions(filterOptions.vehicle_parts?.statuses || {})}
                     </select>
@@ -713,14 +723,14 @@
             <div class="row mb-4">
                 <div class="col-md-3">
                     <label for="locationType" class="form-label">Location Type</label>
-                    <select class="form-control" id="locationType" name="locationType">
+                    <select class="form-control enhanced-dropdown" id="locationType" name="locationType">
                         <option value="">All Types</option>
                         ${generateOptions(filterOptions.locations?.types || [])}
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="locationStatus" class="form-label">Status</label>
-                    <select class="form-control" id="locationStatus" name="locationStatus">
+                    <select class="form-control enhanced-dropdown" id="locationStatus" name="locationStatus">
                         <option value="">All Statuses</option>
                         ${generateOptions(filterOptions.locations?.statuses || {})}
                     </select>

@@ -1,7 +1,6 @@
-// Vehicle CRUD functionality
-console.log('Vehicle CRUD functionality');
-
 // Initialize DataTable
+
+
 if (!$.fn.DataTable.isDataTable('#js-vehicle-table')) {
     $('#js-vehicle-table').DataTable({
         responsive: true,

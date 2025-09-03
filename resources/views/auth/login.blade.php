@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Citizen Waste Management Portal - Sign In</title>
     <link href="{{ asset('assets/auth/css/login.css') }}" rel="stylesheet" type="text/css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 </head>
+
 <body>
     <div class="container">
         <div class="left-section">
             <div class="government-logo">
-                <img src="{{asset('assets/auth/images/government-logo-small.png')}}" alt="Government of Pakistan Logo" class="gov-logo">
+                <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government of Pakistan Logo"
+                    class="gov-logo">
             </div>
 
             <div class="content">
                 <h1 class="main-heading">Sign in to Citizen Waste Management Portal</h1>
-                 <p class="subtitle">Access billing, complaints and service requests</p>
+                <p class="subtitle">Access billing, complaints and service requests</p>
 
-                 <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}" alt="Waste management workers illustration" class="workers-img">
+                <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}"
+                    alt="Waste management workers illustration" class="workers-img">
 
             </div>
         </div>
@@ -26,7 +30,7 @@
         <div class="right-section">
             <div class="login-form-container">
                 <div class="portal-header">
-                    <img src="{{ ('assets/auth/images/recycle-icon.png') }}" alt="Recycle icon" class="recycle-logo">
+                    <img src="{{ 'assets/auth/images/recycle-icon.png' }}" alt="Recycle icon" class="recycle-logo">
                     <div class="portal-title">
                         <h2 class="urdu-title">شہری پورٹل</h2>
                         <h3 class="english-title">Citizen Portal</h3>
@@ -39,7 +43,8 @@
                         <label for="login-id" class="form-label">CNIC or Email</label>
                         <div class="input-wrapper">
                             <span class="input-icon user-icon"></span>
-                            <input type="text" id="login-id" placeholder="Enter your Email" class="form-input" name="email" required>
+                            <input type="text" id="login-id" placeholder="Enter your Email" class="form-input"
+                                name="email" required>
                         </div>
                     </div>
 
@@ -47,13 +52,15 @@
                         <label for="password" class="form-label">Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon lock-icon"></span>
-                            <input type="password" id="password" placeholder="Enter your password" class="form-input" name="password" required value="{{ old('password') }}">
+                            <input type="password" id="password" placeholder="Enter your password" class="form-input"
+                                name="password" required value="{{ old('password') }}">
                         </div>
                     </div>
 
                     <div class="form-options">
                         <label class="remember-me">
-                            <input type="checkbox" class="checkbox" value="true" id="auth-remember-check" name="remember_me">
+                            <input type="checkbox" class="checkbox" value="true" id="auth-remember-check"
+                                name="remember_me">
                             Remember me
                         </label>
                         <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a>
@@ -68,7 +75,8 @@
 
                 <div class="footer">
                     <div class="footer-logo">
-                        <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government Logo" class="footer-gov-logo">
+                        <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government Logo"
+                            class="footer-gov-logo">
                     </div>
                     <div class="footer-text">
                         <span>Managed by Ministry of Climate Change,</span>
@@ -79,7 +87,8 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
 
     <!-- Toastr JavaScript (requires jQuery to be loaded first) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -88,42 +97,42 @@
     <!-- Include jQuery Validation Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 
-        <script>
-            @if(session('success'))
-                toastr.success('{{ session('success') }}');
-            @endif
-            @if(session('error'))
-                toastr.error('{{ session('error') }}');
-            @endif
+    <script>
+        @if (session('success'))
+            toastr.success('{{ session('success') }}');
+        @endif
+        @if (session('error'))
+            toastr.error('{{ session('error') }}');
+        @endif
 
-              @if($errors->has('email'))
-                toastr.error('{{ $errors->first('email') }}');
-            @endif
-            // jquery validation
-            $(document).ready(function()
-            {
-                $('#loginform').validate({
-                    rules:{
-                    email:{
-                        required:true
+        @if ($errors->has('email'))
+            toastr.error('{{ $errors->first('email') }}');
+        @endif
+        // jquery validation
+        $(document).ready(function() {
+            $('#loginform').validate({
+                rules: {
+                    email: {
+                        required: true
                     },
-                    password:{
-                        required:true
+                    password: {
+                        required: true
                     },
+                },
+                messages: {
+                    email: {
+                        required: "Please enter your email address."
                     },
-                    messages: {
-                        email: {
-                            required: "Please enter your email address."
-                        },
-                        password: {
-                            required: "Please enter your password."
-                        }
-
+                    password: {
+                        required: "Please enter your password."
                     }
-                });
+
+                }
             });
-        </script>
+        });
+    </script>
 </body>
+
 </html>
 
 </html>

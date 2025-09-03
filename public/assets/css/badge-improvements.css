@@ -1,0 +1,213 @@
+/* ===============================================
+   IMPROVED BADGE STYLING
+   Better looking badges for tables and UI elements
+   =============================================== */
+
+/* Base Badge Improvements */
+.badge {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    padding: 0.375rem 0.625rem !important;
+    border-radius: 0.375rem !important;
+    line-height: 1.2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    white-space: nowrap !important;
+}
+
+/* Status Badge Improvements */
+.badge.bg-success-subtle {
+    background-color: #d1e7dd !important;
+    color: #0f5132 !important;
+    border: 1px solid #badbcc !important;
+}
+
+.badge.bg-danger-subtle {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+    border: 1px solid #f5c2c7 !important;
+}
+
+.badge.bg-warning-subtle {
+    background-color: #fff3cd !important;
+    color: #664d03 !important;
+    border: 1px solid #ffecb5 !important;
+}
+
+.badge.bg-info-subtle {
+    background-color: #d1ecf1 !important;
+    color: #055160 !important;
+    border: 1px solid #bee5eb !important;
+}
+
+.badge.bg-primary-subtle {
+    background-color: #cfe2ff !important;
+    color: #084298 !important;
+    border: 1px solid #b6d4fe !important;
+}
+
+.badge.bg-secondary-subtle {
+    background-color: #e2e3e5 !important;
+    color: #41464b !important;
+    border: 1px solid #d3d6d8 !important;
+}
+
+/* Solid Badge Improvements for Conditions */
+.badge.bg-success {
+    background-color: #198754 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+    border: none !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.badge.bg-primary {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000000 !important;
+    border: none !important;
+}
+
+.badge.bg-light {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Badge Icons */
+.badge i {
+    font-size: 0.875rem !important;
+    line-height: 1 !important;
+}
+
+/* Table Badge Adjustments */
+.table .badge {
+    font-size: 0.6875rem !important;
+    padding: 0.25rem 0.5rem !important;
+    margin: 0 !important;
+}
+
+/* Count Badges */
+.badge.count-badge {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    min-width: 2rem !important;
+    text-align: center !important;
+    border-radius: 1rem !important;
+}
+
+.badge.count-badge.empty {
+    background: #6c757d !important;
+    color: #ffffff !important;
+}
+
+/* Attachment Badges */
+.badge.attachment-badge {
+    padding: 0.1875rem 0.375rem !important;
+    font-size: 0.625rem !important;
+}
+
+/* Role Badges */
+.badge.role-badge {
+    text-transform: capitalize !important;
+    font-weight: 600 !important;
+}
+
+/* Status Toggle Badges */
+.status-badge {
+    font-size: 0.6875rem !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 0.25rem !important;
+    font-weight: 500 !important;
+}
+
+.status-badge.active {
+    background-color: #d1e7dd !important;
+    color: #0f5132 !important;
+    border: 1px solid #badbcc !important;
+}
+
+.status-badge.inactive {
+    background-color: #f8d7da !important;
+    color: #842029 !important;
+    border: 1px solid #f5c2c7 !important;
+}
+
+.status-badge.pending {
+    background-color: #fff3cd !important;
+    color: #664d03 !important;
+    border: 1px solid #ffecb5 !important;
+}
+
+.status-badge.with-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+
+/* Hover Effects */
+.badge:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* DataTable Badge Adjustments */
+.dataTables_wrapper .badge {
+    margin: 0 !important;
+    vertical-align: middle !important;
+}
+
+/* Responsive Badge Adjustments */
+@media (max-width: 768px) {
+    .badge {
+        font-size: 0.625rem !important;
+        padding: 0.1875rem 0.375rem !important;
+    }
+    
+    .badge i {
+        font-size: 0.75rem !important;
+    }
+    
+    .table .badge {
+        font-size: 0.5625rem !important;
+        padding: 0.125rem 0.25rem !important;
+    }
+}
+
+/* Fix for condition badges in vehicle table */
+.vehicle-condition-badge {
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+}
+
+/* Type badges for better recognition */
+.type-badge {
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+}
+
+/* Priority badges */
+.priority-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 0.625rem !important;
+} 
