@@ -32,8 +32,31 @@ body {
     padding: 40px;
     display: flex;
     flex-direction: column;
-    position: relative;
+    justify-content: center;
     background-color: rgb(154,219,207);
+}
+
+.left-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.government-logo {
+    margin-top: 13%;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.workers-img {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
 }
 
 .government-logo {
