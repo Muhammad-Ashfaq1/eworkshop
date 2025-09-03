@@ -24,6 +24,7 @@ class VehicleCategoryRequest extends FormRequest
         return [
              'name' => 'required|string|max:255',
              'is_active' => 'sometimes|boolean',
+             'vehicle_category_id' => 'nullable|exists:vehicle_categories,id',
         ];
     }
 }

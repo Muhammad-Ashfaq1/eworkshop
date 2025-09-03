@@ -62,9 +62,9 @@
                                     <div>
                                         <label for="VehicleCategoryName" class="form-label">Category Name <x-req /></label>
                                         <input type="text" class="form-control enhanced-dropdown"
-                                            id="vehicleCategoryName" name="vehicle_category_name"
+                                            id="vehicleCategoryName" name="name"
                                             placeholder="Enter Vechicle Category name">
-                                        @error('vehicle_category_name')
+                                        @error('name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -108,18 +108,20 @@
             // Validate & submit form
             $('#js-add-vehicle-categories-form').validate({
                 rules: {
-                    vehicle_category_name: {
+                    name: {
                         required: true,
-                        minlength: 2
+                        minlength: 2,
+                        maxlength: 255
                     },
                     is_active: {
                         required: true
                     }
                 },
                 messages: {
-                    vehicle_category_name: {
+                    name: {
                         required: "Please enter category name",
-                        minlength: "Name must be at least 2 characters long"
+                        minlength: "Name must be at least 3 characters long",
+                        maxlength: "Name must be less than 255 characters"
                     },
                     is_active: {
                         required: "Please select a status"

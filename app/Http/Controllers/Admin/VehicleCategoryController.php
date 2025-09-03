@@ -6,7 +6,7 @@ use App\Http\Requests\VehicleCategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\VehicleCategory;
 use App\Http\Controllers\Controller;
-class VehicleCategoriesController extends Controller
+class VehicleCategoryController extends Controller
 {
       public function index()
     {
@@ -16,12 +16,12 @@ class VehicleCategoriesController extends Controller
     public function store(VehicleCategoryRequest $request)
     {
 
-             $vehicle_category_id=$request->vehicle_category_id ?? null;
+            $vehicle_category_id=$request->vehicle_category_id ?? null;
             VehicleCategory::updateOrCreate(
             ['id' => $vehicle_category_id],
             [
-                'name' => $request->vehicle_category_name,
-                'is_active' => $request->is_active
+                'name' => $request->name ?? null,
+                'is_active' => $request->is_active ?? null
              ]);
 
        return $this->getLatestRecords('Record Saved Successfully!');

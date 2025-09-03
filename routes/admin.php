@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\VehiclePartController;
 use App\Http\Controllers\Admin\FleetManagerController;
-use App\Http\Controllers\Admin\VehicleCategoriesController;
+use App\Http\Controllers\Admin\VehicleCategoryController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // User Management Routes - Super Admin only
@@ -60,7 +60,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         });
 
     //vehicle Categories
-       Route::controller(VehicleCategoriesController::class)->prefix('vehicle-categories')
+       Route::controller(VehicleCategoryController::class)->prefix('vehicle-categories')
         ->name('vehicle-categories.')->group(function () {
         Route::get('/','index')->name('index');
         Route::post('/store','store')->name('store');
