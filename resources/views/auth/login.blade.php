@@ -63,14 +63,14 @@
                                 name="remember_me">
                             Remember me
                         </label>
-                        <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a>
+                        {{-- <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a> --}}
                     </div>
 
                     <button type="submit" class="sign-in-btn">Sign in</button>
 
-                    <div class="signup-link">
+                    {{-- <div class="signup-link">
                         <span>New user? </span><a href="{{ route('register') }}">Sign up</a>
-                    </div>
+                    </div> --}}
                 </form>
 
                 <div class="footer">
