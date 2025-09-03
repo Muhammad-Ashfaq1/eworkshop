@@ -36,8 +36,8 @@
                             @can('delete_vehicle_categories')
 
                             <li>
-                                <a href="{{ route('admin.vehicle-categories.destroy',$vehicle_category->id) }}"
-                                    class="dropdown-item remove-item-btn" id="js-vehicle-categories-delete-btn">
+                                <a href="#"
+                                    class="dropdown-item js-vehicle-categories-delete-btn" data-id="{{ $vehicle_category->id }}">
                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
                                 </a>
                             </li>

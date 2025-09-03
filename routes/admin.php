@@ -61,13 +61,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     //vehicle Categories
        Route::controller(VehicleCategoryController::class)->prefix('vehicle-categories')
-        ->name('vehicle-categories.')->group(function () {
+        ->name('vehicle-categories.')->middleware(['permission:read_vehicle_categories'])->group(function () {
         Route::get('/','index')->name('index');
-        Route::post('/store','store')->name('store');
-        Route::get('/edit/{id}','edit')->name('edit');
-        Route::delete('/destroy/{id}','destroy')->name('destroy');
+        Route::post('/store','store')->name('store')->middleware(['permission:create_vehicle_categories']);
+        Route::get('/edit/{id}','edit')->name('edit')->middleware(['permission:update_vehicle_categories']);
+        Route::delete('/destroy/{id}','destroy')->name('destroy')->middleware(['permission:delete_vehicle_categories']);
         Route::get('archieved','archieved')->name('archieved');
-        Route::post('restore-archived/{id}','restoreArchived')->name('restore.archived');
+        Route::post('restore-archived/{id}','restoreArchived')->name('restore.archived')->middleware(['permission:restore_vehicle_categories']);
 
         });
 

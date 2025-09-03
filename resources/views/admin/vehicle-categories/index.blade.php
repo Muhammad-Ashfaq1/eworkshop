@@ -99,7 +99,6 @@
 
 @endsection
 @section('scripts')
-@section('scripts')
     <script>
         $(document).ready(function() {
             // Initialize DataTable
@@ -174,8 +173,7 @@
             });
         });
 
-        //Edit Vechicle Categories
-
+        //Edit Vehicle Categories
         $(document).on('click', '.edit-vehicle-categories-btn', function(e) {
             e.preventDefault();
 
@@ -210,61 +208,52 @@
                     toastr.error('An error occurred. Please try again.');
                 }
             });
+        });
 
-            //Vehicle category delete
-
-            $(document).on('click', '#js-vehicle-categories-delete-btn', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: url,
-                            type: 'DELETE',
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $(
-                                        'meta[name="csrf-token"]')
-                                    .attr('content'));
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    $('#js-vehicle-categories-table-body').html();
-                                    $('#js-vehicle-categories-table-body').html(response
-                                        .html);
-                                    toastr.success(response.message);
-                                } else {
-                                    toastr.error(response.message);
-                                }
-                            },
-                            error: function(xhr) {
-                                if (xhr.status === 422) {
-                                    const errors = xhr.responseJSON.errors;
-                                    $.each(errors, function(key, value) {
-                                        toastr.error(value[0]);
-                                    });
-                                } else {
-                                    toastr.error(
-                                    'An error occurred. Please try again.');
-                                }
+        //Vehicle category delete
+        $(document).on('click', '.js-vehicle-categories-delete-btn', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var url = "{{ route('admin.vehicle-categories.destroy' , ':id') }}";
+            url = url.replace(':id', id);
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                $('#js-vehicle-categories-table-body').html(response.html);
+                                toastr.success(response.message);
+                            } else {
+                                toastr.error(response.message);
                             }
-                        });
-                    }
-                });
-
-
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422) {
+                                const errors = xhr.responseJSON.errors;
+                                $.each(errors, function(key, value) {
+                                    toastr.error(value[0]);
+                                });
+                            } else {
+                                toastr.error('An error occurred. Please try again.');
+                            }
+                        }
+                    });
+                }
             });
-
-
         });
     </script>
 @endsection
-
-@endsection()
