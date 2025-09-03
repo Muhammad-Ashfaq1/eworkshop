@@ -529,17 +529,17 @@
             $('#add-part').click(function() {
                 const partItem = `
                 <div class="part-item row mb-3">
-                    <div class="col-md-5">
+                    <div class="col-md-8">
                         <label class="form-label">Vehicle Part <x-req /></label>
                         <select class="form-select vehicle-part-select" name="parts[${partIndex}][vehicle_part_id]" required>
                             <option value="" selected disabled>Select Vehicle Part</option>
                         </select>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <label class="form-label">Quantity <x-req /></label>
                         <input type="number" class="form-control enhanced-dropdown" name="parts[${partIndex}][quantity]" placeholder="Enter quantity" min="1" value="1" required>
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
+                    <div class="col-md-1 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-part">
                             <i class="ri-delete-bin-line"></i>
                         </button>
