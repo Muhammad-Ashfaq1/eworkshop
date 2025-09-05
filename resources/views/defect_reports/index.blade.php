@@ -42,12 +42,12 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            
+
                             <!-- DataTable Controls Area (Fixed) -->
                             <div id="datatable-controls-wrapper">
                                 <!-- DataTable controls will be moved here -->
                             </div>
-                            
+
                             <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-defect-report-table"
@@ -100,7 +100,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <!-- DataTable Info and Pagination Area (Fixed) -->
                             <div id="datatable-bottom-wrapper">
                                 <!-- DataTable info and pagination will be moved here -->
@@ -298,7 +298,7 @@
                     var $wrapper = $('#js-defect-report-table_wrapper');
                     var $table = $('#js-defect-report-table');
                     var $responsive = $('.table-responsive');
-                    
+
                     // Ensure responsive container is properly set
                     $responsive.css({
                         'overflow-x': 'auto',
@@ -306,14 +306,14 @@
                         'width': '100%',
                         'position': 'relative'
                     });
-                    
+
                     // Set table width to trigger scroll
                     $table.css({
                         'min-width': '1400px',
                         'width': 'auto',
                         'table-layout': 'auto'
                     });
-                    
+
                     // Remove any conflicting DataTables styling
                     $wrapper.find('.dataTables_scroll').remove();
                     $wrapper.find('.dataTables_scrollHead').remove();
@@ -490,7 +490,7 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-defect-report-table');
-            
+
             // Refresh sorting icons after DataTable initialization
             setTimeout(function() {
                 refreshSortingIcons('#js-defect-report-table');
@@ -771,7 +771,6 @@
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
                             <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" isReadOnly ? "readonly" : "" required>
                             <input type="hidden" name="works[${index}][type]" value="${work.type || 'defect'}">
                             <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
                             <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
