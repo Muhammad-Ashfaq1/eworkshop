@@ -87,8 +87,8 @@ jobs:
           # Create symbolic link for storage
           ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
           # Set correct permissions
-          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage
-          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/*
+          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage/*
           EOF
 
       # Completion message
