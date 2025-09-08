@@ -14,7 +14,7 @@ class DropdownController extends Controller
 {
     public function getTowns(Request $request)
     {
-        $towns = Location::where('location_type', Location::LOCATION_TYPE_TOWN)->where('is_active', Location::IS_ACTIVE)->get(
+        $towns = Location::where('location_type', Location::LOCATION_TYPE_TOWN)->orderBy('name', 'asc')->where('is_active', Location::IS_ACTIVE)->get(
             ['id', 'name']
         );
 
