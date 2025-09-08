@@ -68,4 +68,26 @@ class Work extends Model
 
         return $this->work ?? 'N/A';
     }
+
+    // Get display name with numbering for lists
+    public function getDisplayNameWithNumber($index = 0)
+    {
+        if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
+            $partNumber = $index + 1;
+            return "Part {$partNumber}: " . $this->vehiclePart->name . ($this->quantity ? " (Qty: {$this->quantity})" : '');
+        }
+
+        $workNumber = $index + 1;
+        return "Work Description {$workNumber}: " . ($this->work ?? 'N/A');
+    }
+
+    // Get simple display name for forms
+    public function getSimpleDisplayName()
+    {
+        if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
+            return $this->vehiclePart->name;
+        }
+
+        return $this->work ?? 'N/A';
+    }
 }

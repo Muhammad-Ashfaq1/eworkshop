@@ -178,7 +178,7 @@
                                 <div id="parts-container">
                                     <div class="part-item row mb-3">
                                         <div class="col-md-8">
-                                            <label class="form-label">Vehicle Part <x-req /></label>
+                                            <label class="form-label">Part 1 - Vehicle Part <x-req /></label>
                                             <select class="form-select vehicle-part-select"
                                                 name="parts[0][vehicle_part_id]" required>
                                                 <option value="" selected disabled>Select Vehicle Part</option>
@@ -527,10 +527,11 @@
             let partIndex = 1;
 
             $('#add-part').click(function() {
+                const partNumber = partIndex + 1;
                 const partItem = `
                 <div class="part-item row mb-3">
                     <div class="col-md-8">
-                        <label class="form-label">Vehicle Part <x-req /></label>
+                        <label class="form-label">Part ${partNumber} - Vehicle Part <x-req /></label>
                         <select class="form-select vehicle-part-select" name="parts[${partIndex}][vehicle_part_id]" required>
                             <option value="" selected disabled>Select Vehicle Part</option>
                         </select>
@@ -553,10 +554,31 @@
                 getDynamicDropdownData("{{ route('dropdown.getVehicleParts') }}", newPart);
 
                 partIndex++;
+                updatePartLabels();
             });
 
             $(document).on('click', '.remove-part', function() {
                 $(this).closest('.part-item').remove();
+                updatePartLabels();
+            });
+        }
+
+        function updatePartLabels() {
+            $('#parts-container .part-item').each(function(index) {
+                const label = $(this).find('label');
+                const partNumber = index + 1;
+                const removeButton = $(this).find('.remove-part');
+                const totalItems = $('#parts-container .part-item').length;
+                
+                label.html(`Part ${partNumber} - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>`);
+                
+                // Show remove button if there's more than one item and not in view mode
+                const isViewMode = $('#purchaseOrderSubmit').is(':hidden');
+                if (totalItems > 1 && !isViewMode) {
+                    removeButton.show();
+                } else {
+                    removeButton.hide();
+                }
             });
         }
 
@@ -622,6 +644,31 @@
                         return false;
                     }
 
+                    // Validate all parts
+                    let hasValidParts = true;
+                    $('.vehicle-part-select').each(function() {
+                        if (!$(this).val()) {
+                            $(this).addClass('error');
+                            hasValidParts = false;
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+
+                    $('input[name*="[quantity]"]').each(function() {
+                        if (!$(this).val() || parseInt($(this).val()) < 1) {
+                            $(this).addClass('error');
+                            hasValidParts = false;
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+
+                    if (!hasValidParts) {
+                        toastr.error('All parts must have a selected vehicle part and valid quantity');
+                        return false;
+                    }
+
                     const formData = new FormData(form);
                     const url = $(form).attr('action');
                     const method = $('#purchase_order_id').val() ? 'POST' : 'POST';
@@ -682,6 +729,9 @@
 
             // Remove all parts except the first one
             $('#parts-container .part-item:not(:first)').remove();
+            
+            // Update the first part label to show "Part 1"
+            $('#parts-container .part-item:first label').html('Part 1 - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>');
 
             // Reset Select2
             $('#defect_report_id').val('').trigger('change');
@@ -803,10 +853,11 @@
             // Add parts
             if (po.works && po.works.length > 0) {
                 po.works.forEach((work, index) => {
+                    const partNumber = index + 1;
                     const partItem = `
                     <div class="part-item row mb-3">
                         <div class="col-md-5">
-                            <label class="form-label">Vehicle Part</label>
+                            <label class="form-label">Part ${partNumber} - Vehicle Part</label>
                             <select class="form-select vehicle-part-select" name="parts[${index}][vehicle_part_id]" disabled>
                                 <option value="" selected disabled>Select Vehicle Part</option>
                             </select>
@@ -918,10 +969,12 @@
             if (po.works && po.works.length > 0) {
                 console.log('Adding parts:', po.works); // Debug log
                 po.works.forEach((work, index) => {
+                    const partNumber = index + 1;
+                    const showRemoveButton = po.works.length > 1;
                     const partItem = `
                     <div class="part-item row mb-3">
                         <div class="col-md-5">
-                            <label class="form-label">Vehicle Part <x-req /></label>
+                            <label class="form-label">Part ${partNumber} - Vehicle Part <x-req /></label>
                             <select class="form-select vehicle-part-select" name="parts[${index}][vehicle_part_id]" required>
                                 <option value="" selected disabled>Select Vehicle Part</option>
                             </select>
@@ -931,7 +984,7 @@
                             <input type="number" class="form-control enhanced-dropdown" name="parts[${index}][quantity]" placeholder="Enter quantity" min="1" value="${work.quantity}" required>
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-part" ${index === 0 ? 'style="display: none;"' : ''}>
+                            <button type="button" class="btn btn-danger btn-sm remove-part" ${showRemoveButton ? '' : 'style="display: none;"'}>
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
