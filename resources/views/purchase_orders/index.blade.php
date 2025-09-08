@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="attachment_url" class="form-label">Attach File</label>
+                                    <label for="attachment_url" class="form-label">Attach File <span id="attachment-required" class="text-danger" style="color: red" title="This field is required">*</span></label>
                                     <input type="file" class="form-control enhanced-dropdown" id="attachment_url" name="attachment_url"
                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                     <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB
@@ -260,17 +260,20 @@
         function updateValidationRules() {
             const isEdit = $('#purchase_order_id').val() ? true : false;
             const $attachmentField = $('#attachment_url');
+            const $requiredIndicator = $('#attachment-required');
 
             if (isEdit) {
                 // Remove required validation for attachment when editing
                 $attachmentField.rules('remove', 'required');
                 $attachmentField.removeClass('error');
                 $attachmentField.siblings('.error').remove();
+                $requiredIndicator.hide();
             } else {
                 // Add required validation for attachment when creating new
                 $attachmentField.rules('add', {
                     required: true
                 });
+                $requiredIndicator.show();
             }
         }
 
@@ -540,11 +543,22 @@
             const $select = $(selector);
             $select.empty();
             $select.append('<option value="" selected disabled>Select Defect Report Reference</option>');
+<<<<<<< HEAD
 
             if (mode === 'exclude_po_id=1') {
                 // For create mode - show only defect reports without purchase orders
                 defectReportsData.forEach(function(report) {
                     $select.append(`<option value="${report.id}">${report.reference_number}</option>`);
+=======
+            
+            console.log('Populating dropdown with mode:', mode, 'Data:', defectReportsData);
+            
+            if (mode === 'exclude_po_id=1') {
+                // For create mode - show only defect reports without purchase orders
+                defectReportsData.forEach(function(report) {
+                    const refNumber = report.reference_number || report.text || report.name || 'N/A';
+                    $select.append(`<option value="${report.id}">${refNumber}</option>`);
+>>>>>>> e4af43c33da7e6e3879435f2d015f078183e106f
                 });
 
                 // Check if dropdown is empty
@@ -558,8 +572,18 @@
             } else if (mode === 'include_po_id') {
                 // For edit/view mode - show all defect reports including the current one
                 defectReportsData.forEach(function(report) {
-                    $select.append(`<option value="${report.id}">${report.reference_number || 'N/A'}</option>`);
+                    const refNumber = report.reference_number || report.text || report.name || 'N/A';
+                    $select.append(`<option value="${report.id}">${refNumber}</option>`);
                 });
+                
+                // Check if dropdown is empty for edit mode
+                if (defectReportsData.length === 0) {
+                    $select.append('<option value="" disabled>No defect reports available</option>');
+                    $select.prop('disabled', true);
+                    if (!$('#no-defect-reports-msg').length) {
+                        $select.after('<div id="no-defect-reports-msg" class="form-text text-warning">No defect reports available for editing.</div>');
+                    }
+                }
             }
         }
 
@@ -573,6 +597,9 @@
                         defectReportsLoaded = true;
                         populateDefectReportsDropdown('#defect_report_id', defectReportsData);
                         if (callback) callback();
+                    } else {
+                        console.error('No defect reports data received for edit/view mode');
+                        toastr.error('Failed to load defect reports for editing');
                     }
                 },
                 error: function(xhr) {
@@ -705,6 +732,12 @@
                         required: true,
                         min: 0
                     },
+                    attachment_url: {
+                        required: function() {
+                            // Required for new records, optional for editing
+                            return !$('#purchase_order_id').val();
+                        }
+                    },
                     'parts[0][vehicle_part_id]': {
                         required: true
                     },
@@ -736,6 +769,9 @@
                     acc_amount: {
                         required: "Please enter account amount",
                         min: "Account amount must be greater than or equal to 0"
+                    },
+                    attachment_url: {
+                        required: "Please attach a file for new purchase orders"
                     },
                     'parts[0][vehicle_part_id]': {
                         required: "Please select a vehicle part"
@@ -867,6 +903,9 @@
             // Show info alert for create mode
             $('#info-alert').show();
 
+            // Update validation rules for create mode (attachment required)
+            updateValidationRules();
+
             // Reload defect reports for create mode using cached data
             if (defectReportsLoaded) {
                 populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
@@ -904,6 +943,7 @@
                     $('#editPurchaseOrderBtn').hide();
                     $('#info-alert').show();
                     enableFormFields();
+                    updateValidationRules();
                     break;
                 case 'edit':
                     console.log('Setting modal to edit mode'); // Debug log
@@ -912,6 +952,7 @@
                     $('#editPurchaseOrderBtn').hide();
                     $('#info-alert').hide();
                     enableFormFields();
+                    updateValidationRules();
                     break;
                 case 'view':
                     console.log('Setting modal to view mode'); // Debug log
@@ -932,15 +973,10 @@
                     if (response.success) {
                         const po = response.purchaseOrder;
 
-                        // Load defect reports for edit/view mode if not already loaded
-                        if (!defectReportsLoaded) {
-                            loadDefectReportsForEditView(po.id, function() {
-                                populateViewForm(po);
-                            });
-                        } else {
-                            populateDefectReportsDropdown('#defect_report_id', 'include_po_id');
+                        // Always load defect reports for view mode to ensure we have the correct data
+                        loadDefectReportsForEditView(po.id, function() {
                             populateViewForm(po);
-                        }
+                        });
                     } else {
                         toastr.error(response.message || 'Failed to load purchase order');
                     }
@@ -1036,15 +1072,10 @@
                         const po = response.purchaseOrder;
                         console.log('Purchase Order data:', po); // Debug log
 
-                        // Load defect reports for edit mode if not already loaded
-                        if (!defectReportsLoaded) {
-                            loadDefectReportsForEditView(po.id, function() {
-                                populateEditForm(po);
-                            });
-                        } else {
-                            populateDefectReportsDropdown('#defect_report_id', 'include_po_id');
+                        // Always load defect reports for edit mode to ensure we have the correct data
+                        loadDefectReportsForEditView(po.id, function() {
                             populateEditForm(po);
-                        }
+                        });
                     } else {
                         toastr.error(response.message || 'Failed to load purchase order');
                     }
