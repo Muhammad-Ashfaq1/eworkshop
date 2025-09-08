@@ -315,7 +315,7 @@
                                             </a>
                                         </div>
                                         <div class="col-md-3">
-                                            <a href="{{ route('defect-reports.create') }}" class="btn btn-success w-100 btn-lg">
+                                            <a href="{{ route('defect-reports.store') }}" class="btn btn-success w-100 btn-lg">
                                                 <i class="ri-file-add-line me-2 fs-4"></i><br>
                                                 <span class="fs-6">New Defect Report</span>
                                             </a>
@@ -453,7 +453,7 @@ $(document).ready(function() {
     $('.counter-value').each(function() {
         const $this = $(this);
         const countTo = $this.attr('data-target');
-        
+
         $({ countNum: 0 }).animate({
             countNum: countTo
         }, {
