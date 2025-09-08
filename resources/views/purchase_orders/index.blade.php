@@ -526,7 +526,7 @@
                     if (response.success && response.data) {
                         defectReportsData = response.data;
                         defectReportsLoaded = true;
-                        populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
+                        populateDefectReportsDropdown('#defect_report_id',);
                     }
                 },
                 error: function(xhr) {
@@ -544,7 +544,7 @@
             if (mode === 'exclude_po_id=1') {
                 // For create mode - show only defect reports without purchase orders
                 defectReportsData.forEach(function(report) {
-                    $select.append(`<option value="${report.id}">${report.reference_number || 'N/A'}</option>`);
+                    $select.append(`<option value="${report.id}">${report.reference_number}</option>`);
                 });
 
                 // Check if dropdown is empty
@@ -571,7 +571,7 @@
                     if (response.success && response.data) {
                         defectReportsData = response.data;
                         defectReportsLoaded = true;
-                        populateDefectReportsDropdown('#defect_report_id', 'include_po_id');
+                        populateDefectReportsDropdown('#defect_report_id', defectReportsData);
                         if (callback) callback();
                     }
                 },
