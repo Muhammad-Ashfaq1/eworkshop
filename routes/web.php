@@ -18,8 +18,8 @@ Route::get('/', function () {
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'loginAction'])->name('login.action');
 
-Route::get('register', [AuthController::class, 'register'])->name('register');
-Route::post('register', [AuthController::class, 'registerUser'])->name('register.user');
+// Route::get('register', [AuthController::class, 'register'])->name('register');
+// Route::post('register', [AuthController::class, 'registerUser'])->name('register.user');
 
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -29,25 +29,27 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('update/{id}', [ProfileController::class, 'update'])->middleware('auth')->name('update.user');
 Route::post('updatePassword/{id}', [AuthController::class, 'updatePassword'])->middleware('auth')->name('update.password');
 
-Route::get('/forgot-password', [PasswordController::class, 'forgotPassword'])->name('auth.forgot.password');
-Route::post('/forgot-password-link', [PasswordController::class, 'forgotPasswordLink'])->name('auth.forgot.password.link');
-Route::get('/forgot-password/{token}/{email}', [PasswordController::class, 'verifyEmail'])->name('auth.forgot.password.verify');
-Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('reset.password');
+// Route::get('/forgot-password', [PasswordController::class, 'forgotPassword'])->name('auth.forgot.password');
+// Route::post('/forgot-password-link', [PasswordController::class, 'forgotPasswordLink'])->name('auth.forgot.password.link');
+// Route::get('/forgot-password/{token}/{email}', [PasswordController::class, 'verifyEmail'])->name('auth.forgot.password.verify');
+// Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('reset.password');
 Route::get('/verify-user/{id}', [AuthController::class, 'verifyUser'])->name('verify.user');
 
-Route::get('get-towns', [DropdownController::class, 'getTowns'])->name('dropdown.getTowns');
-Route::get('get-vehicle-categories', [DropdownController::class, 'getVehicleCategories'])->name('dropdown.getVehicleCategories');
-Route::get('get-vehicles', [DropdownController::class, 'getVehicles'])->name('dropdown.getVehicles');
-Route::get('get-locations', [DropdownController::class, 'getLocations'])->name('dropdown.getLocations');
-Route::get('get-fleet-managers', [DropdownController::class, 'getFleetManagers'])->name('dropdown.getFleetManagers');
-Route::get('get-mvis', [DropdownController::class, 'getMvis'])->name('dropdown.getMvis');
-Route::get('get-defect-reports', [DropdownController::class, 'getDefectReports'])->name('dropdown.getDefectReports');
-Route::get('get-vehicle-parts', [DropdownController::class, 'getVehicleParts'])->name('dropdown.getVehicleParts');
+Route::controller(DropdownController::class)->name('dropdown.')->group(function () {
+    Route::get('get-towns', 'getTowns')->name('getTowns');
+    Route::get('get-vehicle-categories', 'getVehicleCategories')->name('getVehicleCategories');
+    Route::get('get-vehicles', 'getVehicles')->name('getVehicles');
+    Route::get('get-locations', 'getLocations')->name('getLocations');
+    Route::get('get-fleet-managers','getFleetManagers')->name('getFleetManagers');
+    Route::get('get-mvis', 'getMvis')->name('getMvis');
+    Route::get('get-defect-reports', 'getDefectReports')->name('getDefectReports');
+    Route::get('get-vehicle-parts', 'getVehicleParts')->name('getVehicleParts');
+});
 
 // Defect Reports routes with permission middleware
 Route::middleware(['auth'])->controller(DefectReportController::class)->prefix('defect-reports')->name('defect-reports.')->group(function () {
     Route::get('/',  'index')->name('index')->middleware('permission:read_defect_reports');
-    Route::get('/create','create')->name('create')->middleware('permission:create_defect_reports');
+    Route::get('/create','store')->name('create')->middleware('permission:create_defect_reports');
     Route::get('/listing','getDefectReportListing')->name('listing')->middleware('permission:read_defect_reports');
     Route::get('/export','exportReports')->name('export')->middleware('permission:export_data');
     Route::post('/','store')->name('store')->middleware('permission:create_defect_reports');
@@ -60,16 +62,16 @@ Route::middleware(['auth'])->controller(DefectReportController::class)->prefix('
 });
 
 // Purchase Orders routes with permission middleware
-Route::middleware(['auth'])->group(function () {
-    Route::get('purchase-orders', [PurchaseOrderController::class, 'index'])->name('purchase-orders.index')->middleware('permission:read_purchase_orders');
-    Route::get('purchase-orders/listing', [PurchaseOrderController::class, 'getPurchaseOrderListing'])->name('purchase-orders.listing')->middleware('permission:read_purchase_orders');
-    Route::post('purchase-orders', [PurchaseOrderController::class, 'store'])->name('purchase-orders.store')->middleware('permission:create_purchase_orders');
-    Route::get('purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('purchase-orders.show')->middleware('permission:read_purchase_orders');
-    Route::get('purchase-orders/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('purchase-orders.edit')->middleware('permission:read_purchase_orders');
-    Route::put('purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('purchase-orders.update')->middleware('permission:update_purchase_orders');
-    Route::delete('purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'destroy'])->name('purchase-orders.destroy')->middleware('permission:delete_purchase_orders');
-    Route::get('purchase-orders-archived', [PurchaseOrderController::class, 'archived'])->name('purchase-orders.archived')->middleware('permission:read_purchase_orders');
-    Route::post('purchase-orders/restore-archived/{id}', [PurchaseOrderController::class, 'restoreArchived'])->name('purchase-orders.restore.archived')->middleware('permission:restore_purchase_orders');
+Route::middleware(['auth'])->controller(PurchaseOrderController::class)->prefix('purchase-orders')->name('purchase-orders.')->group(function () {
+    Route::get('/', 'index')->name('index')->middleware('permission:read_purchase_orders');
+    Route::get('/listing' ,'getPurchaseOrderListing')->name('listing')->middleware('permission:read_purchase_orders');
+    Route::post('/', 'store')->name('store')->middleware('permission:create_purchase_orders');
+    Route::get('/archived','archived')->name('archived')->middleware('permission:read_purchase_orders');
+    Route::post('/restore-archived/{id}','restoreArchived')->name('restore.archived')->middleware('permission:restore_purchase_orders');
+    Route::get('/{purchaseOrder}', 'show')->name('show')->middleware('permission:read_purchase_orders');
+    Route::get('/{purchaseOrder}/edit', 'edit')->name('edit')->middleware('permission:read_purchase_orders');
+    Route::put('/{purchaseOrder}','update')->name('update')->middleware('permission:update_purchase_orders');
+    Route::delete('/{purchaseOrder}','destroy')->name('destroy')->middleware('permission:delete_purchase_orders');
 });
 
 // Role-specific dashboard routes

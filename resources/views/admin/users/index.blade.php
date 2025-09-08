@@ -40,8 +40,7 @@
                         <div class="table-responsive force-table-responsive table-scroll-indicator">
                             <div class="table-wrapper">
                             <table id="usersTable"
-                                    class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                                    style="width:100%; font-weight: lighter !important; font-size: 0.2rem !important;">
+                            class="table table-bordered table-striped align-middle table-nowrap">
                                     <thead>
                                         <tr>
                                             <th data-ordering="false">SR No.</th>
@@ -285,19 +284,14 @@
 
     @section('scripts')
         <script>
-            console.log('User Management Script Loading...');
-
             // Global variables
             let isEditMode = false;
             let currentUserId = null;
 
             $(document).ready(function() {
-                console.log('jQuery is ready - Initializing User Management...');
 
-                // Initialize all event handlers
+                $('#usersTable').DataTable();
                 initializeEventHandlers();
-
-                console.log('User Management initialized successfully');
             });
 
             function initializeEventHandlers() {

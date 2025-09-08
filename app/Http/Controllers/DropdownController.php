@@ -14,7 +14,7 @@ class DropdownController extends Controller
 {
     public function getTowns(Request $request)
     {
-        $towns = Location::where('location_type', Location::LOCATION_TYPE_TOWN)->where('is_active', Location::IS_ACTIVE)->get(
+        $towns = Location::where('location_type', Location::LOCATION_TYPE_TOWN)->orderBy('name', 'asc')->where('is_active', Location::IS_ACTIVE)->get(
             ['id', 'name']
         );
 
@@ -57,7 +57,7 @@ class DropdownController extends Controller
 
     public function getLocations(Request $request)
     {
-        $locations = Location::where('is_active', 1)->get(['id', 'name']);
+        $locations = Location::where('is_active', 1)->orderBy('name', 'asc')->get(['id', 'name']);
 
         return response()->json([
             'success' => true,
@@ -105,7 +105,7 @@ class DropdownController extends Controller
         if ($excludePurchaseOrderId) {
             // For create mode: exclude defect reports that have purchase orders
             $query->whereDoesntHave('purchaseOrders');
-        } elseif ($includePurchaseOrderId) {
+        } elseif ($includePurchaseOrderId && is_numeric($includePurchaseOrderId)) {
             // For edit mode: include the current defect report + defect reports without POs
             $query->where(function($q) use ($includePurchaseOrderId) {
                 $q->whereDoesntHave('purchaseOrders')
@@ -124,8 +124,9 @@ class DropdownController extends Controller
         $formattedDefectReports = $defectReports->map(function ($defectReport) {
             return [
                 'id' => $defectReport->id,
-                'text' => $defectReport->reference_number,
-                'name' => $defectReport->reference_number,
+                'text' => $defectReport->reference_number ?: 'N/A',
+                'name' => $defectReport->reference_number ?: 'N/A',
+                'reference_number' => $defectReport->reference_number ?: 'N/A',
             ];
         });
 

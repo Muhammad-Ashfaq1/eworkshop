@@ -1,3 +1,5 @@
+
+// Function to get dynamic dropdown data
 function getDynamicDropdownData(url, target, callback) {
     $.ajax({
         url: url,
@@ -22,7 +24,7 @@ function getDynamicDropdownData(url, target, callback) {
                 placeholder: 'Select...',
                 allowClear: true,
                 width: '100%',
-                dropdownParent: $(target).closest('.modal').length ? $(target).closest('.modal') : 'body'
+                dropdownParent: $(target).parent()  // Append to the select's immediate parent for correct positioning
             });
 
             // Execute callback if provided
@@ -34,21 +36,4 @@ function getDynamicDropdownData(url, target, callback) {
             console.error('Error fetching dynamic dropdown data:', xhr);
         }
     });
-}
-
-// Function to initialize Select2 for existing dropdowns
-function initializeSelect2(selector) {
-    $(selector).select2({
-        placeholder: 'Select...',
-        allowClear: true,
-        width: '100%',
-        dropdownParent: $(selector).closest('.modal').length ? $(selector).closest('.modal') : 'body'
-    });
-}
-
-// Function to destroy Select2
-function destroySelect2(selector) {
-    if ($(selector).hasClass('select2-hidden-accessible')) {
-        $(selector).select2('destroy');
-    }
 }

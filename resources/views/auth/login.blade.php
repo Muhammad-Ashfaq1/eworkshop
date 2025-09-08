@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citizen Waste Management Portal - Sign In</title>
+    <title>Waste Management Portal - Sign In</title>
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
     <link href="{{ asset('assets/auth/css/login.css') }}" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 </head>
@@ -12,28 +13,31 @@
 <body>
     <div class="container">
         <div class="left-section">
-            <div class="government-logo">
-                <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government of Pakistan Logo"
-                    class="gov-logo">
-            </div>
+            <div class="left-content-wrapper">
+                <div class="government-logo">
+                    <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government of Pakistan Logo"
+                        class="gov-logo">
+                </div>
 
-            <div class="content">
-                <h1 class="main-heading">Sign in to Citizen Waste Management Portal</h1>
-                <p class="subtitle">Access billing, complaints and service requests</p>
+                <div class="content-wrapper">
+                    <div class="content">
+                        <h1 class="main-heading">Login to LWMC E-Workshop</h1>
+                    </div>
 
-                <img src="{{ asset('assets/auth/images/waste-workers-illustration.png') }}"
-                    alt="Waste management workers illustration" class="workers-img">
-
+                    <div class="image-wrapper">
+                        <img src="{{ asset('assets/images/waste-management.png') }}"
+                            alt="Waste management workers illustration" class="workers-img">
+                    </div>
+                </div>
             </div>
         </div>
-
         <div class="right-section">
             <div class="login-form-container">
                 <div class="portal-header">
                     <img src="{{ 'assets/auth/images/recycle-icon.png' }}" alt="Recycle icon" class="recycle-logo">
                     <div class="portal-title">
-                        <h2 class="urdu-title">شہری پورٹل</h2>
-                        <h3 class="english-title">Citizen Portal</h3>
+                        <h2 class="urdu-title"></h2>
+                        <h3 class="english-title"></h3>
                     </div>
                 </div>
 
@@ -63,14 +67,14 @@
                                 name="remember_me">
                             Remember me
                         </label>
-                        <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a>
+                        {{-- <a href="{{ route('auth.forgot.password') }}" class="forgot-password">Forgot password?</a> --}}
                     </div>
 
                     <button type="submit" class="sign-in-btn">Sign in</button>
 
-                    <div class="signup-link">
+                    {{-- <div class="signup-link">
                         <span>New user? </span><a href="{{ route('register') }}">Sign up</a>
-                    </div>
+                    </div> --}}
                 </form>
 
                 <div class="footer">

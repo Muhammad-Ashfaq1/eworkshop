@@ -579,21 +579,21 @@ h1, h2, h3, h4, h5, h6 {
         padding-left: 12px !important;
         padding-right: 12px !important;
     }
-    
+
     .table {
         font-size: 12px !important;
     }
-    
+
     .table th,
     .table td {
         padding: 8px 6px !important;
     }
-    
+
     .card-header,
     .card-body {
         padding: 12px !important;
     }
-    
+
     .btn {
         font-size: 12px !important;
         padding: 6px 12px !important;
@@ -659,6 +659,7 @@ h1, h2, h3, h4, h5, h6 {
 .container-fluid {
     padding-left: 16px !important;
     padding-right: 16px !important;
+    padding-top: 70px ;
 }
 
 /* Clean margins for page content */
@@ -691,4 +692,4 @@ h1, h2, h3, h4, h5, h6 {
 .form-control:focus,
 .form-select:focus {
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
-} 
+}

@@ -42,12 +42,12 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            
+
                             <!-- DataTable Controls Area (Fixed) -->
                             <div id="datatable-controls-wrapper">
                                 <!-- DataTable controls will be moved here -->
                             </div>
-                            
+
                             <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-defect-report-table"
@@ -100,7 +100,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <!-- DataTable Info and Pagination Area (Fixed) -->
                             <div id="datatable-bottom-wrapper">
                                 <!-- DataTable info and pagination will be moved here -->
@@ -209,7 +209,7 @@
                                 <div id="works-container">
                                     <div class="work-item row mb-3">
                                         <div class="col-md-10">
-                                            <label class="form-label">Work Description <x-req /></label>
+                                            <label class="form-label">Work Description 1 <x-req /></label>
                                             <input type="text" class="form-control work-description"
                                                 name="works[0][work]" placeholder="Enter work description"
                                                 maxlength="300" required>
@@ -298,7 +298,7 @@
                     var $wrapper = $('#js-defect-report-table_wrapper');
                     var $table = $('#js-defect-report-table');
                     var $responsive = $('.table-responsive');
-                    
+
                     // Ensure responsive container is properly set
                     $responsive.css({
                         'overflow-x': 'auto',
@@ -306,14 +306,14 @@
                         'width': '100%',
                         'position': 'relative'
                     });
-                    
+
                     // Set table width to trigger scroll
                     $table.css({
                         'min-width': '1400px',
                         'width': 'auto',
                         'table-layout': 'auto'
                     });
-                    
+
                     // Remove any conflicting DataTables styling
                     $wrapper.find('.dataTables_scroll').remove();
                     $wrapper.find('.dataTables_scrollHead').remove();
@@ -490,7 +490,7 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-defect-report-table');
-            
+
             // Refresh sorting icons after DataTable initialization
             setTimeout(function() {
                 refreshSortingIcons('#js-defect-report-table');
@@ -536,10 +536,11 @@
             let workIndex = 1;
 
             $('#add-work').click(function() {
+                const workNumber = workIndex + 1;
                 const workItem = `
                 <div class="work-item row mb-3">
                     <div class="col-md-10">
-                        <label class="form-label">Work Description <x-req /></label>
+                        <label class="form-label">Work Description ${workNumber} <x-req /></label>
                         <input type="text" class="form-control work-description" name="works[${workIndex}][work]" placeholder="Enter work description" maxlength="300" required>
                         <input type="hidden" name="works[${workIndex}][type]" value="defect">
                         <input type="hidden" name="works[${workIndex}][quantity]" value="">
@@ -554,10 +555,31 @@
             `;
                 $('#works-container').append(workItem);
                 workIndex++;
+                updateWorkLabels();
             });
 
             $(document).on('click', '.remove-work', function() {
                 $(this).closest('.work-item').remove();
+                updateWorkLabels();
+            });
+        }
+
+        function updateWorkLabels() {
+            $('#works-container .work-item').each(function(index) {
+                const label = $(this).find('label');
+                const workNumber = index + 1;
+                const removeButton = $(this).find('.remove-work');
+                const totalItems = $('#works-container .work-item').length;
+                
+                label.html(`Work Description ${workNumber} <span class="text-danger" style="color: red" title="This field is required">*</span>`);
+                
+                // Show remove button if there's more than one item and not in view mode
+                const isViewMode = $('#defectReportSubmit').is(':hidden');
+                if (totalItems > 1 && !isViewMode) {
+                    removeButton.show();
+                } else {
+                    removeButton.hide();
+                }
             });
         }
 
@@ -616,6 +638,22 @@
                     }
                 },
                 submitHandler: function(form) {
+                    // Validate all work descriptions
+                    let hasValidWorks = true;
+                    $('.work-description').each(function() {
+                        if ($(this).val().trim().length < 5) {
+                            $(this).addClass('error');
+                            hasValidWorks = false;
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+
+                    if (!hasValidWorks) {
+                        toastr.error('All work descriptions must be at least 5 characters long');
+                        return false;
+                    }
+
                     const formData = new FormData(form);
                     const url = $(form).attr('action');
                     const method = $('#defect_report_id').val() ? 'POST' :
@@ -767,17 +805,24 @@
             $('#works-container').empty();
             if (report.works && report.works.length > 0) {
                 report.works.forEach(function(work, index) {
+                    const workNumber = index + 1;
+                    const showRemoveButton = !isReadOnly && report.works.length > 1;
                     const workItem = `
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
-                            <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[${index}][work]" value="${work.work || ''}" isReadOnly ? "readonly" : "" required>
-                            <input type="hidden" name="works[${index}][type]" value="${work.type || 'defect'}">
+                            <label class="form-label">Work Description ${workNumber} <x-req /></label>
+                            <input type="text" class="form-control work-description"
+                                name="works[${index}][work]" placeholder="Enter work description" value="${work.work || ''}"
+                                maxlength="300" required>
+                            <input type="hidden" name="works[${index}][type]" value="defect">
                             <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
                             <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            ${!isReadOnly ? `<button type="button" class="btn btn-danger btn-sm remove-work"><i class="ri-delete-bin-line"></i></button>` : ''}
+                            <button type="button" class="btn btn-danger btn-sm remove-work"
+                                ${showRemoveButton ? '' : 'style="display: none;"'}>
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -789,16 +834,17 @@
                     const workItem = `
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
-                            <label class="form-label">Work Description <x-req /></label>
-                            <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
+                            <label class="form-label">Work Description 1 <x-req /></label>
+                            <input type="text" class="form-control work-description"
+                                name="works[0][work]" placeholder="Enter work description"
+                                maxlength="300" required>
                             <input type="hidden" name="works[0][type]" value="defect">
-                                        <input type="hidden" name="works[0][quantity]" value="">
-                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
                             <input type="hidden" name="works[0][quantity]" value="">
                             <input type="hidden" name="works[0][vehicle_part_id]" value="">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">
+                            <button type="button" class="btn btn-danger btn-sm remove-work"
+                                style="display: none;">
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
@@ -824,11 +870,11 @@
             $('#works-container').html(`
             <div class="work-item row mb-3">
                 <div class="col-md-10">
-                    <label class="form-label">Work Description <x-req /></label>
+                    <label class="form-label">Work Description 1 <x-req /></label>
                     <input type="text" class="form-control work-description" name="works[0][work]" placeholder="Enter work description" maxlength="300" required>
                     <input type="hidden" name="works[0][type]" value="defect">
-                                        <input type="hidden" name="works[0][quantity]" value="">
-                                        <input type="hidden" name="works[0][vehicle_part_id]" value="">
+                    <input type="hidden" name="works[0][quantity]" value="">
+                    <input type="hidden" name="works[0][vehicle_part_id]" value="">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="button" class="btn btn-danger btn-sm remove-work" style="display: none;">

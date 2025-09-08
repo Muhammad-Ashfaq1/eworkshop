@@ -50,12 +50,12 @@
                                 <small>Start by creating a purchase order for a defect report that doesn't already have
                                     one.</small>
                             </div>
-                            
+
                             <!-- DataTable Controls Area (Fixed) -->
                             <div id="datatable-controls-wrapper">
                                 <!-- DataTable controls will be moved here -->
                             </div>
-                            
+
                             <!-- Table Scroll Area -->
                             <div class="table-responsive">
                                 <table id="js-purchase-order-table"
@@ -81,7 +81,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <!-- DataTable Info and Pagination Area (Fixed) -->
                             <div id="datatable-bottom-wrapper">
                                 <!-- DataTable info and pagination will be moved here -->
@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="attachment_url" class="form-label">Attach File</label>
+                                    <label for="attachment_url" class="form-label">Attach File <span id="attachment-required" class="text-danger" style="color: red" title="This field is required">*</span></label>
                                     <input type="file" class="form-control enhanced-dropdown" id="attachment_url" name="attachment_url"
                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                                     <div class="form-text">Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG. Max size: 2MB
@@ -177,19 +177,19 @@
                                 <h6 class="mb-3">Parts</h6>
                                 <div id="parts-container">
                                     <div class="part-item row mb-3">
-                                        <div class="col-md-5">
-                                            <label class="form-label">Vehicle Part <x-req /></label>
+                                        <div class="col-md-8">
+                                            <label class="form-label">Part 1 - Vehicle Part <x-req /></label>
                                             <select class="form-select vehicle-part-select"
                                                 name="parts[0][vehicle_part_id]" required>
                                                 <option value="" selected disabled>Select Vehicle Part</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-3">
                                             <label class="form-label">Quantity <x-req /></label>
                                             <input type="number" class="form-control enhanced-dropdown" name="parts[0][quantity]"
                                                 placeholder="Enter quantity" min="1" value="1" required>
                                         </div>
-                                        <div class="col-md-2 d-flex align-items-end">
+                                        <div class="col-md-1 d-flex align-items-end">
                                             <button type="button" class="btn btn-danger btn-sm remove-part"
                                                 style="display: none;">
                                                 <i class="ri-delete-bin-line"></i>
@@ -260,17 +260,20 @@
         function updateValidationRules() {
             const isEdit = $('#purchase_order_id').val() ? true : false;
             const $attachmentField = $('#attachment_url');
+            const $requiredIndicator = $('#attachment-required');
 
             if (isEdit) {
                 // Remove required validation for attachment when editing
                 $attachmentField.rules('remove', 'required');
                 $attachmentField.removeClass('error');
                 $attachmentField.siblings('.error').remove();
+                $requiredIndicator.hide();
             } else {
                 // Add required validation for attachment when creating new
                 $attachmentField.rules('add', {
                     required: true
                 });
+                $requiredIndicator.show();
             }
         }
 
@@ -387,7 +390,7 @@
                         orderable: true,
                         searchable: false,
                         className: 'text-end'
-                    }, 
+                    },
                     {
                         data: "works",
                         name: 'parts_count',
@@ -459,7 +462,7 @@
 
             // Fix DataTable controls layout using utility function
             fixDataTableControlsLayout('#js-purchase-order-table');
-            
+
             // Refresh sorting icons after DataTable initialization
             setTimeout(function() {
                 refreshSortingIcons('#js-purchase-order-table');
@@ -500,46 +503,165 @@
             }, 500);
         }
 
-        function loadDropdownData() {
-            // Load defect reports for create mode (exclude those with existing POs)
-            getDynamicDropdownData("{{ route('dropdown.getDefectReports') }}?exclude_po_id=1", '#defect_report_id',
-                function() {
-                    // Check if defect reports dropdown is empty
-                    const defectReportsSelect = $('#defect_report_id');
-                    if (defectReportsSelect.find('option').length <= 1) { // Only "Select..." option
-                        defectReportsSelect.append(
-                            '<option value="" disabled>No defect reports available for PO creation</option>');
-                        defectReportsSelect.prop('disabled', true);
-                        // Show info message
-                        if (!$('#no-defect-reports-msg').length) {
-                            defectReportsSelect.after(
-                                '<div id="no-defect-reports-msg" class="form-text text-warning">No defect reports available for purchase order creation. All defect reports may already have purchase orders.</div>'
-                                );
-                        }
-                    }
-                });
+        // Store vehicle parts data globally
+        let vehiclePartsData = [];
+        let defectReportsData = [];
+        let defectReportsLoaded = false;
 
-            // Load vehicle parts
-            getDynamicDropdownData("{{ route('dropdown.getVehicleParts') }}", '.vehicle-part-select');
+        function loadDropdownData() {
+            // Load vehicle parts once and store globally
+            loadVehiclePartsData();
+            
+            // Load defect reports for create mode (exclude those with existing POs)
+            loadDefectReportsForCreate();
+        }
+
+        function loadDefectReportsForCreate() {
+            if (defectReportsLoaded) {
+                populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('dropdown.getDefectReports') }}?exclude_po_id=1",
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        defectReportsData = response.data;
+                        defectReportsLoaded = true;
+                        populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to load defect reports:', xhr);
+                    toastr.error('Failed to load defect reports');
+                }
+            });
+        }
+
+        function populateDefectReportsDropdown(selector, mode) {
+            const $select = $(selector);
+            $select.empty();
+            $select.append('<option value="" selected disabled>Select Defect Report Reference</option>');
+            
+            console.log('Populating dropdown with mode:', mode, 'Data:', defectReportsData);
+            
+            if (mode === 'exclude_po_id=1') {
+                // For create mode - show only defect reports without purchase orders
+                defectReportsData.forEach(function(report) {
+                    const refNumber = report.reference_number || report.text || report.name || 'N/A';
+                    $select.append(`<option value="${report.id}">${refNumber}</option>`);
+                });
+                
+                // Check if dropdown is empty
+                if (defectReportsData.length === 0) {
+                    $select.append('<option value="" disabled>No defect reports available for PO creation</option>');
+                    $select.prop('disabled', true);
+                    if (!$('#no-defect-reports-msg').length) {
+                        $select.after('<div id="no-defect-reports-msg" class="form-text text-warning">No defect reports available for purchase order creation. All defect reports may already have purchase orders.</div>');
+                    }
+                }
+            } else if (mode === 'include_po_id') {
+                // For edit/view mode - show all defect reports including the current one
+                defectReportsData.forEach(function(report) {
+                    const refNumber = report.reference_number || report.text || report.name || 'N/A';
+                    $select.append(`<option value="${report.id}">${refNumber}</option>`);
+                });
+                
+                // Check if dropdown is empty for edit mode
+                if (defectReportsData.length === 0) {
+                    $select.append('<option value="" disabled>No defect reports available</option>');
+                    $select.prop('disabled', true);
+                    if (!$('#no-defect-reports-msg').length) {
+                        $select.after('<div id="no-defect-reports-msg" class="form-text text-warning">No defect reports available for editing.</div>');
+                    }
+                }
+            }
+        }
+
+        function loadDefectReportsForEditView(poId, callback) {
+            $.ajax({
+                url: "{{ route('dropdown.getDefectReports') }}?include_po_id=" + poId,
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        defectReportsData = response.data;
+                        defectReportsLoaded = true;
+                        populateDefectReportsDropdown('#defect_report_id', 'include_po_id');
+                        if (callback) callback();
+                    } else {
+                        console.error('No defect reports data received for edit/view mode');
+                        toastr.error('Failed to load defect reports for editing');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to load defect reports for edit/view:', xhr);
+                    toastr.error('Failed to load defect reports');
+                }
+            });
+        }
+
+        function loadVehiclePartsData() {
+            $.ajax({
+                url: "{{ route('dropdown.getVehicleParts') }}",
+                type: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        vehiclePartsData = response.data;
+                        // Initialize the first part dropdown
+                        populateVehiclePartDropdown('#parts-container .vehicle-part-select:first');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to load vehicle parts:', xhr);
+                    toastr.error('Failed to load vehicle parts');
+                }
+            });
+        }
+
+        function populateVehiclePartDropdown(selector) {
+            const $select = $(selector);
+            const isDisabled = $select.prop('disabled');
+            
+            // Destroy existing Select2 if it exists
+            if ($select.hasClass('select2-hidden-accessible')) {
+                $select.select2('destroy');
+            }
+            
+            $select.empty();
+            $select.append('<option value="" selected disabled>Select Vehicle Part</option>');
+            
+            vehiclePartsData.forEach(function(part) {
+                $select.append(`<option value="${part.id}">${part.name}</option>`);
+            });
+            
+            // Initialize Select2 on the dropdown
+            $select.select2({
+                placeholder: 'Select Vehicle Part',
+                allowClear: true,
+                width: '100%',
+                disabled: isDisabled
+            });
         }
 
         function setupParts() {
             let partIndex = 1;
 
             $('#add-part').click(function() {
+                const partNumber = partIndex + 1;
                 const partItem = `
                 <div class="part-item row mb-3">
-                    <div class="col-md-5">
-                        <label class="form-label">Vehicle Part <x-req /></label>
+                    <div class="col-md-8">
+                        <label class="form-label">Part ${partNumber} - Vehicle Part <x-req /></label>
                         <select class="form-select vehicle-part-select" name="parts[${partIndex}][vehicle_part_id]" required>
                             <option value="" selected disabled>Select Vehicle Part</option>
                         </select>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <label class="form-label">Quantity <x-req /></label>
                         <input type="number" class="form-control enhanced-dropdown" name="parts[${partIndex}][quantity]" placeholder="Enter quantity" min="1" value="1" required>
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
+                    <div class="col-md-1 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-part">
                             <i class="ri-delete-bin-line"></i>
                         </button>
@@ -548,15 +670,36 @@
             `;
                 $('#parts-container').append(partItem);
 
-                // Initialize Select2 for the new part
+                // Populate the new part dropdown with cached data
                 const newPart = $('#parts-container .part-item:last-child .vehicle-part-select');
-                getDynamicDropdownData("{{ route('dropdown.getVehicleParts') }}", newPart);
+                populateVehiclePartDropdown(newPart);
 
                 partIndex++;
+                updatePartLabels();
             });
 
             $(document).on('click', '.remove-part', function() {
                 $(this).closest('.part-item').remove();
+                updatePartLabels();
+            });
+        }
+
+        function updatePartLabels() {
+            $('#parts-container .part-item').each(function(index) {
+                const label = $(this).find('label');
+                const partNumber = index + 1;
+                const removeButton = $(this).find('.remove-part');
+                const totalItems = $('#parts-container .part-item').length;
+                
+                label.html(`Part ${partNumber} - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>`);
+                
+                // Show remove button if there's more than one item and not in view mode
+                const isViewMode = $('#purchaseOrderSubmit').is(':hidden');
+                if (totalItems > 1 && !isViewMode) {
+                    removeButton.show();
+                } else {
+                    removeButton.hide();
+                }
             });
         }
 
@@ -580,6 +723,12 @@
                     acc_amount: {
                         required: true,
                         min: 0
+                    },
+                    attachment_url: {
+                        required: function() {
+                            // Required for new records, optional for editing
+                            return !$('#purchase_order_id').val();
+                        }
                     },
                     'parts[0][vehicle_part_id]': {
                         required: true
@@ -608,6 +757,9 @@
                         required: "Please enter account amount",
                         min: "Account amount must be greater than or equal to 0"
                     },
+                    attachment_url: {
+                        required: "Please attach a file for new purchase orders"
+                    },
                     'parts[0][vehicle_part_id]': {
                         required: "Please select a vehicle part"
                     },
@@ -619,6 +771,31 @@
                 submitHandler: function(form) {
                     // Don't submit if in view mode
                     if ($('#modal_mode').val() === 'view') {
+                        return false;
+                    }
+
+                    // Validate all parts
+                    let hasValidParts = true;
+                    $('.vehicle-part-select').each(function() {
+                        if (!$(this).val()) {
+                            $(this).addClass('error');
+                            hasValidParts = false;
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+
+                    $('input[name*="[quantity]"]').each(function() {
+                        if (!$(this).val() || parseInt($(this).val()) < 1) {
+                            $(this).addClass('error');
+                            hasValidParts = false;
+                        } else {
+                            $(this).removeClass('error');
+                        }
+                    });
+
+                    if (!hasValidParts) {
+                        toastr.error('All parts must have a selected vehicle part and valid quantity');
                         return false;
                     }
 
@@ -682,10 +859,22 @@
 
             // Remove all parts except the first one
             $('#parts-container .part-item:not(:first)').remove();
+            
+            // Update the first part label to show "Part 1"
+            $('#parts-container .part-item:first label').html('Part 1 - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>');
 
             // Reset Select2
             $('#defect_report_id').val('').trigger('change');
-            $('.vehicle-part-select').val('').trigger('change');
+            
+            // Destroy and reinitialize all vehicle part selects
+            $('.vehicle-part-select').each(function() {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+            });
+            
+            // Re-populate the first part dropdown with cached data
+            populateVehiclePartDropdown('#parts-container .vehicle-part-select:first');
 
             // Clear validation errors
             $('#purchaseOrderForm').find('.error').remove();
@@ -697,8 +886,20 @@
             // Show info alert for create mode
             $('#info-alert').show();
 
-            // Reload defect reports for create mode
-            getDynamicDropdownData("{{ route('dropdown.getDefectReports') }}?exclude_po_id=1", '#defect_report_id');
+            // Update validation rules for create mode (attachment required)
+            updateValidationRules();
+
+            // Reload defect reports for create mode using cached data
+            if (defectReportsLoaded) {
+                populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
+            } else {
+                loadDefectReportsForCreate();
+            }
+            
+            // Ensure vehicle parts data is loaded
+            if (vehiclePartsData.length === 0) {
+                loadVehiclePartsData();
+            }
         }
 
         function enableFormFields() {
@@ -725,6 +926,7 @@
                     $('#editPurchaseOrderBtn').hide();
                     $('#info-alert').show();
                     enableFormFields();
+                    updateValidationRules();
                     break;
                 case 'edit':
                     console.log('Setting modal to edit mode'); // Debug log
@@ -733,6 +935,7 @@
                     $('#editPurchaseOrderBtn').hide();
                     $('#info-alert').hide();
                     enableFormFields();
+                    updateValidationRules();
                     break;
                 case 'view':
                     console.log('Setting modal to view mode'); // Debug log
@@ -753,14 +956,10 @@
                     if (response.success) {
                         const po = response.purchaseOrder;
 
-                        // For view mode, we need to load defect reports including the current one
-                        // Load defect reports with current PO's defect report included
-                        getDynamicDropdownData("{{ route('dropdown.getDefectReports') }}?include_po_id=" + po
-                            .id, '#defect_report_id',
-                            function() {
-                                // Now populate the form fields
-                                populateViewForm(po);
-                            });
+                        // Always load defect reports for view mode to ensure we have the correct data
+                        loadDefectReportsForEditView(po.id, function() {
+                            populateViewForm(po);
+                        });
                     } else {
                         toastr.error(response.message || 'Failed to load purchase order');
                     }
@@ -803,19 +1002,20 @@
             // Add parts
             if (po.works && po.works.length > 0) {
                 po.works.forEach((work, index) => {
+                    const partNumber = index + 1;
                     const partItem = `
                     <div class="part-item row mb-3">
-                        <div class="col-md-5">
-                            <label class="form-label">Vehicle Part</label>
+                        <div class="col-md-8">
+                            <label class="form-label">Part ${partNumber} - Vehicle Part</label>
                             <select class="form-select vehicle-part-select" name="parts[${index}][vehicle_part_id]" disabled>
                                 <option value="" selected disabled>Select Vehicle Part</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <label class="form-label">Quantity</label>
                             <input type="number" class="form-control enhanced-dropdown" name="parts[${index}][quantity]" value="${work.quantity}" disabled>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
+                        <div class="col-md-1 d-flex align-items-end">
                             <button type="button" class="btn btn-danger btn-sm remove-part" style="display: none;">
                                 <i class="ri-delete-bin-line"></i>
                             </button>
@@ -824,11 +1024,10 @@
                 `;
                     $('#parts-container').append(partItem);
 
-                    // Initialize Select2 and set value
+                    // Populate dropdown with cached data and set value
                     const newPart = $(`#parts-container .part-item:eq(${index}) .vehicle-part-select`);
-                    getDynamicDropdownData("{{ route('dropdown.getVehicleParts') }}", newPart, function() {
-                        newPart.val(work.vehicle_part_id).trigger('change');
-                    });
+                    populateVehiclePartDropdown(newPart);
+                    newPart.val(work.vehicle_part_id).trigger('change');
                 });
             }
 
@@ -856,18 +1055,10 @@
                         const po = response.purchaseOrder;
                         console.log('Purchase Order data:', po); // Debug log
 
-                        // For edit mode, we need to load defect reports including the current one
-                        console.log('Loading defect reports for edit mode...'); // Debug log
-                        // Load defect reports with current PO's defect report included
-                        getDynamicDropdownData("{{ route('dropdown.getDefectReports') }}?include_po_id=" + po
-                            .id, '#defect_report_id',
-                            function() {
-                                console.log(
-                                    'Defect reports dropdown loaded for edit mode, populating form...'
-                                    ); // Debug log
-                                // Now populate the form fields
-                                populateEditForm(po);
-                            });
+                        // Always load defect reports for edit mode to ensure we have the correct data
+                        loadDefectReportsForEditView(po.id, function() {
+                            populateEditForm(po);
+                        });
                     } else {
                         toastr.error(response.message || 'Failed to load purchase order');
                     }
@@ -918,20 +1109,22 @@
             if (po.works && po.works.length > 0) {
                 console.log('Adding parts:', po.works); // Debug log
                 po.works.forEach((work, index) => {
+                    const partNumber = index + 1;
+                    const showRemoveButton = po.works.length > 1;
                     const partItem = `
                     <div class="part-item row mb-3">
-                        <div class="col-md-5">
-                            <label class="form-label">Vehicle Part <x-req /></label>
+                        <div class="col-md-8">
+                            <label class="form-label">Part ${partNumber} - Vehicle Part <x-req /></label>
                             <select class="form-select vehicle-part-select" name="parts[${index}][vehicle_part_id]" required>
                                 <option value="" selected disabled>Select Vehicle Part</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <label class="form-label">Quantity <x-req /></label>
                             <input type="number" class="form-control enhanced-dropdown" name="parts[${index}][quantity]" placeholder="Enter quantity" min="1" value="${work.quantity}" required>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-part" ${index === 0 ? 'style="display: none;"' : ''}>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-part" ${showRemoveButton ? '' : 'style="display: none;"'}>
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
@@ -939,11 +1132,10 @@
                 `;
                     $('#parts-container').append(partItem);
 
-                    // Initialize Select2 and set value
+                    // Populate dropdown with cached data and set value
                     const newPart = $(`#parts-container .part-item:eq(${index}) .vehicle-part-select`);
-                    getDynamicDropdownData("{{ route('dropdown.getVehicleParts') }}", newPart, function() {
-                        newPart.val(work.vehicle_part_id).trigger('change');
-                    });
+                    populateVehiclePartDropdown(newPart);
+                    newPart.val(work.vehicle_part_id).trigger('change');
                 });
             } else {
                 console.log('No works found for this PO'); // Debug log
