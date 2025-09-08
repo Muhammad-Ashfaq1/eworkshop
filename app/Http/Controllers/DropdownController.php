@@ -56,7 +56,7 @@ class DropdownController extends Controller
 
     public function getLocations(Request $request)
     {
-        $locations = Location::where('is_active', 1)->get(['id', 'name']);
+        $locations = Location::where('is_active', 1)->orderBy('name', 'asc')->get(['id', 'name']);
 
         return response()->json([
             'success' => true,
