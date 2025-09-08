@@ -36,8 +36,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $search['column_name'] = $data['columns'][$index]['name'] ?? 'created_at';
         }
 
-        $query = DefectReport::forUser($user)
-            ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi']);
+        $query = DefectReport::forUser($user)->orderBy('created_at', 'desc')->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi']);
 
         // Apply search filter
         if (!empty($search['search'])) {
@@ -101,31 +100,31 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                       ->orderBy('vehicles.vehicle_number', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'location.name':
                 $query->join('locations', 'defect_reports.location_id', '=', 'locations.id')
                       ->orderBy('locations.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'fleet_manager.name':
                 $query->leftJoin('fleet_managers as fleet_managers', 'defect_reports.fleet_manager_id', '=', 'fleet_managers.id')
                       ->orderBy('fleet_managers.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'mvi.name':
                 $query->leftJoin('fleet_managers as mvis', 'defect_reports.mvi_id', '=', 'mvis.id')
                       ->orderBy('mvis.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'creator.name':
                 $query->leftJoin('users as creators', 'defect_reports.created_by', '=', 'creators.id')
                       ->orderBy('creators.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             default:
                 // Handle direct column sorting
                 if (strpos($columnName, '.') === false) {
@@ -213,10 +212,10 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
             // Store original values BEFORE any modifications
             $originalValues = $defectReport->getAttributes();
-            
+
             // Store the original values in the observer's static property
             \App\Observers\DefectReportObserver::setOriginalValues($defectReport->id, $originalValues);
-            
+
             // Update defect report fields individually to preserve original values
             $defectReport->vehicle_id = $data['vehicle_id'];
             $defectReport->location_id = $data['location_id'];
@@ -225,7 +224,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $defectReport->mvi_id = $data['mvi_id'];
             $defectReport->date = $data['date'];
             $defectReport->type = $data['type'];
-            
+
             // Save the changes - this will trigger the observer with proper original values
             $defectReport->save();
 
