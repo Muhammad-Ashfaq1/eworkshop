@@ -508,7 +508,7 @@
         function loadDropdownData() {
             // Load vehicle parts once and store globally
             loadVehiclePartsData();
-            
+
             // Load defect reports for create mode (exclude those with existing POs)
             loadDefectReportsForCreate();
         }
@@ -540,13 +540,13 @@
             const $select = $(selector);
             $select.empty();
             $select.append('<option value="" selected disabled>Select Defect Report Reference</option>');
-            
+
             if (mode === 'exclude_po_id=1') {
                 // For create mode - show only defect reports without purchase orders
                 defectReportsData.forEach(function(report) {
                     $select.append(`<option value="${report.id}">${report.reference_number || 'N/A'}</option>`);
                 });
-                
+
                 // Check if dropdown is empty
                 if (defectReportsData.length === 0) {
                     $select.append('<option value="" disabled>No defect reports available for PO creation</option>');
@@ -603,19 +603,19 @@
         function populateVehiclePartDropdown(selector) {
             const $select = $(selector);
             const isDisabled = $select.prop('disabled');
-            
+
             // Destroy existing Select2 if it exists
             if ($select.hasClass('select2-hidden-accessible')) {
                 $select.select2('destroy');
             }
-            
+
             $select.empty();
             $select.append('<option value="" selected disabled>Select Vehicle Part</option>');
-            
+
             vehiclePartsData.forEach(function(part) {
                 $select.append(`<option value="${part.id}">${part.name}</option>`);
             });
-            
+
             // Initialize Select2 on the dropdown
             $select.select2({
                 placeholder: 'Select Vehicle Part',
@@ -671,9 +671,9 @@
                 const partNumber = index + 1;
                 const removeButton = $(this).find('.remove-part');
                 const totalItems = $('#parts-container .part-item').length;
-                
+
                 label.html(`Part ${partNumber} - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>`);
-                
+
                 // Show remove button if there's more than one item and not in view mode
                 const isViewMode = $('#purchaseOrderSubmit').is(':hidden');
                 if (totalItems > 1 && !isViewMode) {
@@ -711,6 +711,11 @@
                     'parts[0][quantity]': {
                         required: true,
                         min: 1
+                    },
+                    attachment_url: {
+                        required: function() {
+                            return $('#defect_report_id').val() === '';
+                        }
                     }
                 },
                 messages: {
@@ -738,7 +743,11 @@
                     'parts[0][quantity]': {
                         required: "Please enter quantity",
                         min: "Quantity must be at least 1"
+                    },
+                    attachment_url:{
+                        required:"Please add attachment"
                     }
+
                 },
                 submitHandler: function(form) {
                     // Don't submit if in view mode
@@ -831,20 +840,20 @@
 
             // Remove all parts except the first one
             $('#parts-container .part-item:not(:first)').remove();
-            
+
             // Update the first part label to show "Part 1"
             $('#parts-container .part-item:first label').html('Part 1 - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>');
 
             // Reset Select2
             $('#defect_report_id').val('').trigger('change');
-            
+
             // Destroy and reinitialize all vehicle part selects
             $('.vehicle-part-select').each(function() {
                 if ($(this).hasClass('select2-hidden-accessible')) {
                     $(this).select2('destroy');
                 }
             });
-            
+
             // Re-populate the first part dropdown with cached data
             populateVehiclePartDropdown('#parts-container .vehicle-part-select:first');
 
@@ -864,7 +873,7 @@
             } else {
                 loadDefectReportsForCreate();
             }
-            
+
             // Ensure vehicle parts data is loaded
             if (vehiclePartsData.length === 0) {
                 loadVehiclePartsData();
