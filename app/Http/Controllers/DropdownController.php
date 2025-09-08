@@ -104,7 +104,7 @@ class DropdownController extends Controller
         if ($excludePurchaseOrderId) {
             // For create mode: exclude defect reports that have purchase orders
             $query->whereDoesntHave('purchaseOrders');
-        } elseif ($includePurchaseOrderId) {
+        } elseif ($includePurchaseOrderId && is_numeric($includePurchaseOrderId)) {
             // For edit mode: include the current defect report + defect reports without POs
             $query->where(function($q) use ($includePurchaseOrderId) {
                 $q->whereDoesntHave('purchaseOrders')
@@ -123,8 +123,9 @@ class DropdownController extends Controller
         $formattedDefectReports = $defectReports->map(function ($defectReport) {
             return [
                 'id' => $defectReport->id,
-                'text' => $defectReport->reference_number,
-                'name' => $defectReport->reference_number,
+                'text' => $defectReport->reference_number ?: 'N/A',
+                'name' => $defectReport->reference_number ?: 'N/A',
+                'reference_number' => $defectReport->reference_number ?: 'N/A',
             ];
         });
 
