@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Traits\ReportAuditRelation;
 
 class ReportAudit extends Model
 {
-    use SoftDeletes;
-    
+    use SoftDeletes,ReportAuditRelation;
+
     protected $fillable = [
         'modifier_id',
         'original_creator_id',
@@ -21,7 +22,7 @@ class ReportAudit extends Model
         'after_changing_record_readable',
         'type',
     ];
-    
+
     protected $casts = [
         'before_changing_record' => 'array',
         'after_changing_record' => 'array',
@@ -29,32 +30,6 @@ class ReportAudit extends Model
         'after_changing_record_readable' => 'array',
     ];
 
-    public function modifier()
-    {
-        return $this->belongsTo(User::class, 'modifier_id');
-    }
-    
-    public function originalCreator()
-    {
-        return $this->belongsTo(User::class, 'original_creator_id');
-    }
-    
-    /**
-     * Get the defect report (if this audit is for a defect report)
-     */
-    public function defectReport()
-    {
-        return $this->belongsTo(DefectReport::class, 'record_id')->where('record_type', 'defect_report');
-    }
-    
-    /**
-     * Get the purchase order (if this audit is for a purchase order)
-     */
-    public function purchaseOrder()
-    {
-        return $this->belongsTo(PurchaseOrder::class, 'record_id')->where('record_type', 'purchase_order');
-    }
-    
     /**
      * Get the record that was audited (accessor method, not a relationship)
      */
@@ -65,10 +40,10 @@ class ReportAudit extends Model
         } elseif ($this->record_type === 'purchase_order') {
             return $this->purchaseOrder;
         }
-        
+
         return null;
     }
-    
+
     /**
      * Check if this audit was made by an admin/super admin (affects accuracy)
      */
@@ -77,10 +52,10 @@ class ReportAudit extends Model
         if (!$this->modifier) {
             return false;
         }
-        
+
         return $this->modifier->hasAnyRole(['admin', 'super_admin']);
     }
-    
+
     /**
      * Check if this audit affects DEO accuracy
      * (Admin edits to DEO-created records affect accuracy)
@@ -91,24 +66,24 @@ class ReportAudit extends Model
         if (!$this->isAdminEdit()) {
             return false;
         }
-        
+
         // Original creator must be a DEO
         if (!$this->originalCreator || !$this->originalCreator->hasRole('deo')) {
             return false;
         }
-        
+
         // Must not be the same person (DEO editing their own record doesn't affect accuracy)
         return $this->modifier_id !== $this->original_creator_id;
     }
-    
+
     /**
      * Get accuracy statistics for a user
      */
     public static function getAccuracyStats($userId)
     {
-        $totalRecords = DefectReport::where('created_by', $userId)->count() + 
+        $totalRecords = DefectReport::where('created_by', $userId)->count() +
                        PurchaseOrder::where('created_by', $userId)->count();
-        
+
         $editedRecords = self::where('original_creator_id', $userId)
                            ->whereHas('modifier', function($query) {
                                $query->whereHas('roles', function($roleQuery) {
@@ -117,7 +92,7 @@ class ReportAudit extends Model
                            })
                            ->distinct(['record_id', 'record_type'])
                            ->count();
-        
+
         if ($totalRecords === 0) {
             return [
                 'total_records' => 0,
@@ -126,10 +101,10 @@ class ReportAudit extends Model
                 'accuracy_percentage' => 0
             ];
         }
-        
+
         $accurateRecords = $totalRecords - $editedRecords;
         $accuracyPercentage = ($accurateRecords / $totalRecords) * 100;
-        
+
         return [
             'total_records' => $totalRecords,
             'edited_records' => $editedRecords,

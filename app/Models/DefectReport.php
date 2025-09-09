@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\Traits\DefectReportRelation;
 
 class DefectReport extends Model
 {
-    use AttachmentStatus, HasFactory, SoftDeletes;
+    use AttachmentStatus, HasFactory, SoftDeletes,DefectReportRelation;
 
     protected $fillable = [
         'reference_number',
@@ -41,7 +42,7 @@ class DefectReport extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($defectReport) {
             if (empty($defectReport->reference_number)) {
                 $defectReport->reference_number = self::generateReferenceNumber();
@@ -57,7 +58,7 @@ class DefectReport extends Model
         do {
             $reference = 'DR-'. strtoupper(Str::random(5));
         } while (self::where('reference_number', $reference)->exists());
-        
+
         return $reference;
     }
 
@@ -70,30 +71,7 @@ class DefectReport extends Model
     }
 
     // Relationships
-    public function vehicle()
-    {
-        return $this->belongsTo(Vehicle::class);
-    }
 
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
-    }
-
-    public function fleetManager()
-    {
-        return $this->belongsTo(FleetManager::class, 'fleet_manager_id');
-    }
-
-    public function mvi()
-    {
-        return $this->belongsTo(FleetManager::class, 'mvi_id');
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
 
     /**
      * Get field labels for display
@@ -114,25 +92,6 @@ class DefectReport extends Model
         ];
     }
 
-    public function works()
-    {
-        return $this->hasMany(Work::class);
-    }
-
-    public function defectWorks()
-    {
-        return $this->hasMany(Work::class)->defects();
-    }
-
-    public function purchaseOrderWorks()
-    {
-        return $this->hasMany(Work::class)->purchaseOrders();
-    }
-
-    public function purchaseOrders()
-    {
-        return $this->hasMany(PurchaseOrder::class);
-    }
 
     // Scopes for role-based filtering
     public function scopeForUser($query, $user)

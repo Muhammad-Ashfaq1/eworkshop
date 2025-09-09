@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Traits\UserRelation;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use AttachmentStatus, HasFactory, HasRoles, Notifiable;
+    use AttachmentStatus, HasFactory, HasRoles, Notifiable,UserRelation;
 
     /**
      * The attributes that are mass assignable.
@@ -56,39 +57,11 @@ class User extends Authenticatable
     {
         return $this->first_name.' '.$this->last_name;
     }
-    
+
     /**
      * Get defect reports created by this user
      */
-    public function defectReports()
-    {
-        return $this->hasMany(DefectReport::class, 'created_by');
-    }
-    
-    /**
-     * Get purchase orders created by this user
-     */
-    public function purchaseOrders()
-    {
-        return $this->hasMany(PurchaseOrder::class, 'created_by');
-    }
-    
-    /**
-     * Get report audits where this user was the modifier
-     */
-    public function modifiedReports()
-    {
-        return $this->hasMany(ReportAudit::class, 'modifier_id');
-    }
-    
-    /**
-     * Get report audits where this user was the original creator
-     */
-    public function originalReports()
-    {
-        return $this->hasMany(ReportAudit::class, 'original_creator_id');
-    }
-    
+
     /**
      * Get user statistics for dashboard
      */
@@ -108,15 +81,15 @@ class User extends Authenticatable
                 'this_month' => $this->purchaseOrders()->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->count(),
             ]
         ];
-        
+
         // Add accuracy stats for DEO users
         if ($this->hasRole('deo')) {
             $stats['accuracy'] = ReportAudit::getAccuracyStats($this->id);
         }
-        
+
         return $stats;
     }
-    
+
     /**
      * Get recent reports created by this user
      */
@@ -131,7 +104,7 @@ class User extends Authenticatable
                 $report->report_type = 'defect_report';
                 return $report;
             });
-            
+
         $purchaseOrders = $this->purchaseOrders()
             ->with(['defectReport.vehicle', 'defectReport.location'])
             ->latest()
@@ -141,7 +114,7 @@ class User extends Authenticatable
                 $order->report_type = 'purchase_order';
                 return $order;
             });
-        
+
         return $defectReports->concat($purchaseOrders)
             ->sortByDesc('created_at')
             ->take($limit)
