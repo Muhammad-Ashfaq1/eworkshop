@@ -742,8 +742,8 @@
                 });
             }
             
-            // Initialize Select2 for all other dropdowns
-            $('.enhanced-dropdown').each(function() {
+            // Initialize Select2 for select dropdowns only (exclude date inputs)
+            $('.enhanced-dropdown:not(input[type="date"])').each(function() {
                 if (!$(this).hasClass('select2-hidden-accessible')) {
                     $(this).select2({
                         placeholder: 'Select...',
