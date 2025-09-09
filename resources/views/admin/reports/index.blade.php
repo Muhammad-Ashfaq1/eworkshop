@@ -22,6 +22,7 @@
                                 <option value="" selected disabled>Select Report Type</option>
                                 <option value="vehicles">Vehicles Report</option>
                                 <option value="defect_reports">Defect Reports</option>
+                                <option value="purchase_orders">Purchase Orders</option>
                                 <option value="vehicle_parts">Vehicle Parts</option>
                                 <option value="locations">Locations</option>
                             </select>
@@ -144,6 +145,7 @@
             const reportTypeNames = {
                 'vehicles': 'Vehicles Report',
                 'defect_reports': 'Defect Reports',
+                'purchase_orders': 'Purchase Orders',
                 'vehicle_parts': 'Vehicle Parts',
                 'locations': 'Locations'
             };
@@ -328,6 +330,7 @@
         const endpoints = {
             'vehicles': "{{ route('admin.reports.vehicles.listing') }}",
             'defect_reports': "{{ route('admin.reports.defect-reports.listing') }}",
+            'purchase_orders': "{{ route('admin.reports.purchase-orders.listing') }}",
             'vehicle_parts': "{{ route('admin.reports.vehicle-parts.listing') }}",
             'locations': "{{ route('admin.reports.locations.listing') }}"
         };
@@ -358,6 +361,17 @@
                     <th>Vehicle</th>
                     <th>Location</th>
                     <th>Date</th>
+                    <th>Created By</th>
+                `;
+                break;
+            case 'purchase_orders':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>PO Number</th>
+                    <th>Vehicle</th>
+                    <th>Location</th>
+                    <th>Issue Date</th>
+                    <th>Amount</th>
                     <th>Created By</th>
                 `;
                 break;
@@ -394,6 +408,8 @@
             case 'vehicles':
                 return 7;
             case 'defect_reports':
+                return 7;
+            case 'purchase_orders':
                 return 7;
             case 'vehicle_parts':
                 return 5;
@@ -527,6 +543,68 @@
                         }
                     }
                 ];
+            case 'purchase_orders':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'po_no',
+                        name: 'po_no',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'defect_report.vehicle.vehicle_number',
+                        name: 'vehicle',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'defect_report.location.name',
+                        name: 'location',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'issue_date',
+                        name: 'issue_date',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'acc_amount',
+                        name: 'acc_amount',
+                        render: function(data, type, row) {
+                            return data ? parseFloat(data).toFixed(2) : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'creator',
+                        name: 'creator',
+                        render: function(data, type, row) {
+                            if (data && data.full_name) {
+                                return data.full_name;
+                            } else if (data && data.first_name && data.last_name) {
+                                return data.first_name + ' ' + data.last_name;
+                            } else if (data && data.name) {
+                                return data.name;
+                            } else {
+                                return 'N/A';
+                            }
+                        }
+                    }
+                ];
             case 'vehicle_parts':
                 return [
                     {
@@ -633,6 +711,9 @@
             case 'defect_reports':
                 filtersHtml = generateDefectReportFilters();
                 break;
+            case 'purchase_orders':
+                filtersHtml = generatePurchaseOrderFilters();
+                break;
             case 'vehicle_parts':
                 filtersHtml = generateVehiclePartFilters();
                 break;
@@ -642,6 +723,20 @@
         }
 
         filtersContainer.html(filtersHtml);
+        
+        // Initialize Select2 for vehicle dropdowns if purchase orders is selected
+        if (currentReportType === 'purchase_orders') {
+            setTimeout(function() {
+                if ($('#poVehicle').length > 0) {
+                    $('#poVehicle').select2({
+                        placeholder: 'Select Vehicle...',
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $('#poVehicle').parent()
+                    });
+                }
+            }, 100);
+        }
     }
 
     function generateVehicleFilters() {
@@ -699,6 +794,31 @@
                 <div class="col-md-4">
                     <label for="defectDate" class="form-label">Date</label>
                     <input type="date" class="form-control enhanced-dropdown" id="defectDate" name="defectDate">
+                </div>
+            </div>
+        `;
+    }
+
+    function generatePurchaseOrderFilters() {
+        return `
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label for="poVehicle" class="form-label">Vehicle</label>
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="poVehicle" name="poVehicle">
+                        <option value="">All Vehicles</option>
+                        ${generateOptions(filterOptions.purchase_orders?.vehicles || {})}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="poLocation" class="form-label">Location</label>
+                    <select class="form-control enhanced-dropdown" id="poLocation" name="poLocation">
+                        <option value="">All Locations</option>
+                        ${generateOptions(filterOptions.purchase_orders?.locations || {})}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="poDate" class="form-label">Issue Date</label>
+                    <input type="date" class="form-control enhanced-dropdown" id="poDate" name="poDate">
                 </div>
             </div>
         `;
@@ -770,6 +890,11 @@
                 filters.vehicle_id = $('#defectVehicle').val();
                 filters.location_id = $('#defectLocation').val();
                 filters.defect_date = $('#defectDate').val();
+                break;
+            case 'purchase_orders':
+                filters.vehicle_id = $('#poVehicle').val();
+                filters.location_id = $('#poLocation').val();
+                filters.issue_date = $('#poDate').val();
                 break;
             case 'vehicle_parts':
                 filters.is_active = $('#partStatus').val();

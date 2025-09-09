@@ -63,6 +63,15 @@ class ReportsController extends Controller
     }
 
     /**
+     * Get purchase orders report with filters
+     */
+    public function getPurchaseOrdersReport(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getPurchaseOrdersReport($request->all());
+    }
+
+    /**
      * Get vehicles report with DataTables pagination
      */
     public function getVehiclesReportListing(Request $request): JsonResponse
@@ -96,6 +105,15 @@ class ReportsController extends Controller
     {
         $this->authorize('access_admin_panel');
         return $this->reportsRepository->getLocationsReportListing($request->all());
+    }
+
+    /**
+     * Get purchase orders report with DataTables pagination
+     */
+    public function getPurchaseOrdersReportListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getPurchaseOrdersReportListing($request->all());
     }
 
     /**

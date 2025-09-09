@@ -37,7 +37,7 @@ class DropdownController extends Controller
     public function getVehicles(Request $request)
     {
         $vehicles = Vehicle::with('category')
-            ->where('is_active', 1)
+            ->where('is_active', 1)->orderBy('vehicle_number', 'asc')
             ->get(['id', 'vehicle_number', 'vehicle_category_id']);
 
         $formattedVehicles = $vehicles->map(function ($vehicle) {

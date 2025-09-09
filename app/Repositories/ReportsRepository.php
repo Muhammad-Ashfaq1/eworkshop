@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\ReportsRepositoryInterface;
 use App\Models\Vehicle;
 use App\Models\DefectReport;
+use App\Models\PurchaseOrder;
 use App\Models\VehiclePart;
 use App\Models\Location;
 use App\Models\User;
@@ -24,7 +25,14 @@ class ReportsRepository implements ReportsRepositoryInterface
                 'statuses' => [1 => 'Active', 0 => 'Inactive']
             ],
             'defect_reports' => [
-                'vehicles' => Vehicle::pluck('vehicle_number', 'id'),
+                'vehicles' => Vehicle::orderBy('vehicle_number', 'asc')->pluck('vehicle_number', 'id'),
+                'locations' => Location::pluck('name', 'id'),
+                'users' => User::role(['admin', 'deo'])->get()->mapWithKeys(function($user) {
+                    return [$user->id => $user->full_name];
+                })
+            ],
+            'purchase_orders' => [
+                'vehicles' => Vehicle::orderBy('vehicle_number', 'asc')->pluck('vehicle_number', 'id'),
                 'locations' => Location::pluck('name', 'id'),
                 'users' => User::role(['admin', 'deo'])->get()->mapWithKeys(function($user) {
                     return [$user->id => $user->full_name];
@@ -177,6 +185,41 @@ class ReportsRepository implements ReportsRepositoryInterface
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to generate locations report: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getPurchaseOrdersReport(array $filters): JsonResponse
+    {
+        try {
+            $query = PurchaseOrder::with(['defectReport.vehicle', 'defectReport.location', 'creator']);
+
+            // Apply filters
+            $this->applyPurchaseOrderFilters($query, $filters);
+
+            // Get results
+            $results = $query->get();
+
+            // Apply additional filtering if needed
+            if (!empty($filters['search'])) {
+                $results = $results->filter(function ($po) use ($filters) {
+                    return stripos($po->po_no, $filters['search']) !== false ||
+                           stripos($po->defectReport?->vehicle?->vehicle_number ?? '', $filters['search']) !== false ||
+                           stripos($po->defectReport?->location?->name ?? '', $filters['search']) !== false;
+                });
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $results,
+                'total' => $results->count(),
+                'filters_applied' => $filters
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate purchase orders report: ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -425,6 +468,68 @@ class ReportsRepository implements ReportsRepositoryInterface
         }
     }
 
+    /**
+     * Get purchase orders report with DataTables pagination
+     */
+    public function getPurchaseOrdersReportListing(array $data): JsonResponse
+    {
+        try {
+            $query = PurchaseOrder::with(['defectReport.vehicle', 'defectReport.location', 'creator']);
+
+            // Get total count before applying any filters
+            $totalRecords = PurchaseOrder::count();
+
+            // Apply custom filters first
+            $this->applyPurchaseOrderFilters($query, $data);
+
+            // Apply search
+            if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('po_no', 'like', "%{$searchValue}%")
+                      ->orWhereHas('defectReport.vehicle', function($vehQ) use ($searchValue) {
+                          $vehQ->where('vehicle_number', 'like', "%{$searchValue}%");
+                      })
+                      ->orWhereHas('defectReport.location', function($locQ) use ($searchValue) {
+                          $locQ->where('name', 'like', "%{$searchValue}%");
+                      });
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+                
+                $columns = ['id', 'po_no', 'issue_date', 'acc_amount', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate purchase orders listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function exportReport(array $filters): JsonResponse
     {
         try {
@@ -436,6 +541,9 @@ class ReportsRepository implements ReportsRepositoryInterface
                     break;
                 case 'defect_reports':
                     $data = $this->getDefectReportsReport($filters);
+                    break;
+                case 'purchase_orders':
+                    $data = $this->getPurchaseOrdersReport($filters);
                     break;
                 case 'vehicle_parts':
                     $data = $this->getVehiclePartsReport($filters);
@@ -488,6 +596,8 @@ class ReportsRepository implements ReportsRepositoryInterface
                 return ['ID', 'Vehicle Number', 'Location', 'Category', 'Condition', 'Status', 'Created At'];
             case 'defect_reports':
                 return ['ID', 'Reference Number', 'Vehicle', 'Location', 'Driver Name', 'Date', 'Type', 'Created At'];
+            case 'purchase_orders':
+                return ['ID', 'PO Number', 'Vehicle', 'Location', 'Issue Date', 'Amount', 'Created At'];
             case 'vehicle_parts':
                 return ['ID', 'Name', 'Description', 'Status', 'Created At'];
             case 'locations':
@@ -519,6 +629,16 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $row['driver_name'] ?? '',
                     $row['date'] ?? '',
                     $row['type'] ?? '',
+                    $row['created_at'] ?? ''
+                ];
+            case 'purchase_orders':
+                return [
+                    $row['id'] ?? '',
+                    $row['po_no'] ?? '',
+                    $row['defect_report']['vehicle']['vehicle_number'] ?? '',
+                    $row['defect_report']['location']['name'] ?? '',
+                    $row['issue_date'] ?? '',
+                    $row['acc_amount'] ?? '',
                     $row['created_at'] ?? ''
                 ];
             case 'vehicle_parts':
@@ -624,6 +744,33 @@ class ReportsRepository implements ReportsRepositoryInterface
 
         if (!empty($filters['date_to'])) {
             $query->where('created_at', '<=', $filters['date_to'] . ' 23:59:59');
+        }
+    }
+
+    private function applyPurchaseOrderFilters($query, array $filters): void
+    {
+        if (!empty($filters['vehicle_id'])) {
+            $query->whereHas('defectReport', function($q) use ($filters) {
+                $q->where('vehicle_id', $filters['vehicle_id']);
+            });
+        }
+
+        if (!empty($filters['location_id'])) {
+            $query->whereHas('defectReport', function($q) use ($filters) {
+                $q->where('location_id', $filters['location_id']);
+            });
+        }
+
+        if (!empty($filters['issue_date'])) {
+            $query->where('issue_date', $filters['issue_date']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->where('issue_date', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->where('issue_date', '<=', $filters['date_to'] . ' 23:59:59');
         }
     }
 }
