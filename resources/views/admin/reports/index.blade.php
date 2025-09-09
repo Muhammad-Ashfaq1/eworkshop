@@ -724,19 +724,36 @@
 
         filtersContainer.html(filtersHtml);
         
-        // Initialize Select2 for vehicle dropdowns if purchase orders is selected
-        if (currentReportType === 'purchase_orders') {
-            setTimeout(function() {
-                if ($('#poVehicle').length > 0) {
-                    $('#poVehicle').select2({
-                        placeholder: 'Select Vehicle...',
+        // Initialize Select2 for vehicle dropdowns
+        setTimeout(function() {
+            if (currentReportType === 'purchase_orders' && $('#poVehicle').length > 0) {
+                $('#poVehicle').select2({
+                    placeholder: 'Select Vehicle...',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#poVehicle').parent()
+                });
+            } else if (currentReportType === 'defect_reports' && $('#defectVehicle').length > 0) {
+                $('#defectVehicle').select2({
+                    placeholder: 'Select Vehicle...',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#defectVehicle').parent()
+                });
+            }
+            
+            // Initialize Select2 for all other dropdowns
+            $('.enhanced-dropdown').each(function() {
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2({
+                        placeholder: 'Select...',
                         allowClear: true,
                         width: '100%',
-                        dropdownParent: $('#poVehicle').parent()
+                        dropdownParent: $(this).parent()
                     });
                 }
-            }, 100);
-        }
+            });
+        }, 100);
     }
 
     function generateVehicleFilters() {
@@ -779,7 +796,7 @@
             <div class="row mb-4">
                 <div class="col-md-4">
                     <label for="defectVehicle" class="form-label">Vehicle</label>
-                    <select class="form-control enhanced-dropdown" id="defectVehicle" name="defectVehicle">
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="defectVehicle" name="defectVehicle">
                         <option value="">All Vehicles</option>
                         ${generateOptions(filterOptions.defect_reports?.vehicles || {})}
                     </select>
