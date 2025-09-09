@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\WorkRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Work extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,WorkRelation;
 
     protected $fillable = [
         'defect_report_id',
@@ -20,20 +21,6 @@ class Work extends Model
     ];
 
     // Relationships
-    public function defectReport()
-    {
-        return $this->belongsTo(DefectReport::class);
-    }
-
-    public function purchaseOrder()
-    {
-        return $this->belongsTo(PurchaseOrder::class);
-    }
-
-    public function vehiclePart()
-    {
-        return $this->belongsTo(VehiclePart::class);
-    }
 
     // Constants for work types
     const TYPE_DEFECT = 'defect';
