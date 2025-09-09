@@ -210,8 +210,10 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" id="purchaseOrderSubmit"
                             style="display: none;">Create Purchase Order</button>
-                        <button type="button" class="btn btn-warning" id="editPurchaseOrderBtn"
+                            @can('edit_purchase_orders')
+                                <button type="button" class="btn btn-warning" id="editPurchaseOrderBtn"
                             style="display: none;">Edit Purchase Order</button>
+                            @endcan
                     </div>
                 </form>
             </div>
