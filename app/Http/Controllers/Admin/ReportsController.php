@@ -19,10 +19,10 @@ class ReportsController extends Controller
     public function index()
     {
         $this->authorize('access_admin_panel');
-        
+
         // Get filter options for dropdowns
         $filterOptions = $this->reportsRepository->getFilterOptions();
-        
+
         return view('admin.reports.index', compact('filterOptions'));
     }
 
@@ -80,6 +80,11 @@ class ReportsController extends Controller
         return $this->reportsRepository->getDefectReportsReportListing($request->all());
     }
 
+      public function getPurchaseOrderListing(Request $request): JsonResponse
+    {
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getPurchaseOrderListing($request->all());
+    }
     /**
      * Get vehicle parts report with DataTables pagination
      */

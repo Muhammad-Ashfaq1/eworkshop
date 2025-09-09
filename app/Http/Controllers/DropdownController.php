@@ -37,7 +37,7 @@ class DropdownController extends Controller
     public function getVehicles(Request $request)
     {
         $vehicles = Vehicle::with('category')
-            ->where('is_active', 1)
+            ->where('is_active', 1)->orderBy('vehicle_number','asc')
             ->get(['id', 'vehicle_number', 'vehicle_category_id']);
 
         $formattedVehicles = $vehicles->map(function ($vehicle) {
@@ -97,10 +97,10 @@ class DropdownController extends Controller
     {
         $excludePurchaseOrderId = $request->get('exclude_po_id');
         $includePurchaseOrderId = $request->get('include_po_id');
-        
+
         $query = DefectReport::where('type', DefectReport::TYPE_DEFECT_REPORT)
             ->whereNotNull('reference_number');
-        
+
         if ($excludePurchaseOrderId) {
             // For create mode: exclude defect reports that have purchase orders
             $query->whereDoesntHave('purchaseOrders');
@@ -116,7 +116,7 @@ class DropdownController extends Controller
             // Default: exclude defect reports that have purchase orders
             $query->whereDoesntHave('purchaseOrders');
         }
-        
+
         $defectReports = $query->orderBy('created_at', 'desc')
             ->get(['id', 'reference_number']);
 

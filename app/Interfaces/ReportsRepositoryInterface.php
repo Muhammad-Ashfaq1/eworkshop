@@ -45,6 +45,14 @@ interface ReportsRepositoryInterface
      * @param array $filters
      * @return JsonResponse
      */
+   public function getPurchaseOrderListing(array $data): JsonResponse;
+
+    /**
+     * Get purchase orders with filters
+     * @param array $filters
+     * @return JsonResponse
+     */
+
     public function getVehiclePartsReport(array $filters): JsonResponse;
 
     /**

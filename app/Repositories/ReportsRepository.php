@@ -2,15 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ReportsRepositoryInterface;
-use App\Models\Vehicle;
-use App\Models\DefectReport;
-use App\Models\VehiclePart;
-use App\Models\Location;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use App\Models\Vehicle;
+use App\Models\Location;
+use App\Models\VehiclePart;
+use App\Models\DefectReport;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\ReportsRepositoryInterface;
 
 class ReportsRepository implements ReportsRepositoryInterface
 {
@@ -83,6 +84,42 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             // Apply filters
             $this->applyDefectReportFilters($query, $filters);
+
+            // Get results
+            $results = $query->get();
+
+            // Apply additional filtering if needed
+            if (!empty($filters['search'])) {
+                $results = $results->filter(function ($report) use ($filters) {
+                    return stripos($report->driver_name, $filters['search']) !== false ||
+                           stripos($report->type, $filters['search']) !== false ||
+                           stripos($report->vehicle?->vehicle_number ?? '', $filters['search']) !== false ||
+                           stripos($report->location?->name ?? '', $filters['search']) !== false;
+                });
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $results,
+                'total' => $results->count(),
+                'filters_applied' => $filters
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate defect reports report: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+      public function getPurchaseOrderReport(array $filters): JsonResponse
+    {
+        try {
+            $query = PurchaseOrder::with(['vehicle', 'location', 'creator']);
+
+            // Apply filters
+            $this->applyPurchaseOrderFilters($query, $filters);
 
             // Get results
             $results = $query->get();
@@ -217,7 +254,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'vehicle_number', 'condition', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -246,7 +283,64 @@ class ReportsRepository implements ReportsRepositoryInterface
 
     /**
      * Get defect reports with DataTables pagination
+     *
      */
+
+     public function getPurchaseOrderListing(array $data):JsonResponse
+     {
+        try{
+            $query=PurchaseOrder::with(['vehicle','location','creator']);
+             // Get total count before applying any filters
+            $totalRecords = PurchaseOrder::count();
+            // Apply custom filters first
+            $this->applyPurchaseOrderFilters($query, $data);
+              if (!empty($data['search']['value'])) {
+                $searchValue = $data['search']['value'];
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('driver_name', 'like', "%{$searchValue}%")
+                      ->orWhere('type', 'like', "%{$searchValue}%")
+                      ->orWhereHas('vehicle', function($vehQ) use ($searchValue) {
+                          $vehQ->where('vehicle_number', 'like', "%{$searchValue}%");
+                      })
+                      ->orWhereHas('location', function($locQ) use ($searchValue) {
+                          $locQ->where('name', 'like', "%{$searchValue}%");
+                      });
+                });
+            }
+
+            // Get filtered count
+            $filteredRecords = $query->count();
+
+            // Apply ordering
+            if (!empty($data['order'])) {
+                $columnIndex = $data['order'][0]['column'];
+                $columnDirection = $data['order'][0]['dir'];
+
+                $columns = ['id', 'driver_name', 'type', 'date', 'created_at'];
+                if (isset($columns[$columnIndex])) {
+                    $query->orderBy($columns[$columnIndex], $columnDirection);
+                }
+            }
+
+            // Apply pagination
+            $pageLength = $data['length'] ?? 10;
+            $start = $data['start'] ?? 0;
+            $results = $query->skip($start)->take($pageLength)->get();
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $results->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate purchase order listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+          }
+     }
     public function getDefectReportsReportListing(array $data): JsonResponse
     {
         try {
@@ -280,7 +374,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'driver_name', 'type', 'date', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -337,7 +431,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'name', 'slug', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -398,7 +492,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'name', 'location_type', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -429,7 +523,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     {
         try {
             $reportType = $filters['report_type'] ?? 'vehicles';
-            
+
             switch ($reportType) {
                 case 'vehicles':
                     $data = $this->getVehiclesReport($filters);
@@ -443,13 +537,16 @@ class ReportsRepository implements ReportsRepositoryInterface
                 case 'locations':
                     $data = $this->getLocationsReport($filters);
                     break;
+                    case'purchase_orders':
+                    $data=$this->getPurchaseOrderReport($filters);
+                    break;
                 default:
                     throw new \Exception('Invalid report type');
             }
 
             // Convert data to CSV format
             $csvContent = $this->convertToCSV($data->getData(true)['data'], $reportType);
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $csvContent,
@@ -592,7 +689,28 @@ class ReportsRepository implements ReportsRepositoryInterface
             $query->where('date', '<=', $filters['date_to'] . ' 23:59:59');
         }
     }
+    private function applyPurchaseOrderFilters($query, array $filters):void
+    {
+        if (!empty($filters['vehicle_id'])) {
+            $query->where('vehicle_id', $filters['vehicle_id']);
+        }
 
+        if (!empty($filters['location_id'])) {
+            $query->where('location_id', $filters['location_id']);
+        }
+
+        if (!empty($filters['defect_date'])) {
+            $query->where('date', $filters['defect_date']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->where('date', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->where('date', '<=', $filters['date_to'] . ' 23:59:59');
+        }
+    }
     private function applyVehiclePartFilters($query, array $filters): void
     {
         if (isset($filters['is_active']) && $filters['is_active'] !== '') {
@@ -609,7 +727,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     }
 
     private function applyLocationFilters($query, array $filters): void
-    {        
+    {
         if (!empty($filters['location_type'])) {
             $query->where('location_type', $filters['location_type']);
         }
