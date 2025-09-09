@@ -77,6 +77,20 @@ interface ReportsRepositoryInterface
     public function getLocationsReportListing(array $data): JsonResponse;
 
     /**
+     * Get purchase orders report with filters
+     * @param array $filters
+     * @return JsonResponse
+     */
+    public function getPurchaseOrdersReport(array $filters): JsonResponse;
+
+    /**
+     * Get purchase orders report with DataTables pagination
+     * @param array $data
+     * @return JsonResponse
+     */
+    public function getPurchaseOrdersReportListing(array $data): JsonResponse;
+
+    /**
      * Export report data
      * @param array $filters
      * @return JsonResponse

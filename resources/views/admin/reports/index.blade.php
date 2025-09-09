@@ -22,6 +22,7 @@
                                 <option value="" selected disabled>Select Report Type</option>
                                 <option value="vehicles">Vehicles Report</option>
                                 <option value="defect_reports">Defect Reports</option>
+                                <option value="purchase_orders">Purchase Orders</option>
                                 <option value="vehicle_parts">Vehicle Parts</option>
                                 <option value="locations">Locations</option>
                                 <option value="purchase_orders">Purchase Order</option>
@@ -112,6 +113,7 @@
 @endsection
 
 @section('scripts')
+<<<<<<< HEAD
     <script>
         $(document).ready(function() {
             // Add a small delay to ensure DOM is fully ready
@@ -120,6 +122,47 @@
                 setupEventListeners();
                 loadFilterOptions();
             }, 100);
+=======
+<script>
+    $(document).ready(function(){
+        // Add a small delay to ensure DOM is fully ready
+        setTimeout(function() {
+            initializeReports();
+            setupEventListeners();
+            loadFilterOptions();
+        }, 100);
+    });
+
+    let currentReportType = 'vehicles';
+    let filterOptions = {};
+    let reportsDataTable = null;
+
+    function initializeReports() {
+        // Set default date range
+        setDefaultDateRange();
+        
+        // Show empty state initially (no DataTable initialization)
+        showEmptyState();
+        
+        // Show welcome message
+    }
+
+    function setupEventListeners() {
+        // Report type change
+        $('#reportType').on('change', function() {
+            currentReportType = $(this).val();
+            loadDynamicFilters();
+            resetToEmptyState();
+            
+            // Show info message
+            const reportTypeNames = {
+                'vehicles': 'Vehicles Report',
+                'defect_reports': 'Defect Reports',
+                'purchase_orders': 'Purchase Orders',
+                'vehicle_parts': 'Vehicle Parts',
+                'locations': 'Locations'
+            };
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
         });
 
         let currentReportType = 'vehicles';
@@ -191,10 +234,23 @@
             });
         }
 
+<<<<<<< HEAD
         function loadFilterOptions() {
             // Filter options are loaded from the controller
             filterOptions = @json($filterOptions);
         }
+=======
+    function getDataTableUrl() {
+        const endpoints = {
+            'vehicles': "{{ route('admin.reports.vehicles.listing') }}",
+            'defect_reports': "{{ route('admin.reports.defect-reports.listing') }}",
+            'purchase_orders': "{{ route('admin.reports.purchase-orders.listing') }}",
+            'vehicle_parts': "{{ route('admin.reports.vehicle-parts.listing') }}",
+            'locations': "{{ route('admin.reports.locations.listing') }}"
+        };
+        return endpoints[currentReportType] || endpoints.vehicles;
+    }
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
 
         function initializeDataTable() {
             if (reportsDataTable) {
@@ -382,6 +438,7 @@
                     <th>Date</th>
                     <th>Created By</th>
                 `;
+<<<<<<< HEAD
                     break;
                 case 'purchase_orders':
                     headers = `
@@ -396,6 +453,22 @@
                     break;
                 case 'vehicle_parts':
                     headers = `
+=======
+                break;
+            case 'purchase_orders':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>PO Number</th>
+                    <th>Vehicle</th>
+                    <th>Location</th>
+                    <th>Issue Date</th>
+                    <th>Amount</th>
+                    <th>Created By</th>
+                `;
+                break;
+            case 'vehicle_parts':
+                headers = `
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
                     <th style="width: 50px;">#</th>
                     <th>Name</th>
                     <th>Slug</th>
@@ -420,7 +493,24 @@
                 `;
             }
 
+<<<<<<< HEAD
             thead.html(headers);
+=======
+    function getColumnCount() {
+        switch(currentReportType) {
+            case 'vehicles':
+                return 7;
+            case 'defect_reports':
+                return 7;
+            case 'purchase_orders':
+                return 7;
+            case 'vehicle_parts':
+                return 5;
+            case 'locations':
+                return 5;
+            default:
+                return 2;
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
         }
 
         function getColumnCount() {
@@ -498,6 +588,7 @@
                                 return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                             }
                         }
+<<<<<<< HEAD
                     ];
                 case 'defect_reports':
                     return [{
@@ -559,6 +650,81 @@
                                     return 'N/A';
                                 }
                             }
+=======
+                    }
+                ];
+            case 'purchase_orders':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'po_no',
+                        name: 'po_no',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'defect_report.vehicle.vehicle_number',
+                        name: 'vehicle',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'defect_report.location.name',
+                        name: 'location',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'issue_date',
+                        name: 'issue_date',
+                        render: function(data, type, row) {
+                            return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'acc_amount',
+                        name: 'acc_amount',
+                        render: function(data, type, row) {
+                            return data ? parseFloat(data).toFixed(2) : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'creator',
+                        name: 'creator',
+                        render: function(data, type, row) {
+                            if (data && data.full_name) {
+                                return data.full_name;
+                            } else if (data && data.first_name && data.last_name) {
+                                return data.first_name + ' ' + data.last_name;
+                            } else if (data && data.name) {
+                                return data.name;
+                            } else {
+                                return 'N/A';
+                            }
+                        }
+                    }
+                ];
+            case 'vehicle_parts':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
                         }
                     ];
 
@@ -625,6 +791,7 @@
                         }
                     ];
 
+<<<<<<< HEAD
                 case 'vehicle_parts':
                     return [{
                             data: null,
@@ -732,6 +899,59 @@
         function loadDynamicFilters() {
             const filtersContainer = $('#dynamicFilters');
             let filtersHtml = '';
+=======
+        switch(currentReportType) {
+            case 'vehicles':
+                filtersHtml = generateVehicleFilters();
+                break;
+            case 'defect_reports':
+                filtersHtml = generateDefectReportFilters();
+                break;
+            case 'purchase_orders':
+                filtersHtml = generatePurchaseOrderFilters();
+                break;
+            case 'vehicle_parts':
+                filtersHtml = generateVehiclePartFilters();
+                break;
+            case 'locations':
+                filtersHtml = generateLocationFilters();
+                break;
+        }
+
+        filtersContainer.html(filtersHtml);
+        
+        // Initialize Select2 for vehicle dropdowns
+        setTimeout(function() {
+            if (currentReportType === 'purchase_orders' && $('#poVehicle').length > 0) {
+                $('#poVehicle').select2({
+                    placeholder: 'Select Vehicle...',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#poVehicle').parent()
+                });
+            } else if (currentReportType === 'defect_reports' && $('#defectVehicle').length > 0) {
+                $('#defectVehicle').select2({
+                    placeholder: 'Select Vehicle...',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#defectVehicle').parent()
+                });
+            }
+            
+            // Initialize Select2 for select dropdowns only (exclude date inputs)
+            $('.enhanced-dropdown:not(input[type="date"])').each(function() {
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2({
+                        placeholder: 'Select...',
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $(this).parent()
+                    });
+                }
+            });
+        }, 100);
+    }
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
 
             switch (currentReportType) {
                 case 'vehicles':
@@ -794,7 +1014,7 @@
             <div class="row mb-4">
                 <div class="col-md-4">
                     <label for="defectVehicle" class="form-label">Vehicle</label>
-                    <select class="form-control enhanced-dropdown" id="defectVehicle" name="defectVehicle">
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="defectVehicle" name="defectVehicle">
                         <option value="">All Vehicles</option>
                         ${generateOptions(filterOptions.defect_reports?.vehicles || {})}
                     </select>
@@ -813,7 +1033,37 @@
             </div>
         `;
     }
+<<<<<<< HEAD
      function generatePurchaseOrderFilter() {
+=======
+
+    function generatePurchaseOrderFilters() {
+        return `
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label for="poVehicle" class="form-label">Vehicle</label>
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="poVehicle" name="poVehicle">
+                        <option value="">All Vehicles</option>
+                        ${generateOptions(filterOptions.purchase_orders?.vehicles || {})}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="poLocation" class="form-label">Location</label>
+                    <select class="form-control enhanced-dropdown" id="poLocation" name="poLocation">
+                        <option value="">All Locations</option>
+                        ${generateOptions(filterOptions.purchase_orders?.locations || {})}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="poDate" class="form-label">Issue Date</label>
+                    <input type="date" class="form-control enhanced-dropdown" id="poDate" name="poDate">
+                </div>
+            </div>
+        `;
+    }
+
+    function generateVehiclePartFilters() {
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
         return `
         <div class="row mb-4">
             <div class="col-md-4">
@@ -872,6 +1122,55 @@
                 </div>
             </div>
         `;
+<<<<<<< HEAD
+=======
+    }
+
+    function generateOptions(options) {
+        if (Array.isArray(options)) {
+            return options.map(option => `<option value="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</option>`).join('');
+        } else if (typeof options === 'object') {
+            return Object.entries(options).map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+        }
+        return '';
+    }
+
+
+
+    function collectFilters() {
+        const filters = {
+            report_type: currentReportType,
+            date_from: $('#dateFrom').val(),
+            date_to: $('#dateTo').val(),
+            search: $('#searchTerm').val()
+        };
+
+        // Add dynamic filters based on report type
+        switch(currentReportType) {
+            case 'vehicles':
+                filters.category_id = $('#vehicleCategory').val();
+                filters.location_id = $('#vehicleLocation').val();
+                filters.condition = $('#vehicleCondition').val();
+                filters.is_active = $('#vehicleStatus').val();
+                break;
+            case 'defect_reports':
+                filters.vehicle_id = $('#defectVehicle').val();
+                filters.location_id = $('#defectLocation').val();
+                filters.defect_date = $('#defectDate').val();
+                break;
+            case 'purchase_orders':
+                filters.vehicle_id = $('#poVehicle').val();
+                filters.location_id = $('#poLocation').val();
+                filters.issue_date = $('#poDate').val();
+                break;
+            case 'vehicle_parts':
+                filters.is_active = $('#partStatus').val();
+                break;
+            case 'locations':
+                filters.location_type = $('#locationType').val();
+                filters.is_active = $('#locationStatus').val();
+                break;
+>>>>>>> 63a2df877a837ea6ef395b67d4ae8c96e63cccb5
         }
 
 
