@@ -240,6 +240,9 @@
                 if (!$('#purchase_order_id').val()) {
                     resetForm();
                 }
+                
+                // Initialize all select2 dropdowns in the modal
+                initializeModalSelect2();
             });
 
             // Check if modal should be opened automatically
@@ -518,6 +521,25 @@
             loadDefectReportsForCreate();
         }
 
+        function initializeModalSelect2() {
+            // Initialize defect report dropdown
+            if ($('#defect_report_id').length && !$('#defect_report_id').hasClass('select2-hidden-accessible')) {
+                $('#defect_report_id').select2({
+                    placeholder: 'Select Defect Report Reference',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#purchaseOrderModal')
+                });
+            }
+            
+            // Initialize all vehicle part dropdowns
+            $('.vehicle-part-select').each(function() {
+                if (!$(this).hasClass('select2-hidden-accessible')) {
+                    populateVehiclePartDropdown($(this));
+                }
+            });
+        }
+
         function loadDefectReportsForCreate() {
             if (defectReportsLoaded) {
                 populateDefectReportsDropdown('#defect_report_id', 'exclude_po_id=1');
@@ -579,6 +601,16 @@
                     }
                 }
             }
+            
+            // Initialize Select2 if not already initialized
+            if (!$select.hasClass('select2-hidden-accessible')) {
+                $select.select2({
+                    placeholder: 'Select Defect Report Reference',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $('#purchaseOrderModal')
+                });
+            }
         }
 
         function loadDefectReportsForEditView(poId, callback) {
@@ -637,12 +669,13 @@
                 $select.append(`<option value="${part.id}">${part.name}</option>`);
             });
             
-            // Initialize Select2 on the dropdown
+            // Initialize Select2 on the dropdown with proper modal configuration
             $select.select2({
                 placeholder: 'Select Vehicle Part',
                 allowClear: true,
                 width: '100%',
-                disabled: isDisabled
+                disabled: isDisabled,
+                dropdownParent: $('#purchaseOrderModal') // Ensure dropdown appears above modal
             });
         }
 
@@ -878,6 +911,11 @@
             // Re-populate the first part dropdown with cached data
             populateVehiclePartDropdown('#parts-container .vehicle-part-select:first');
 
+            // Initialize all select2 dropdowns in the modal
+            setTimeout(function() {
+                initializeModalSelect2();
+            }, 100);
+
             // Clear validation errors
             $('#purchaseOrderForm').find('.error').remove();
             $('#purchaseOrderForm').find('.is-invalid').removeClass('is-invalid');
@@ -1036,6 +1074,11 @@
             // Set modal to view mode
             setModalMode('view');
 
+            // Initialize select2 dropdowns after populating the form
+            setTimeout(function() {
+                initializeModalSelect2();
+            }, 100);
+
             // Show the modal
             $('#purchaseOrderModal').modal('show');
         }
@@ -1142,6 +1185,11 @@
             } else {
                 console.log('No works found for this PO'); // Debug log
             }
+
+            // Initialize select2 dropdowns after populating the form
+            setTimeout(function() {
+                initializeModalSelect2();
+            }, 100);
 
             $('#purchaseOrderModal').modal('show');
         }
