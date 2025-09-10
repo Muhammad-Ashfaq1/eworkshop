@@ -96,7 +96,7 @@
     <!-- Unified Purchase Order Modal -->
     <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="purchaseOrderModalLabel">Add Purchase Order</h5>
@@ -107,7 +107,7 @@
                     @csrf
                     <input type="hidden" id="purchase_order_id" name="purchase_order_id" value="">
                     <input type="hidden" id="modal_mode" name="modal_mode" value="create">
-                    <div class="modal-body">
+                    <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
                         <div class="alert alert-info mb-3" id="info-alert">
                             <i class="ri-information-line me-2"></i>
                             <strong>Note:</strong> Purchase orders can only be created for defect reports that don't already
@@ -198,7 +198,7 @@
                                     </div>
                                 </div>
 
-                                <div class="text-center">
+                                <div class="text-center mt-3" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef;">
                                     <button type="button" class="btn btn-success btn-sm" id="add-part">
                                         <i class="ri-add-line"></i> Add Part
                                     </button>
