@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\VehicleRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes,VehicleRelation;
 
     protected $fillable = [
         'vehicle_number',
@@ -30,13 +31,5 @@ class Vehicle extends Model
     const CONDITION_OLD = 'old';
 
     // Relationships
-    public function location()
-    {
-        return $this->belongsTo(Location::class);
-    }
 
-    public function category()
-    {
-        return $this->belongsTo(VehicleCategory::class, 'vehicle_category_id');
-    }
 }

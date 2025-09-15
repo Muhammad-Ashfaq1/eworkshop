@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\WorkRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Work extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,WorkRelation;
 
     protected $fillable = [
         'defect_report_id',
@@ -20,20 +21,6 @@ class Work extends Model
     ];
 
     // Relationships
-    public function defectReport()
-    {
-        return $this->belongsTo(DefectReport::class);
-    }
-
-    public function purchaseOrder()
-    {
-        return $this->belongsTo(PurchaseOrder::class);
-    }
-
-    public function vehiclePart()
-    {
-        return $this->belongsTo(VehiclePart::class);
-    }
 
     // Constants for work types
     const TYPE_DEFECT = 'defect';
@@ -64,6 +51,28 @@ class Work extends Model
     {
         if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
             return $this->vehiclePart->name.($this->quantity ? " (Qty: {$this->quantity})" : '');
+        }
+
+        return $this->work ?? 'N/A';
+    }
+
+    // Get display name with numbering for lists
+    public function getDisplayNameWithNumber($index = 0)
+    {
+        if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
+            $partNumber = $index + 1;
+            return "Part {$partNumber}: " . $this->vehiclePart->name . ($this->quantity ? " (Qty: {$this->quantity})" : '');
+        }
+
+        $workNumber = $index + 1;
+        return "Work Description {$workNumber}: " . ($this->work ?? 'N/A');
+    }
+
+    // Get simple display name for forms
+    public function getSimpleDisplayName()
+    {
+        if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
+            return $this->vehiclePart->name;
         }
 
         return $this->work ?? 'N/A';

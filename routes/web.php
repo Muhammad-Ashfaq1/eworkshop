@@ -49,7 +49,7 @@ Route::controller(DropdownController::class)->name('dropdown.')->group(function 
 // Defect Reports routes with permission middleware
 Route::middleware(['auth'])->controller(DefectReportController::class)->prefix('defect-reports')->name('defect-reports.')->group(function () {
     Route::get('/',  'index')->name('index')->middleware('permission:read_defect_reports');
-    Route::get('/create','create')->name('create')->middleware('permission:create_defect_reports');
+    Route::get('/create','store')->name('create')->middleware('permission:create_defect_reports');
     Route::get('/listing','getDefectReportListing')->name('listing')->middleware('permission:read_defect_reports');
     Route::get('/export','exportReports')->name('export')->middleware('permission:export_data');
     Route::post('/','store')->name('store')->middleware('permission:create_defect_reports');
