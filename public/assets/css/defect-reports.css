@@ -1,0 +1,299 @@
+/* Defect Reports DataTable Styles */
+
+/* Fix pagination cutoff issues */
+.dataTables_wrapper .dataTables_paginate {
+    float: right;
+    text-align: right;
+    padding-top: 0.25em;
+    overflow: visible !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: 0.5em 1em;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: transparent;
+    color: #333 !important;
+    white-space: nowrap;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: white !important;
+    border: 1px solid #979797;
+    background-color: #585858;
+    background: linear-gradient(to bottom, #585858 0%, #111 100%);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    color: white !important;
+    border: 1px solid #979797;
+    background-color: #585858;
+    background: linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    cursor: default;
+    color: #666 !important;
+    border: 1px solid transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Ensure pagination container doesn't get cut off */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    clear: both;
+}
+
+/* Fix responsive issues with pagination */
+@media (max-width: 768px) {
+    .dataTables_wrapper .dataTables_paginate {
+        float: none;
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 0.4em 0.8em;
+        margin: 0 1px;
+        font-size: 0.9em;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}
+
+/* Ensure table wrapper doesn't overflow */
+.dataTables_wrapper {
+    overflow: visible !important;
+    width: 100%;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    overflow: visible !important;
+}
+
+/* Fix table container overflow */
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+/* Ensure pagination is always visible */
+#datatable-bottom-wrapper {
+    overflow: visible !important;
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Defect Reports Table Specific Styles */
+#js-defect-report-table_wrapper {
+    overflow: visible !important;
+}
+
+#js-defect-report-table {
+    min-width: 1400px;
+    width: auto;
+    table-layout: auto;
+}
+
+/* Defect Reports Modal Styles */
+#defectReportModal .modal-content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#defectReportModal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+#defectReportModal .modal-footer {
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 15px 20px;
+}
+
+/* Button Styles in Modal Footer */
+#defectReportModal .modal-footer .btn {
+    white-space: nowrap;
+}
+
+#defectReportModal .modal-footer .btn i {
+    margin-right: 5px;
+}
+
+/* Form Field Improvements */
+#defectReportModal .form-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#defectReportModal .form-control,
+#defectReportModal .form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#defectReportModal .form-control:focus,
+#defectReportModal .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Work Items Section Styling */
+#defectReportModal .work-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+}
+
+#defectReportModal .work-item:last-child {
+    margin-bottom: 0;
+}
+
+#defectReportModal #add-work {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Alert Styling */
+#defectReportModal .alert {
+    border-radius: 8px;
+    border: none;
+}
+
+#defectReportModal .alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Loading States */
+#defectReportModal .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Select2 Dropdown Improvements */
+#defectReportModal .select2-container {
+    width: 100% !important;
+}
+
+#defectReportModal .select2-container--default .select2-selection--single {
+    height: 38px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+#defectReportModal .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px;
+    padding-left: 12px;
+}
+
+#defectReportModal .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
+
+/* Responsive Modal Styles */
+@media (max-width: 768px) {
+    #defectReportModal .modal-dialog {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+    
+    #defectReportModal .modal-content {
+        min-height: calc(100vh - 20px);
+    }
+    
+    #defectReportModal .modal-body {
+        max-height: calc(100vh - 180px);
+        padding: 15px;
+    }
+    
+    #defectReportModal .modal-footer {
+        padding: 10px 15px;
+    }
+    
+    #defectReportModal .modal-footer .btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    #defectReportModal .modal-footer .d-flex {
+        flex-direction: column;
+    }
+    
+    #defectReportModal .modal-footer .flex-fill {
+        flex: 1 !important;
+        margin-bottom: 5px;
+    }
+    
+    #defectReportModal .modal-footer .flex-fill:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Improve form layout on small screens */
+    #defectReportModal .row .col-md-6 {
+        margin-bottom: 15px;
+    }
+    
+    #defectReportModal .work-item .col-md-10,
+    #defectReportModal .work-item .col-md-2 {
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    #defectReportModal .modal-dialog {
+        margin: 5px;
+        max-width: calc(100% - 10px);
+    }
+    
+    #defectReportModal .modal-content {
+        min-height: calc(100vh - 10px);
+    }
+    
+    #defectReportModal .modal-body {
+        max-height: calc(100vh - 160px);
+        padding: 10px;
+    }
+    
+    #defectReportModal .modal-footer {
+        padding: 8px 10px;
+    }
+    
+    #defectReportModal .modal-footer .btn {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* Ensure modal footer is always visible */
+#defectReportModal .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1050;
+}

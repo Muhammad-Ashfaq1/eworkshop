@@ -248,6 +248,10 @@
     </div>
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/defect-reports.css') }}">
+@endsection
+
 @section('scripts')
     <script>
         $(document).ready(function() {
@@ -292,6 +296,7 @@
                 serverSide: true,
                 responsive: false,
                 autoWidth: false,
+                scrollX: false,
                 ajax: {
                     url: "{{ route('defect-reports.listing') }}",
                     type: "GET"
