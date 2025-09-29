@@ -42,7 +42,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where(function($q) use ($search) {
-                $q->where('driver_name', 'like', '%' . $search['search'] . '%')
+                $q->where('reference_number', 'like', '%' . $search['search'] . '%')
+                  ->orWhere('driver_name', 'like', '%' . $search['search'] . '%')
                   ->orWhere('date', 'like', '%' . $search['search'] . '%')
                   ->orWhere('type', 'like', '%' . $search['search'] . '%')
                   ->orWhereHas('vehicle', function($vehicleQuery) use ($search) {

@@ -281,7 +281,7 @@
 
         function applyDefectReportsDatatable() {
             var table = $('#js-defect-report-table').DataTable({
-                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+                dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>><"row"<"col-sm-12 col-md-6"l>>rtip',
                 pageLength: 20,
                 searching: true,
                 lengthMenu: [
@@ -353,7 +353,9 @@
                         name: 'reference_number',
                         render: function(data, type, row) {
                             return data || 'N/A';
-                        }
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "vehicle",
