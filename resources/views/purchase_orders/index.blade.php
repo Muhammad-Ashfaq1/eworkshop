@@ -107,7 +107,7 @@
                     @csrf
                     <input type="hidden" id="purchase_order_id" name="purchase_order_id" value="">
                     <input type="hidden" id="modal_mode" name="modal_mode" value="create">
-                    <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+                    <div class="modal-body">
                         <div class="alert alert-info mb-3" id="info-alert">
                             <i class="ri-information-line me-2"></i>
                             <strong>Note:</strong> Purchase orders can only be created for defect reports that don't already
@@ -207,18 +207,30 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="purchaseOrderSubmit"
-                            style="display: none;">Create Purchase Order</button>
+                        <div class="d-flex flex-wrap gap-2 justify-content-end w-100">
+                            <button type="button" class="btn btn-secondary flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
+                                <i class="ri-close-line me-1"></i>Close
+                            </button>
+                            <button type="submit" class="btn btn-primary flex-fill flex-sm-grow-0" id="purchaseOrderSubmit"
+                                style="display: none;">
+                                <i class="ri-save-line me-1"></i>Create Purchase Order
+                            </button>
                             @can('update_purchase_orders')
-                                <button type="button" class="btn btn-warning" id="editPurchaseOrderBtn"
-                            style="display: none;">Edit Purchase Order</button>
+                                <button type="button" class="btn btn-warning flex-fill flex-sm-grow-0" id="editPurchaseOrderBtn"
+                                    style="display: none;">
+                                    <i class="ri-edit-line me-1"></i>Edit Purchase Order
+                                </button>
                             @endcan
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+@endsection
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/purchase-orders.css') }}">
 @endsection
 
 @section('scripts')

@@ -1,0 +1,196 @@
+/* Purchase Order Modal Responsive Styles */
+
+/* Tablet and below (≤768px) */
+@media (max-width: 768px) {
+    #purchaseOrderModal .modal-dialog {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+    
+    #purchaseOrderModal .modal-content {
+        min-height: calc(100vh - 20px);
+    }
+    
+    #purchaseOrderModal .modal-body {
+        max-height: calc(100vh - 180px);
+        padding: 15px;
+    }
+    
+    #purchaseOrderModal .modal-footer {
+        padding: 10px 15px;
+    }
+    
+    #purchaseOrderModal .modal-footer .btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    #purchaseOrderModal .modal-footer .d-flex {
+        flex-direction: column;
+    }
+    
+    #purchaseOrderModal .modal-footer .flex-fill {
+        flex: 1 !important;
+        margin-bottom: 5px;
+    }
+    
+    #purchaseOrderModal .modal-footer .flex-fill:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Improve form layout on small screens */
+    #purchaseOrderModal .row .col-md-6 {
+        margin-bottom: 15px;
+    }
+    
+    #purchaseOrderModal .part-item .col-md-8,
+    #purchaseOrderModal .part-item .col-md-3,
+    #purchaseOrderModal .part-item .col-md-1 {
+        margin-bottom: 10px;
+    }
+}
+
+/* Mobile (≤576px) */
+@media (max-width: 576px) {
+    #purchaseOrderModal .modal-dialog {
+        margin: 5px;
+        max-width: calc(100% - 10px);
+    }
+    
+    #purchaseOrderModal .modal-content {
+        min-height: calc(100vh - 10px);
+    }
+    
+    #purchaseOrderModal .modal-body {
+        max-height: calc(100vh - 160px);
+        padding: 10px;
+    }
+    
+    #purchaseOrderModal .modal-footer {
+        padding: 8px 10px;
+    }
+    
+    #purchaseOrderModal .modal-footer .btn {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* Ensure modal footer is always visible */
+#purchaseOrderModal .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1050;
+}
+
+/* Purchase Order Table Styles */
+.purchase-order-table-container {
+    overflow-x: auto;
+}
+
+.purchase-order-table-container .table {
+    min-width: 1200px;
+}
+
+/* Purchase Order Modal General Styles */
+#purchaseOrderModal .modal-content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#purchaseOrderModal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+#purchaseOrderModal .modal-footer {
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 15px 20px;
+}
+
+/* Button Styles in Modal Footer */
+#purchaseOrderModal .modal-footer .btn {
+    white-space: nowrap;
+}
+
+#purchaseOrderModal .modal-footer .btn i {
+    margin-right: 5px;
+}
+
+/* Form Field Improvements */
+#purchaseOrderModal .form-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#purchaseOrderModal .form-control,
+#purchaseOrderModal .form-select {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#purchaseOrderModal .form-control:focus,
+#purchaseOrderModal .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Parts Section Styling */
+#purchaseOrderModal .part-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+}
+
+#purchaseOrderModal .part-item:last-child {
+    margin-bottom: 0;
+}
+
+#purchaseOrderModal #add-part {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Alert Styling */
+#purchaseOrderModal .alert {
+    border-radius: 8px;
+    border: none;
+}
+
+#purchaseOrderModal .alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Loading States */
+#purchaseOrderModal .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Select2 Dropdown Improvements */
+#purchaseOrderModal .select2-container {
+    width: 100% !important;
+}
+
+#purchaseOrderModal .select2-container--default .select2-selection--single {
+    height: 38px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+#purchaseOrderModal .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px;
+    padding-left: 12px;
+}
+
+#purchaseOrderModal .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+}
