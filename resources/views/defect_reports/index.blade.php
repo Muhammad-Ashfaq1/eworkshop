@@ -165,20 +165,23 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="fleet_manager_id" class="form-label">Fleet Manager <x-req /></label>
-                                    <select class="form-select enhanced-dropdown" id="fleet_manager_id" name="fleet_manager_id" required>
-                                        <option value="" selected disabled>Select Fleet Manager</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label for="mvi_id" class="form-label">MVI <x-req /></label>
                                     <select class="form-select enhanced-dropdown" id="mvi_id" name="mvi_id">
                                         <option value="" selected disabled>Select MVI</option>
                                     </select>
                                 </div>
                             </div>
+
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="fleet_manager_id" class="form-label">Fleet Manager <x-req /></label>
+                                    <select class="form-select enhanced-dropdown" id="fleet_manager_id" name="fleet_manager_id" required>
+                                        <option value="" selected disabled>Select Fleet Manager</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
                         </div>
 
                         <div class="row">
@@ -483,9 +486,7 @@
                         className: 'text-center'
                     }
                 ],
-                order: [
-                    [7, 'desc']
-                ]
+                order: []
             });
 
             // Fix DataTable controls layout using utility function
