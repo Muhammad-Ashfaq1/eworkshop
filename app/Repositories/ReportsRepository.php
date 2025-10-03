@@ -910,14 +910,9 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['vehicle_id'])) {
                 $query->where('id', $data['vehicle_id']);
             } else {
-                // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
-                $query->where(function($q) use ($data) {
-                    $q->whereHas('defectReports', function($defectQuery) use ($data) {
-                        $defectQuery->whereBetween('date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
-                    })
-                    ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($data) {
-                        $poQuery->whereBetween('issue_date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
-                    });
+                // If no vehicle selected, show only vehicles that have purchase orders in the date range
+                $query->whereHas('defectReports.purchaseOrders', function($poQuery) use ($data) {
+                    $poQuery->whereBetween('issue_date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
                 });
             }
 
@@ -976,15 +971,8 @@ class ReportsRepository implements ReportsRepositoryInterface
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($data) {
                 $vehicleId = $vehicle->id;
                 
-                // Count defect reports
-                $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
-                if (!empty($data['date_from'])) {
-                    $defectReportsQuery->where('date', '>=', $data['date_from']);
-                }
-                if (!empty($data['date_to'])) {
-                    $defectReportsQuery->where('date', '<=', $data['date_to'] . ' 23:59:59');
-                }
-                $defectReportsCount = $defectReportsQuery->count();
+                // Count defect reports (no date filter - count all defect reports for the vehicle)
+                $defectReportsCount = DefectReport::where('vehicle_id', $vehicleId)->count();
 
                 // Count purchase orders
                 $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
@@ -1048,14 +1036,9 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($filters['vehicle_id'])) {
                 $query->where('id', $filters['vehicle_id']);
             } else {
-                // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
-                $query->where(function($q) use ($filters) {
-                    $q->whereHas('defectReports', function($defectQuery) use ($filters) {
-                        $defectQuery->whereBetween('date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
-                    })
-                    ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($filters) {
-                        $poQuery->whereBetween('issue_date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
-                    });
+                // If no vehicle selected, show only vehicles that have purchase orders in the date range
+                $query->whereHas('defectReports.purchaseOrders', function($poQuery) use ($filters) {
+                    $poQuery->whereBetween('issue_date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
                 });
             }
 
@@ -1066,15 +1049,8 @@ class ReportsRepository implements ReportsRepositoryInterface
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
                 $vehicleId = $vehicle->id;
                 
-                // Count defect reports
-                $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
-                if (!empty($filters['date_from'])) {
-                    $defectReportsQuery->where('date', '>=', $filters['date_from']);
-                }
-                if (!empty($filters['date_to'])) {
-                    $defectReportsQuery->where('date', '<=', $filters['date_to'] . ' 23:59:59');
-                }
-                $defectReportsCount = $defectReportsQuery->count();
+                // Count defect reports (no date filter - count all defect reports for the vehicle)
+                $defectReportsCount = DefectReport::where('vehicle_id', $vehicleId)->count();
 
                 // Count purchase orders
                 $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
