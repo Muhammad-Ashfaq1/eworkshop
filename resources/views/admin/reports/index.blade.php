@@ -28,6 +28,27 @@
                                 <option value="vehicle_wise">Vehicle-wise Report</option>
                             </select>
                         </div>
+                        <div class="col-md-3" id="generalDateRangeContainer">
+                            <label for="dateRange" class="form-label">Date Range</label>
+                            <select class="form-control enhanced-dropdown" id="dateRange" name="dateRange">
+                                <option value="">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="yesterday">Yesterday</option>
+                                <option value="last_7_days">Last 7 Days</option>
+                                <option value="last_30_days">Last 30 Days</option>
+                                <option value="this_month">This Month</option>
+                                <option value="last_month">Last Month</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="generalFromDateContainer">
+                            <label for="dateFrom" class="form-label">From Date</label>
+                            <input type="date" class="form-control enhanced-dropdown" id="dateFrom" name="dateFrom">
+                        </div>
+                        <div class="col-md-3" id="generalToDateContainer">
+                            <label for="dateTo" class="form-label">To Date</label>
+                            <input type="date" class="form-control enhanced-dropdown" id="dateTo" name="dateTo">
+                        </div>
                     </div>
 
                     <!-- Dynamic Filters Based on Report Type -->
@@ -105,6 +126,9 @@
     let reportsDataTable = null;
 
     function initializeReports() {
+        // Set default date range
+        setDefaultDateRange();
+        
         // Show empty state initially (no DataTable initialization)
         showEmptyState();
         
@@ -129,6 +153,24 @@
             };
         });
 
+        // Date range change
+        $('#dateRange').on('change', function() {
+            handleDateRangeChange();
+            
+            // Show info message
+            const range = $(this).val();
+            if (range) {
+                const rangeNames = {
+                    'today': 'Today',
+                    'yesterday': 'Yesterday',
+                    'last_7_days': 'Last 7 Days',
+                    'last_30_days': 'Last 30 Days',
+                    'this_month': 'This Month',
+                    'last_month': 'Last Month',
+                    'custom': 'Custom Range'
+                };
+            }
+        });
 
         // Generate report button
         $('#js-generate-report-btn').on('click', function() {
@@ -138,10 +180,6 @@
             
             // Special validation for vehicle-wise report
             if (currentReportType === 'vehicle_wise') {
-                if (!filters.vehicle_id) {
-                    toastr.error('Please select a vehicle for the vehicle-wise report', 'Validation Error');
-                    return;
-                }
                 if (!filters.date_from || !filters.date_to) {
                     toastr.error('Please select both start date and end date for the vehicle-wise report', 'Validation Error');
                     return;
@@ -782,6 +820,17 @@
 
         filtersContainer.html(filtersHtml);
         
+        // Show/hide general date range filters based on report type
+        if (currentReportType === 'vehicle_wise') {
+            $('#generalDateRangeContainer').hide();
+            $('#generalFromDateContainer').hide();
+            $('#generalToDateContainer').hide();
+        } else {
+            $('#generalDateRangeContainer').show();
+            $('#generalFromDateContainer').show();
+            $('#generalToDateContainer').show();
+        }
+        
         // Initialize Select2 for vehicle dropdowns
         setTimeout(function() {
             if (currentReportType === 'purchase_orders' && $('#poVehicle').length > 0) {
@@ -938,9 +987,9 @@
         return `
             <div class="row mb-4">
                 <div class="col-md-4">
-                    <label for="vehicleWiseVehicle" class="form-label">Vehicle <x-req /></label>
-                    <select class="form-control enhanced-dropdown select2-vehicle" id="vehicleWiseVehicle" name="vehicleWiseVehicle" required>
-                        <option value="">Select Vehicle</option>
+                    <label for="vehicleWiseVehicle" class="form-label">Vehicle</label>
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="vehicleWiseVehicle" name="vehicleWiseVehicle">
+                        <option value="">All Vehicles with Activity</option>
                         ${generateOptions(filterOptions.vehicles?.vehicles || {})}
                     </select>
                 </div>
@@ -957,7 +1006,7 @@
                 <div class="col-md-12">
                     <div class="alert alert-info">
                         <i class="ri-information-line me-2"></i>
-                        <strong>Vehicle-wise Report:</strong> Shows statistics for the selected vehicle including count of defect reports, purchase orders, and total amount spent on purchase orders within the selected date range.
+                        <strong>Vehicle-wise Report:</strong> Shows statistics for vehicles including count of defect reports, purchase orders, and total amount spent on purchase orders within the selected date range. If no vehicle is selected, it will show all vehicles that have activity (defect reports or purchase orders) in the specified date range.
                     </div>
                 </div>
             </div>
@@ -980,6 +1029,12 @@
             report_type: currentReportType,
             search: $('#searchTerm').val()
         };
+        
+        // Only include general date filters if not vehicle-wise report
+        if (currentReportType !== 'vehicle_wise') {
+            filters.date_from = $('#dateFrom').val();
+            filters.date_to = $('#dateTo').val();
+        }
 
         // Add dynamic filters based on report type
         switch(currentReportType) {
@@ -1054,6 +1109,13 @@
         $('#dynamicFilters select, #dynamicFilters input').val('');
         $('#searchTerm').val('');
         
+        // Only clear general date fields if not vehicle-wise report
+        if (currentReportType !== 'vehicle_wise') {
+            $('#dateRange, #dateFrom, #dateTo').val('');
+            // Set default date range
+            setDefaultDateRange();
+        }
+        
         // Reset to empty state
         resetToEmptyState();
         
@@ -1061,6 +1123,55 @@
         toastr.success('All filters have been cleared', 'Filters Reset');
     }
 
+    function setDefaultDateRange() {
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+        
+        $('#dateFrom').val(thirtyDaysAgo.toISOString().split('T')[0]);
+        $('#dateTo').val(today.toISOString().split('T')[0]);
+        $('#dateRange').val('last_30_days');
+    }
+
+    function handleDateRangeChange() {
+        const range = $('#dateRange').val();
+        const today = new Date();
+        
+        switch(range) {
+            case 'today':
+                $('#dateFrom').val(today.toISOString().split('T')[0]);
+                $('#dateTo').val(today.toISOString().split('T')[0]);
+                break;
+            case 'yesterday':
+                const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000));
+                $('#dateFrom').val(yesterday.toISOString().split('T')[0]);
+                $('#dateTo').val(yesterday.toISOString().split('T')[0]);
+                break;
+            case 'last_7_days':
+                const sevenDaysAgo = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+                $('#dateFrom').val(sevenDaysAgo.toISOString().split('T')[0]);
+                $('#dateTo').val(today.toISOString().split('T')[0]);
+                break;
+            case 'last_30_days':
+                const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+                $('#dateFrom').val(thirtyDaysAgo.toISOString().split('T')[0]);
+                $('#dateTo').val(today.toISOString().split('T')[0]);
+                break;
+            case 'this_month':
+                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                $('#dateFrom').val(firstDay.toISOString().split('T')[0]);
+                $('#dateTo').val(today.toISOString().split('T')[0]);
+                break;
+            case 'last_month':
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                const lastMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0);
+                $('#dateFrom').val(lastMonth.toISOString().split('T')[0]);
+                $('#dateTo').val(lastMonthLastDay.toISOString().split('T')[0]);
+                break;
+            case 'custom':
+                // Keep current custom dates
+                break;
+        }
+    }
 
     function exportReport() {
         const filters = collectFilters();

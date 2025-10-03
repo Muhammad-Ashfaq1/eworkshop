@@ -794,14 +794,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReport(array $filters): JsonResponse
     {
         try {
-            // Validate required filters
-            if (empty($filters['vehicle_id'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Vehicle selection is required for vehicle-wise report'
-                ], 400);
-            }
-
+            // Validate required date filters
             if (empty($filters['date_from']) || empty($filters['date_to'])) {
                 return response()->json([
                     'success' => false,
@@ -811,8 +804,20 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             $query = Vehicle::with(['category', 'location']);
 
-            // Apply filters - only vehicle selection
-            $query->where('id', $filters['vehicle_id']);
+            // If specific vehicle is selected, filter by that vehicle
+            if (!empty($filters['vehicle_id'])) {
+                $query->where('id', $filters['vehicle_id']);
+            } else {
+                // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
+                $query->where(function($q) use ($filters) {
+                    $q->whereHas('defectReports', function($defectQuery) use ($filters) {
+                        $defectQuery->whereBetween('date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
+                    })
+                    ->orWhereHas('purchaseOrders', function($poQuery) use ($filters) {
+                        $poQuery->whereBetween('issue_date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
+                    });
+                });
+            }
 
             // Get vehicle statistics
             $vehicles = $query->get()->map(function($vehicle) use ($filters) {
@@ -875,14 +880,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReportListing(array $data): JsonResponse
     {
         try {
-            // Validate required filters
-            if (empty($data['vehicle_id'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Vehicle selection is required for vehicle-wise report'
-                ], 400);
-            }
-
+            // Validate required date filters
             if (empty($data['date_from']) || empty($data['date_to'])) {
                 return response()->json([
                     'success' => false,
@@ -905,27 +903,81 @@ class ReportsRepository implements ReportsRepositoryInterface
             $skip = ($pageNumber - 1) * $pageLength;
             $searchValue = $data['search']['value'];
 
-            // Build base query - only for selected vehicle
-            $query = Vehicle::with(['category', 'location'])
-                ->where('id', $data['vehicle_id']);
+            // Build base query
+            $query = Vehicle::with(['category', 'location']);
+
+            // If specific vehicle is selected, filter by that vehicle
+            if (!empty($data['vehicle_id'])) {
+                $query->where('id', $data['vehicle_id']);
+            } else {
+                // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
+                $query->where(function($q) use ($data) {
+                    $q->whereHas('defectReports', function($defectQuery) use ($data) {
+                        $defectQuery->whereBetween('date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
+                    })
+                    ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($data) {
+                        $poQuery->whereBetween('issue_date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
+                    });
+                });
+            }
 
             // Apply filters
             $filters = $this->extractFiltersFromDataTablesData($data);
 
-            // Get the single vehicle (no pagination needed for single vehicle)
-            $vehicles = $query->get();
+            // Apply search if provided
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('vehicle_number', 'like', '%' . $searchValue . '%')
+                      ->orWhereHas('category', function($categoryQuery) use ($searchValue) {
+                          $categoryQuery->where('name', 'like', '%' . $searchValue . '%');
+                      })
+                      ->orWhereHas('location', function($locationQuery) use ($searchValue) {
+                          $locationQuery->where('name', 'like', '%' . $searchValue . '%');
+                      });
+                });
+            }
+
+            // Get total count before pagination
+            $totalRecords = $query->count();
+
+            // Apply ordering
+            if (isset($data['order']) && !empty($data['order'])) {
+                $orderColumn = $data['columns'][$data['order'][0]['column']]['name'] ?? 'vehicle_number';
+                $orderDirection = $data['order'][0]['dir'] ?? 'asc';
+                
+                switch ($orderColumn) {
+                    case 'category':
+                        $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
+                              ->orderBy('vehicle_categories.name', $orderDirection)
+                              ->select('vehicles.*');
+                        break;
+                    case 'location':
+                        $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
+                              ->orderBy('locations.name', $orderDirection)
+                              ->select('vehicles.*');
+                        break;
+                    default:
+                        $query->orderBy($orderColumn, $orderDirection);
+                        break;
+                }
+            } else {
+                $query->orderBy('vehicle_number', 'asc');
+            }
+
+            // Apply pagination
+            $vehicles = $query->skip($skip)->take($pageLength)->get();
 
             // Calculate statistics for each vehicle
-            $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
+            $vehiclesWithStats = $vehicles->map(function($vehicle) use ($data) {
                 $vehicleId = $vehicle->id;
                 
                 // Count defect reports
                 $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
-                if (!empty($filters['date_from'])) {
-                    $defectReportsQuery->where('date', '>=', $filters['date_from']);
+                if (!empty($data['date_from'])) {
+                    $defectReportsQuery->where('date', '>=', $data['date_from']);
                 }
-                if (!empty($filters['date_to'])) {
-                    $defectReportsQuery->where('date', '<=', $filters['date_to']);
+                if (!empty($data['date_to'])) {
+                    $defectReportsQuery->where('date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $defectReportsCount = $defectReportsQuery->count();
 
@@ -933,11 +985,11 @@ class ReportsRepository implements ReportsRepositoryInterface
                 $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
                     $q->where('vehicle_id', $vehicleId);
                 });
-                if (!empty($filters['date_from'])) {
-                    $purchaseOrdersQuery->where('issue_date', '>=', $filters['date_from']);
+                if (!empty($data['date_from'])) {
+                    $purchaseOrdersQuery->where('issue_date', '>=', $data['date_from']);
                 }
-                if (!empty($filters['date_to'])) {
-                    $purchaseOrdersQuery->where('issue_date', '<=', $filters['date_to']);
+                if (!empty($data['date_to'])) {
+                    $purchaseOrdersQuery->where('issue_date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $purchaseOrdersCount = $purchaseOrdersQuery->count();
 
@@ -961,8 +1013,8 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             return response()->json([
                 'draw' => intval($data['draw']),
-                'recordsTotal' => 1,
-                'recordsFiltered' => 1,
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalRecords,
                 'data' => $vehiclesWithStats
             ]);
 
