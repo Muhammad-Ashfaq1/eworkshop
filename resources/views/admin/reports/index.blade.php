@@ -28,27 +28,6 @@
                                 <option value="vehicle_wise">Vehicle-wise Report</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="dateRange" class="form-label">Date Range</label>
-                            <select class="form-control enhanced-dropdown" id="dateRange" name="dateRange">
-                                <option value="">All Time</option>
-                                <option value="today">Today</option>
-                                <option value="yesterday">Yesterday</option>
-                                <option value="last_7_days">Last 7 Days</option>
-                                <option value="last_30_days">Last 30 Days</option>
-                                <option value="this_month">This Month</option>
-                                <option value="last_month">Last Month</option>
-                                <option value="custom">Custom Range</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="dateFrom" class="form-label">From Date</label>
-                            <input type="date" class="form-control enhanced-dropdown" id="dateFrom" name="dateFrom">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="dateTo" class="form-label">To Date</label>
-                            <input type="date" class="form-control enhanced-dropdown" id="dateTo" name="dateTo">
-                        </div>
                     </div>
 
                     <!-- Dynamic Filters Based on Report Type -->
@@ -126,9 +105,6 @@
     let reportsDataTable = null;
 
     function initializeReports() {
-        // Set default date range
-        setDefaultDateRange();
-        
         // Show empty state initially (no DataTable initialization)
         showEmptyState();
         
@@ -153,24 +129,6 @@
             };
         });
 
-        // Date range change
-        $('#dateRange').on('change', function() {
-            handleDateRangeChange();
-            
-            // Show info message
-            const range = $(this).val();
-            if (range) {
-                const rangeNames = {
-                    'today': 'Today',
-                    'yesterday': 'Yesterday',
-                    'last_7_days': 'Last 7 Days',
-                    'last_30_days': 'Last 30 Days',
-                    'this_month': 'This Month',
-                    'last_month': 'Last Month',
-                    'custom': 'Custom Range'
-                };
-            }
-        });
 
         // Generate report button
         $('#js-generate-report-btn').on('click', function() {
@@ -1020,8 +978,6 @@
     function collectFilters() {
         const filters = {
             report_type: currentReportType,
-            date_from: $('#dateFrom').val(),
-            date_to: $('#dateTo').val(),
             search: $('#searchTerm').val()
         };
 
@@ -1096,10 +1052,7 @@
     function clearFilters() {
         // Reset all form elements
         $('#dynamicFilters select, #dynamicFilters input').val('');
-        $('#dateRange, #dateFrom, #dateTo, #searchTerm').val('');
-        
-        // Set default date range
-        setDefaultDateRange();
+        $('#searchTerm').val('');
         
         // Reset to empty state
         resetToEmptyState();
@@ -1108,55 +1061,6 @@
         toastr.success('All filters have been cleared', 'Filters Reset');
     }
 
-    function setDefaultDateRange() {
-        const today = new Date();
-        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-        
-        $('#dateFrom').val(thirtyDaysAgo.toISOString().split('T')[0]);
-        $('#dateTo').val(today.toISOString().split('T')[0]);
-        $('#dateRange').val('last_30_days');
-    }
-
-    function handleDateRangeChange() {
-        const range = $('#dateRange').val();
-        const today = new Date();
-        
-        switch(range) {
-            case 'today':
-                $('#dateFrom').val(today.toISOString().split('T')[0]);
-                $('#dateTo').val(today.toISOString().split('T')[0]);
-                break;
-            case 'yesterday':
-                const yesterday = new Date(today.getTime() - (24 * 60 * 60 * 1000));
-                $('#dateFrom').val(yesterday.toISOString().split('T')[0]);
-                $('#dateTo').val(yesterday.toISOString().split('T')[0]);
-                break;
-            case 'last_7_days':
-                const sevenDaysAgo = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
-                $('#dateFrom').val(sevenDaysAgo.toISOString().split('T')[0]);
-                $('#dateTo').val(today.toISOString().split('T')[0]);
-                break;
-            case 'last_30_days':
-                const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-                $('#dateFrom').val(thirtyDaysAgo.toISOString().split('T')[0]);
-                $('#dateTo').val(today.toISOString().split('T')[0]);
-                break;
-            case 'this_month':
-                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-                $('#dateFrom').val(firstDay.toISOString().split('T')[0]);
-                $('#dateTo').val(today.toISOString().split('T')[0]);
-                break;
-            case 'last_month':
-                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                const lastMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0);
-                $('#dateFrom').val(lastMonth.toISOString().split('T')[0]);
-                $('#dateTo').val(lastMonthLastDay.toISOString().split('T')[0]);
-                break;
-            case 'custom':
-                // Keep current custom dates
-                break;
-        }
-    }
 
     function exportReport() {
         const filters = collectFilters();
