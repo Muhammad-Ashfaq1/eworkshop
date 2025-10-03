@@ -769,7 +769,7 @@
                         data: 'total_amount',
                         name: 'total_amount_raw',
                         render: function(data, type, row) {
-                            return `<span class="fw-bold text-success">$${data || '0.00'}</span>`;
+                            return `<span class="fw-bold text-success">${data || '0.00'}</span>`;
                         },
                         className: 'text-end'
                     },

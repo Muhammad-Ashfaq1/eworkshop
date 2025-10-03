@@ -672,7 +672,7 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $row['location'] ?? '',
                     $row['defect_reports_count'] ?? '0',
                     $row['purchase_orders_count'] ?? '0',
-                    $row['total_amount'] ?? '0.00',
+                    str_replace(['$', ','], '', $row['total_amount'] ?? '0.00'),
                     $row['is_active'] ? 'Active' : 'Inactive'
                 ];
             default:
