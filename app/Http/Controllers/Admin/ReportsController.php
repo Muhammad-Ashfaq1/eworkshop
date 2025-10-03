@@ -72,6 +72,23 @@ class ReportsController extends Controller
     }
 
     /**
+     * Get vehicle-wise report with statistics
+     */
+    public function getVehicleWiseReport(Request $request): JsonResponse
+    {
+        // Check if user is super admin or admin only
+        if (!auth()->user()->hasRole(['super_admin', 'admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied. This report is only available for Super Admin and Admin users.'
+            ], 403);
+        }
+        
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getVehicleWiseReport($request->all());
+    }
+
+    /**
      * Get vehicles report with DataTables pagination
      */
     public function getVehiclesReportListing(Request $request): JsonResponse
@@ -114,6 +131,23 @@ class ReportsController extends Controller
     {
         $this->authorize('access_admin_panel');
         return $this->reportsRepository->getPurchaseOrdersReportListing($request->all());
+    }
+
+    /**
+     * Get vehicle-wise report with DataTables pagination
+     */
+    public function getVehicleWiseReportListing(Request $request): JsonResponse
+    {
+        // Check if user is super admin or admin only
+        if (!auth()->user()->hasRole(['super_admin', 'admin'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied. This report is only available for Super Admin and Admin users.'
+            ], 403);
+        }
+        
+        $this->authorize('access_admin_panel');
+        return $this->reportsRepository->getVehicleWiseReportListing($request->all());
     }
 
     /**

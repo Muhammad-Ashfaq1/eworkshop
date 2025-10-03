@@ -83,6 +83,20 @@ interface ReportsRepositoryInterface
     public function getPurchaseOrdersReportListing(array $data): JsonResponse;
 
     /**
+     * Get vehicle-wise report with statistics
+     * @param array $filters
+     * @return JsonResponse
+     */
+    public function getVehicleWiseReport(array $filters): JsonResponse;
+
+    /**
+     * Get vehicle-wise report with DataTables pagination
+     * @param array $data
+     * @return JsonResponse
+     */
+    public function getVehicleWiseReportListing(array $data): JsonResponse;
+
+    /**
      * Export report data
      * @param array $filters
      * @return JsonResponse

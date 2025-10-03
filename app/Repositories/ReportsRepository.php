@@ -22,7 +22,8 @@ class ReportsRepository implements ReportsRepositoryInterface
                 'categories' => \App\Models\VehicleCategory::pluck('name', 'id'),
                 'locations' => Location::pluck('name', 'id'),
                 'conditions' => ['new', 'old'],
-                'statuses' => [1 => 'Active', 0 => 'Inactive']
+                'statuses' => [1 => 'Active', 0 => 'Inactive'],
+                'vehicles' => Vehicle::orderBy('vehicle_number', 'asc')->pluck('vehicle_number', 'id')
             ],
             'defect_reports' => [
                 'vehicles' => Vehicle::orderBy('vehicle_number', 'asc')->pluck('vehicle_number', 'id'),
@@ -551,6 +552,9 @@ class ReportsRepository implements ReportsRepositoryInterface
                 case 'locations':
                     $data = $this->getLocationsReport($filters);
                     break;
+                case 'vehicle_wise':
+                    $data = $this->getVehicleWiseReport($filters);
+                    break;
                 default:
                     throw new \Exception('Invalid report type');
             }
@@ -602,6 +606,8 @@ class ReportsRepository implements ReportsRepositoryInterface
                 return ['ID', 'Name', 'Description', 'Status', 'Created At'];
             case 'locations':
                 return ['ID', 'Name', 'Slug', 'Type', 'Status', 'Created At'];
+            case 'vehicle_wise':
+                return ['ID', 'Vehicle Number', 'Category', 'Location', 'Defect Reports Count', 'Purchase Orders Count', 'Total Amount', 'Status'];
             default:
                 return ['ID', 'Data'];
         }
@@ -657,6 +663,17 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $row['location_type'] ?? '',
                     $row['is_active'] ? 'Active' : 'Inactive',
                     $row['created_at'] ?? ''
+                ];
+            case 'vehicle_wise':
+                return [
+                    $row['id'] ?? '',
+                    $row['vehicle_number'] ?? '',
+                    $row['category'] ?? '',
+                    $row['location'] ?? '',
+                    $row['defect_reports_count'] ?? '0',
+                    $row['purchase_orders_count'] ?? '0',
+                    $row['total_amount'] ?? '0.00',
+                    $row['is_active'] ? 'Active' : 'Inactive'
                 ];
             default:
                 return [json_encode($row)];
@@ -772,5 +789,235 @@ class ReportsRepository implements ReportsRepositoryInterface
         if (!empty($filters['date_to'])) {
             $query->where('issue_date', '<=', $filters['date_to'] . ' 23:59:59');
         }
+    }
+
+    public function getVehicleWiseReport(array $filters): JsonResponse
+    {
+        try {
+            $query = Vehicle::with(['category', 'location']);
+
+            // Apply filters
+            $this->applyVehicleWiseFilters($query, $filters);
+
+            // Get vehicle statistics
+            $vehicles = $query->get()->map(function($vehicle) use ($filters) {
+                $vehicleId = $vehicle->id;
+                
+                // Count defect reports for this vehicle
+                $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
+                if (!empty($filters['date_from'])) {
+                    $defectReportsQuery->where('date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $defectReportsQuery->where('date', '<=', $filters['date_to']);
+                }
+                $defectReportsCount = $defectReportsQuery->count();
+
+                // Count purchase orders for this vehicle (through defect reports)
+                $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
+                    $q->where('vehicle_id', $vehicleId);
+                });
+                if (!empty($filters['date_from'])) {
+                    $purchaseOrdersQuery->where('issue_date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $purchaseOrdersQuery->where('issue_date', '<=', $filters['date_to']);
+                }
+                $purchaseOrdersCount = $purchaseOrdersQuery->count();
+
+                // Calculate total amount of purchase orders for this vehicle
+                $totalAmount = $purchaseOrdersQuery->sum('acc_amount');
+
+                return [
+                    'id' => $vehicle->id,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'category' => $vehicle->category ? $vehicle->category->name : 'N/A',
+                    'location' => $vehicle->location ? $vehicle->location->name : 'N/A',
+                    'defect_reports_count' => $defectReportsCount,
+                    'purchase_orders_count' => $purchaseOrdersCount,
+                    'total_amount' => number_format($totalAmount, 2),
+                    'total_amount_raw' => $totalAmount,
+                    'condition' => $vehicle->condition,
+                    'is_active' => $vehicle->is_active,
+                    'created_at' => $vehicle->created_at
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $vehicles,
+                'message' => 'Vehicle-wise report generated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate vehicle-wise report: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getVehicleWiseReportListing(array $data): JsonResponse
+    {
+        try {
+            // Set default values for DataTables parameters
+            $data = array_merge([
+                'start' => 0,
+                'length' => 10,
+                'draw' => 1,
+                'search' => ['value' => ''],
+                'order' => [],
+                'columns' => []
+            ], $data);
+
+            $pageNumber = ($data['start'] / $data['length']) + 1;
+            $pageLength = $data['length'];
+            $skip = ($pageNumber - 1) * $pageLength;
+            $searchValue = $data['search']['value'];
+
+            // Build base query
+            $query = Vehicle::with(['category', 'location']);
+
+            // Apply filters
+            $filters = $this->extractFiltersFromDataTablesData($data);
+            $this->applyVehicleWiseFilters($query, $filters);
+
+            // Apply search
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('vehicle_number', 'like', '%' . $searchValue . '%')
+                      ->orWhereHas('category', function($categoryQuery) use ($searchValue) {
+                          $categoryQuery->where('name', 'like', '%' . $searchValue . '%');
+                      })
+                      ->orWhereHas('location', function($locationQuery) use ($searchValue) {
+                          $locationQuery->where('name', 'like', '%' . $searchValue . '%');
+                      });
+                });
+            }
+
+            // Get total count before pagination
+            $totalRecords = $query->count();
+
+            // Apply ordering
+            if (isset($data['order']) && !empty($data['order'])) {
+                $orderColumn = $data['columns'][$data['order'][0]['column']]['name'] ?? 'vehicle_number';
+                $orderDirection = $data['order'][0]['dir'] ?? 'asc';
+                
+                switch ($orderColumn) {
+                    case 'category':
+                        $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
+                              ->orderBy('vehicle_categories.name', $orderDirection)
+                              ->select('vehicles.*');
+                        break;
+                    case 'location':
+                        $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
+                              ->orderBy('locations.name', $orderDirection)
+                              ->select('vehicles.*');
+                        break;
+                    default:
+                        $query->orderBy($orderColumn, $orderDirection);
+                        break;
+                }
+            } else {
+                $query->orderBy('vehicle_number', 'asc');
+            }
+
+            // Apply pagination
+            $vehicles = $query->skip($skip)->take($pageLength)->get();
+
+            // Calculate statistics for each vehicle
+            $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
+                $vehicleId = $vehicle->id;
+                
+                // Count defect reports
+                $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
+                if (!empty($filters['date_from'])) {
+                    $defectReportsQuery->where('date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $defectReportsQuery->where('date', '<=', $filters['date_to']);
+                }
+                $defectReportsCount = $defectReportsQuery->count();
+
+                // Count purchase orders
+                $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
+                    $q->where('vehicle_id', $vehicleId);
+                });
+                if (!empty($filters['date_from'])) {
+                    $purchaseOrdersQuery->where('issue_date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $purchaseOrdersQuery->where('issue_date', '<=', $filters['date_to']);
+                }
+                $purchaseOrdersCount = $purchaseOrdersQuery->count();
+
+                // Calculate total amount
+                $totalAmount = $purchaseOrdersQuery->sum('acc_amount');
+
+                return [
+                    'id' => $vehicle->id,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'category' => $vehicle->category ? $vehicle->category->name : 'N/A',
+                    'location' => $vehicle->location ? $vehicle->location->name : 'N/A',
+                    'defect_reports_count' => $defectReportsCount,
+                    'purchase_orders_count' => $purchaseOrdersCount,
+                    'total_amount' => number_format($totalAmount, 2),
+                    'total_amount_raw' => $totalAmount,
+                    'condition' => $vehicle->condition,
+                    'is_active' => $vehicle->is_active,
+                    'created_at' => $vehicle->created_at
+                ];
+            });
+
+            return response()->json([
+                'draw' => intval($data['draw']),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $totalRecords,
+                'data' => $vehiclesWithStats
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate vehicle-wise report listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private function applyVehicleWiseFilters($query, array $filters): void
+    {
+        if (!empty($filters['vehicle_id'])) {
+            $query->where('id', $filters['vehicle_id']);
+        }
+
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        if (!empty($filters['location_id'])) {
+            $query->where('location_id', $filters['location_id']);
+        }
+
+        if (!empty($filters['condition'])) {
+            $query->where('condition', $filters['condition']);
+        }
+
+        if (isset($filters['is_active']) && $filters['is_active'] !== '') {
+            $query->where('is_active', $filters['is_active']);
+        }
+    }
+
+    private function extractFiltersFromDataTablesData(array $data): array
+    {
+        $filters = [];
+        
+        // Extract filters from DataTables data
+        foreach ($data as $key => $value) {
+            if (in_array($key, ['vehicle_id', 'category_id', 'location_id', 'condition', 'is_active', 'date_from', 'date_to'])) {
+                $filters[$key] = $value;
+            }
+        }
+        
+        return $filters;
     }
 }

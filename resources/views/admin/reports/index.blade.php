@@ -25,6 +25,7 @@
                                 <option value="purchase_orders">Purchase Orders</option>
                                 <option value="vehicle_parts">Vehicle Parts</option>
                                 <option value="locations">Locations</option>
+                                <option value="vehicle_wise">Vehicle-wise Report</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -147,7 +148,8 @@
                 'defect_reports': 'Defect Reports',
                 'purchase_orders': 'Purchase Orders',
                 'vehicle_parts': 'Vehicle Parts',
-                'locations': 'Locations'
+                'locations': 'Locations',
+                'vehicle_wise': 'Vehicle-wise Report'
             };
         });
 
@@ -332,7 +334,8 @@
             'defect_reports': "{{ route('admin.reports.defect-reports.listing') }}",
             'purchase_orders': "{{ route('admin.reports.purchase-orders.listing') }}",
             'vehicle_parts': "{{ route('admin.reports.vehicle-parts.listing') }}",
-            'locations': "{{ route('admin.reports.locations.listing') }}"
+            'locations': "{{ route('admin.reports.locations.listing') }}",
+            'vehicle_wise': "{{ route('admin.reports.vehicle-wise.listing') }}"
         };
         return endpoints[currentReportType] || endpoints.vehicles;
     }
@@ -393,6 +396,18 @@
                     <th>Created At</th>
                 `;
                 break;
+            case 'vehicle_wise':
+                headers = `
+                    <th style="width: 50px;">#</th>
+                    <th>Vehicle Number</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Defect Reports</th>
+                    <th>Purchase Orders</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                `;
+                break;
             default:
                 headers = `
                     <th style="width: 50px;">#</th>
@@ -415,6 +430,8 @@
                 return 5;
             case 'locations':
                 return 5;
+            case 'vehicle_wise':
+                return 8;
             default:
                 return 2;
         }
@@ -691,6 +708,73 @@
                         }
                     }
                 ];
+            case 'vehicle_wise':
+                return [
+                    {
+                        data: null,
+                        name: '#',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'vehicle_number',
+                        name: 'vehicle_number',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'category',
+                        name: 'category',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'location',
+                        name: 'location',
+                        render: function(data, type, row) {
+                            return data || 'N/A';
+                        }
+                    },
+                    {
+                        data: 'defect_reports_count',
+                        name: 'defect_reports_count',
+                        render: function(data, type, row) {
+                            return `<span class="badge bg-primary">${data || 0}</span>`;
+                        },
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'purchase_orders_count',
+                        name: 'purchase_orders_count',
+                        render: function(data, type, row) {
+                            return `<span class="badge bg-info">${data || 0}</span>`;
+                        },
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'total_amount',
+                        name: 'total_amount_raw',
+                        render: function(data, type, row) {
+                            return `<span class="fw-bold text-success">$${data || '0.00'}</span>`;
+                        },
+                        className: 'text-end'
+                    },
+                    {
+                        data: 'is_active',
+                        name: 'is_active',
+                        render: function(data, type, row) {
+                            const badgeClass = data ? 'success' : 'danger';
+                            const text = data ? 'Active' : 'Inactive';
+                            return `<span class="badge bg-${badgeClass}">${text}</span>`;
+                        },
+                        className: 'text-center'
+                    }
+                ];
             default:
                 return [
                     { data: null, name: '#', orderable: false, searchable: false },
@@ -719,6 +803,9 @@
                 break;
             case 'locations':
                 filtersHtml = generateLocationFilters();
+                break;
+            case 'vehicle_wise':
+                filtersHtml = generateVehicleWiseFilters();
                 break;
         }
 
@@ -876,6 +963,49 @@
         `;
     }
 
+    function generateVehicleWiseFilters() {
+        return `
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <label for="vehicleWiseVehicle" class="form-label">Vehicle</label>
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="vehicleWiseVehicle" name="vehicleWiseVehicle">
+                        <option value="">All Vehicles</option>
+                        ${generateOptions(filterOptions.vehicles?.vehicles || {})}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="vehicleWiseCategory" class="form-label">Category</label>
+                    <select class="form-control enhanced-dropdown" id="vehicleWiseCategory" name="vehicleWiseCategory">
+                        <option value="">All Categories</option>
+                        ${generateOptions(filterOptions.vehicles?.categories || {})}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="vehicleWiseLocation" class="form-label">Location</label>
+                    <select class="form-control enhanced-dropdown" id="vehicleWiseLocation" name="vehicleWiseLocation">
+                        <option value="">All Locations</option>
+                        ${generateOptions(filterOptions.vehicles?.locations || {})}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="vehicleWiseStatus" class="form-label">Status</label>
+                    <select class="form-control enhanced-dropdown" id="vehicleWiseStatus" name="vehicleWiseStatus">
+                        <option value="">All Statuses</option>
+                        ${generateOptions(filterOptions.vehicles?.statuses || {})}
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        <i class="ri-information-line me-2"></i>
+                        <strong>Vehicle-wise Report:</strong> Shows statistics for each vehicle including count of defect reports, purchase orders, and total amount spent on purchase orders within the selected date range.
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     function generateOptions(options) {
         if (Array.isArray(options)) {
             return options.map(option => `<option value="${option}">${option.charAt(0).toUpperCase() + option.slice(1)}</option>`).join('');
@@ -919,6 +1049,12 @@
             case 'locations':
                 filters.location_type = $('#locationType').val();
                 filters.is_active = $('#locationStatus').val();
+                break;
+            case 'vehicle_wise':
+                filters.vehicle_id = $('#vehicleWiseVehicle').val();
+                filters.category_id = $('#vehicleWiseCategory').val();
+                filters.location_id = $('#vehicleWiseLocation').val();
+                filters.is_active = $('#vehicleWiseStatus').val();
                 break;
         }
 
