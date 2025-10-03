@@ -39,6 +39,14 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $query = PurchaseOrder::forUser($user)
             ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location']);
 
+        // Apply date range filter
+        if (isset($data['start_date']) && !empty($data['start_date'])) {
+            $query->where('issue_date', '>=', $data['start_date']);
+        }
+        if (isset($data['end_date']) && !empty($data['end_date'])) {
+            $query->where('issue_date', '<=', $data['end_date']);
+        }
+
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where(function($q) use ($search) {

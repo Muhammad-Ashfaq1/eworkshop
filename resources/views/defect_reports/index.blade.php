@@ -42,6 +42,48 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <!-- Date Range Filter -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="card border border-primary">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">
+                                                <i class="ri-calendar-range-line me-2"></i>Date Range Filter
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="start_date" class="form-label">Start Date</label>
+                                                    <input type="date" class="form-control" id="start_date" name="start_date">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="end_date" class="form-label">End Date</label>
+                                                    <input type="date" class="form-control" id="end_date" name="end_date">
+                                                </div>
+                                                <div class="col-md-4 d-flex align-items-end">
+                                                    <div class="btn-group" role="group">
+                                                        <button type="button" class="btn btn-primary" id="apply-date-filter">
+                                                            <i class="ri-search-line me-1"></i>Filter
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary" id="clear-date-filter">
+                                                            <i class="ri-refresh-line me-1"></i>Clear
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <small class="text-muted">
+                                                        <i class="ri-information-line me-1"></i>
+                                                        Filter defect reports by report date (not creation date)
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- DataTable Controls Area (Fixed) -->
                             <div id="datatable-controls-wrapper">
@@ -259,6 +301,7 @@
             loadDropdownData();
             setupWorkItems();
             setupFormValidation();
+            setupDateFilter();
 
             // Handle modal close to reset Select2
             $('#defectReportModal').on('hidden.bs.modal', function() {
@@ -299,7 +342,17 @@
                 scrollX: false,
                 ajax: {
                     url: "{{ route('defect-reports.listing') }}",
-                    type: "GET"
+                    type: "GET",
+                    data: function(d) {
+                        // Add date filter parameters
+                        if ($('#start_date').val()) {
+                            d.start_date = $('#start_date').val();
+                        }
+                        if ($('#end_date').val()) {
+                            d.end_date = $('#end_date').val();
+                        }
+                        return d;
+                    }
                 },
                 initComplete: function() {
                     // Force proper table container setup
@@ -902,6 +955,51 @@
 
             // Update validation rules after reset
             updateValidationRules();
+        }
+
+        function setupDateFilter() {
+            // Apply date filter
+            $('#apply-date-filter').click(function() {
+                const startDate = $('#start_date').val();
+                const endDate = $('#end_date').val();
+                
+                // Validate date range
+                if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+                    toastr.error('Start date cannot be greater than end date');
+                    return;
+                }
+                
+                // Reload DataTable with new filter
+                $('#js-defect-report-table').DataTable().ajax.reload();
+                
+                // Show success message
+                if (startDate || endDate) {
+                    let message = 'Filter applied';
+                    if (startDate && endDate) {
+                        message += ` from ${moment(startDate).format('MMM DD, YYYY')} to ${moment(endDate).format('MMM DD, YYYY')}`;
+                    } else if (startDate) {
+                        message += ` from ${moment(startDate).format('MMM DD, YYYY')}`;
+                    } else if (endDate) {
+                        message += ` until ${moment(endDate).format('MMM DD, YYYY')}`;
+                    }
+                    toastr.success(message);
+                }
+            });
+            
+            // Clear date filter
+            $('#clear-date-filter').click(function() {
+                $('#start_date').val('');
+                $('#end_date').val('');
+                $('#js-defect-report-table').DataTable().ajax.reload();
+                toastr.info('Date filter cleared');
+            });
+            
+            // Allow Enter key to apply filter
+            $('#start_date, #end_date').keypress(function(e) {
+                if (e.which === 13) { // Enter key
+                    $('#apply-date-filter').click();
+                }
+            });
         }
     </script>
 @endsection

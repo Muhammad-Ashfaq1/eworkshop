@@ -39,6 +39,14 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         $query = DefectReport::forUser($user)
             ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi']);
 
+        // Apply date range filter
+        if (isset($data['start_date']) && !empty($data['start_date'])) {
+            $query->where('date', '>=', $data['start_date']);
+        }
+        if (isset($data['end_date']) && !empty($data['end_date'])) {
+            $query->where('date', '<=', $data['end_date']);
+        }
+
         // Apply search filter
         if (!empty($search['search'])) {
             $query->where(function($q) use ($search) {
