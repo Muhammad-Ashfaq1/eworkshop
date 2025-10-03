@@ -794,10 +794,25 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReport(array $filters): JsonResponse
     {
         try {
+            // Validate required filters
+            if (empty($filters['vehicle_id'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vehicle selection is required for vehicle-wise report'
+                ], 400);
+            }
+
+            if (empty($filters['date_from']) || empty($filters['date_to'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Start date and end date are required for vehicle-wise report'
+                ], 400);
+            }
+
             $query = Vehicle::with(['category', 'location']);
 
-            // Apply filters
-            $this->applyVehicleWiseFilters($query, $filters);
+            // Apply filters - only vehicle selection
+            $query->where('id', $filters['vehicle_id']);
 
             // Get vehicle statistics
             $vehicles = $query->get()->map(function($vehicle) use ($filters) {
@@ -860,6 +875,21 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReportListing(array $data): JsonResponse
     {
         try {
+            // Validate required filters
+            if (empty($data['vehicle_id'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vehicle selection is required for vehicle-wise report'
+                ], 400);
+            }
+
+            if (empty($data['date_from']) || empty($data['date_to'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Start date and end date are required for vehicle-wise report'
+                ], 400);
+            }
+
             // Set default values for DataTables parameters
             $data = array_merge([
                 'start' => 0,
@@ -875,55 +905,15 @@ class ReportsRepository implements ReportsRepositoryInterface
             $skip = ($pageNumber - 1) * $pageLength;
             $searchValue = $data['search']['value'];
 
-            // Build base query
-            $query = Vehicle::with(['category', 'location']);
+            // Build base query - only for selected vehicle
+            $query = Vehicle::with(['category', 'location'])
+                ->where('id', $data['vehicle_id']);
 
             // Apply filters
             $filters = $this->extractFiltersFromDataTablesData($data);
-            $this->applyVehicleWiseFilters($query, $filters);
 
-            // Apply search
-            if (!empty($searchValue)) {
-                $query->where(function($q) use ($searchValue) {
-                    $q->where('vehicle_number', 'like', '%' . $searchValue . '%')
-                      ->orWhereHas('category', function($categoryQuery) use ($searchValue) {
-                          $categoryQuery->where('name', 'like', '%' . $searchValue . '%');
-                      })
-                      ->orWhereHas('location', function($locationQuery) use ($searchValue) {
-                          $locationQuery->where('name', 'like', '%' . $searchValue . '%');
-                      });
-                });
-            }
-
-            // Get total count before pagination
-            $totalRecords = $query->count();
-
-            // Apply ordering
-            if (isset($data['order']) && !empty($data['order'])) {
-                $orderColumn = $data['columns'][$data['order'][0]['column']]['name'] ?? 'vehicle_number';
-                $orderDirection = $data['order'][0]['dir'] ?? 'asc';
-                
-                switch ($orderColumn) {
-                    case 'category':
-                        $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
-                              ->orderBy('vehicle_categories.name', $orderDirection)
-                              ->select('vehicles.*');
-                        break;
-                    case 'location':
-                        $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
-                              ->orderBy('locations.name', $orderDirection)
-                              ->select('vehicles.*');
-                        break;
-                    default:
-                        $query->orderBy($orderColumn, $orderDirection);
-                        break;
-                }
-            } else {
-                $query->orderBy('vehicle_number', 'asc');
-            }
-
-            // Apply pagination
-            $vehicles = $query->skip($skip)->take($pageLength)->get();
+            // Get the single vehicle (no pagination needed for single vehicle)
+            $vehicles = $query->get();
 
             // Calculate statistics for each vehicle
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
@@ -971,8 +961,8 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             return response()->json([
                 'draw' => intval($data['draw']),
-                'recordsTotal' => $totalRecords,
-                'recordsFiltered' => $totalRecords,
+                'recordsTotal' => 1,
+                'recordsFiltered' => 1,
                 'data' => $vehiclesWithStats
             ]);
 
@@ -984,36 +974,14 @@ class ReportsRepository implements ReportsRepositoryInterface
         }
     }
 
-    private function applyVehicleWiseFilters($query, array $filters): void
-    {
-        if (!empty($filters['vehicle_id'])) {
-            $query->where('id', $filters['vehicle_id']);
-        }
-
-        if (!empty($filters['category_id'])) {
-            $query->where('category_id', $filters['category_id']);
-        }
-
-        if (!empty($filters['location_id'])) {
-            $query->where('location_id', $filters['location_id']);
-        }
-
-        if (!empty($filters['condition'])) {
-            $query->where('condition', $filters['condition']);
-        }
-
-        if (isset($filters['is_active']) && $filters['is_active'] !== '') {
-            $query->where('is_active', $filters['is_active']);
-        }
-    }
 
     private function extractFiltersFromDataTablesData(array $data): array
     {
         $filters = [];
         
-        // Extract filters from DataTables data
+        // Extract filters from DataTables data - only vehicle_id and dates for vehicle-wise report
         foreach ($data as $key => $value) {
-            if (in_array($key, ['vehicle_id', 'category_id', 'location_id', 'condition', 'is_active', 'date_from', 'date_to'])) {
+            if (in_array($key, ['vehicle_id', 'date_from', 'date_to'])) {
                 $filters[$key] = $value;
             }
         }

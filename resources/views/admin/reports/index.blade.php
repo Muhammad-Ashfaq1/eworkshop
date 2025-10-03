@@ -177,6 +177,19 @@
             // Check if any filters are applied
             const filters = collectFilters();
             const hasFilters = Object.values(filters).some(value => value !== '' && value !== null);
+            
+            // Special validation for vehicle-wise report
+            if (currentReportType === 'vehicle_wise') {
+                if (!filters.vehicle_id) {
+                    toastr.error('Please select a vehicle for the vehicle-wise report', 'Validation Error');
+                    return;
+                }
+                if (!filters.date_from || !filters.date_to) {
+                    toastr.error('Please select both start date and end date for the vehicle-wise report', 'Validation Error');
+                    return;
+                }
+            }
+            
             refreshDataTable();
         });
 
@@ -966,40 +979,27 @@
     function generateVehicleWiseFilters() {
         return `
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <label for="vehicleWiseVehicle" class="form-label">Vehicle</label>
-                    <select class="form-control enhanced-dropdown select2-vehicle" id="vehicleWiseVehicle" name="vehicleWiseVehicle">
-                        <option value="">All Vehicles</option>
+                <div class="col-md-4">
+                    <label for="vehicleWiseVehicle" class="form-label">Vehicle <x-req /></label>
+                    <select class="form-control enhanced-dropdown select2-vehicle" id="vehicleWiseVehicle" name="vehicleWiseVehicle" required>
+                        <option value="">Select Vehicle</option>
                         ${generateOptions(filterOptions.vehicles?.vehicles || {})}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label for="vehicleWiseCategory" class="form-label">Category</label>
-                    <select class="form-control enhanced-dropdown" id="vehicleWiseCategory" name="vehicleWiseCategory">
-                        <option value="">All Categories</option>
-                        ${generateOptions(filterOptions.vehicles?.categories || {})}
-                    </select>
+                <div class="col-md-4">
+                    <label for="vehicleWiseStartDate" class="form-label">Start Date <x-req /></label>
+                    <input type="date" class="form-control enhanced-dropdown" id="vehicleWiseStartDate" name="vehicleWiseStartDate" required>
                 </div>
-                <div class="col-md-3">
-                    <label for="vehicleWiseLocation" class="form-label">Location</label>
-                    <select class="form-control enhanced-dropdown" id="vehicleWiseLocation" name="vehicleWiseLocation">
-                        <option value="">All Locations</option>
-                        ${generateOptions(filterOptions.vehicles?.locations || {})}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="vehicleWiseStatus" class="form-label">Status</label>
-                    <select class="form-control enhanced-dropdown" id="vehicleWiseStatus" name="vehicleWiseStatus">
-                        <option value="">All Statuses</option>
-                        ${generateOptions(filterOptions.vehicles?.statuses || {})}
-                    </select>
+                <div class="col-md-4">
+                    <label for="vehicleWiseEndDate" class="form-label">End Date <x-req /></label>
+                    <input type="date" class="form-control enhanced-dropdown" id="vehicleWiseEndDate" name="vehicleWiseEndDate" required>
                 </div>
             </div>
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="alert alert-info">
                         <i class="ri-information-line me-2"></i>
-                        <strong>Vehicle-wise Report:</strong> Shows statistics for each vehicle including count of defect reports, purchase orders, and total amount spent on purchase orders within the selected date range.
+                        <strong>Vehicle-wise Report:</strong> Shows statistics for the selected vehicle including count of defect reports, purchase orders, and total amount spent on purchase orders within the selected date range.
                     </div>
                 </div>
             </div>
@@ -1052,9 +1052,8 @@
                 break;
             case 'vehicle_wise':
                 filters.vehicle_id = $('#vehicleWiseVehicle').val();
-                filters.category_id = $('#vehicleWiseCategory').val();
-                filters.location_id = $('#vehicleWiseLocation').val();
-                filters.is_active = $('#vehicleWiseStatus').val();
+                filters.date_from = $('#vehicleWiseStartDate').val();
+                filters.date_to = $('#vehicleWiseEndDate').val();
                 break;
         }
 
