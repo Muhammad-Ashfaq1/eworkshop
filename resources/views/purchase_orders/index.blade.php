@@ -114,7 +114,8 @@
                                             <th style="min-width: 120px;" data-column-type="user"><i class="ri-user-received-line me-1"></i>Received By</th>
                                             <th style="min-width: 100px;"><i class="ri-money-dollar-circle-line me-1"></i>Amount</th>
                                             <th style="min-width: 100px;" class="text-center"><i class="ri-shopping-cart-line me-1"></i>Parts Count</th>
-                                            <th style="min-width: 100px;" class="text-center"><i class="ri-attachment-line me-1"></i>Attachment</th>
+                                            <th style="min-width: 100px;" class="text-center"><i class="ri-attachment-line me-1"></i>PO Attachment</th>
+                                            <th style="min-width: 100px;" class="text-center"><i class="ri-file-damage-line me-1"></i>Defect Attachment</th>
                                             <th style="min-width: 120px;" data-column-type="user"><i class="ri-user-add-line me-1"></i>Created By</th>
                                             <th style="min-width: 120px;" class="text-center"><i class="ri-settings-line me-1"></i>Actions</th>
                                         </tr>
@@ -351,6 +352,7 @@
                 { icon: 'ri-money-dollar-circle-line' },
                 { icon: 'ri-shopping-cart-line', className: 'text-center' },
                 { icon: 'ri-attachment-line', className: 'text-center' },
+                { icon: 'ri-file-damage-line', className: 'text-center' },
                 { icon: 'ri-user-add-line' },
                 { icon: 'ri-settings-line', className: 'text-center' }
             ];
@@ -478,6 +480,19 @@
                         render: function(data, type, row) {
                             if (data) {
                                 return `<a href="${data}" target="_blank" class="btn btn-sm btn-outline-success"><i class="ri-eye-line me-1"></i>View</a>`;
+                            }
+                            return createAttachmentBadge(null);
+                        },
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: "defect_report",
+                        name: 'defect_attachment',
+                        render: function(data, type, row) {
+                            if (data && data.attachment_url) {
+                                return `<a href="${data.attachment_url}" target="_blank" class="btn btn-sm btn-outline-warning"><i class="ri-file-damage-line me-1"></i>View</a>`;
                             }
                             return createAttachmentBadge(null);
                         },

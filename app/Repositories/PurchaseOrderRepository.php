@@ -37,7 +37,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         }
 
         $query = PurchaseOrder::forUser($user)
-            ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location']);
+            ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location', 'defectReport']);
 
         // Apply date range filter
         if (isset($data['start_date']) && !empty($data['start_date'])) {
@@ -160,7 +160,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 
     public function getPurchaseOrderById($id)
     {
-        return PurchaseOrder::with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location'])->find($id);
+        return PurchaseOrder::with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location', 'defectReport'])->find($id);
     }
 
     public function createPurchaseOrder($data): JsonResponse
@@ -332,7 +332,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
     public function getPurchaseOrdersForUser($user, $perPage = 15)
     {
         return PurchaseOrder::forUser($user)
-            ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location'])
+            ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location', 'defectReport'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
