@@ -955,29 +955,37 @@ class ReportsRepository implements ReportsRepositoryInterface
                 $orderColumn = $data['columns'][$data['order'][0]['column']]['name'] ?? 'vehicle_number';
                 $orderDirection = $data['order'][0]['dir'] ?? 'asc';
                 
-                switch ($orderColumn) {
-                    case 'category':
-                        $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
-                              ->orderBy('vehicle_categories.name', $orderDirection)
-                              ->select('vehicles.*');
-                        break;
-                    case 'location':
-                        $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
-                              ->orderBy('locations.name', $orderDirection)
-                              ->select('vehicles.*');
-                        break;
-                    default:
-                        $query->orderBy($orderColumn, $orderDirection);
-                        break;
+                // Handle special cases for non-orderable columns
+                if ($orderColumn === '#' || $orderColumn === null || $orderColumn === '') {
+                    $query->orderBy('vehicle_number', 'asc');
+                } else {
+                    switch ($orderColumn) {
+                        case 'category':
+                            $query->join('vehicle_categories', 'vehicles.category_id', '=', 'vehicle_categories.id')
+                                  ->orderBy('vehicle_categories.name', $orderDirection)
+                                  ->select('vehicles.*');
+                            break;
+                        case 'location':
+                            $query->join('locations', 'vehicles.location_id', '=', 'locations.id')
+                                  ->orderBy('locations.name', $orderDirection)
+                                  ->select('vehicles.*');
+                            break;
+                        default:
+                            $query->orderBy($orderColumn, $orderDirection);
+                            break;
+                    }
                 }
             } else {
                 $query->orderBy('vehicle_number', 'asc');
             }
 
             // Apply pagination
+            \Log::info('Applying pagination', ['skip' => $skip, 'take' => $pageLength]);
             $vehicles = $query->skip($skip)->take($pageLength)->get();
+            \Log::info('Vehicles retrieved', ['count' => $vehicles->count()]);
 
             // Calculate statistics for each vehicle
+            \Log::info('Starting statistics calculation');
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($data) {
                 $vehicleId = $vehicle->id;
                 
@@ -990,6 +998,7 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $defectReportsQuery->where('date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $defectReportsCount = $defectReportsQuery->count();
+                \Log::info("Vehicle {$vehicleId} defect reports count: {$defectReportsCount}");
 
                 // Count purchase orders
                 $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
@@ -1002,9 +1011,11 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $purchaseOrdersQuery->where('issue_date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $purchaseOrdersCount = $purchaseOrdersQuery->count();
+                \Log::info("Vehicle {$vehicleId} purchase orders count: {$purchaseOrdersCount}");
 
                 // Calculate total amount
                 $totalAmount = $purchaseOrdersQuery->sum('acc_amount');
+                \Log::info("Vehicle {$vehicleId} total amount: {$totalAmount}");
 
                 return [
                     'id' => $vehicle->id,
@@ -1021,6 +1032,11 @@ class ReportsRepository implements ReportsRepositoryInterface
                 ];
             });
 
+            \Log::info('Vehicle-wise report completed successfully', [
+                'totalRecords' => $totalRecords,
+                'vehiclesCount' => $vehiclesWithStats->count()
+            ]);
+
             return response()->json([
                 'draw' => intval($data['draw']),
                 'recordsTotal' => $totalRecords,
@@ -1029,6 +1045,13 @@ class ReportsRepository implements ReportsRepositoryInterface
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Vehicle-wise report listing failed', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to generate vehicle-wise report listing: ' . $e->getMessage()
