@@ -553,7 +553,7 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $data = $this->getLocationsReport($filters);
                     break;
                 case 'vehicle_wise':
-                    $data = $this->getVehicleWiseReport($filters);
+                    $data = $this->getVehicleWiseReportForExport($filters);
                     break;
                 default:
                     throw new \Exception('Invalid report type');
@@ -880,11 +880,8 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReportListing(array $data): JsonResponse
     {
         try {
-            \Log::info('Vehicle-wise report listing started', ['data' => $data]);
-            
             // Validate required date filters
             if (empty($data['date_from']) || empty($data['date_to'])) {
-                \Log::warning('Missing date filters', ['data' => $data]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Start date and end date are required for vehicle-wise report'
@@ -908,22 +905,17 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             // Build base query
             $query = Vehicle::with(['category', 'location']);
-            \Log::info('Base query created');
 
             // If specific vehicle is selected, filter by that vehicle
             if (!empty($data['vehicle_id'])) {
-                \Log::info('Filtering by specific vehicle', ['vehicle_id' => $data['vehicle_id']]);
                 $query->where('id', $data['vehicle_id']);
             } else {
-                \Log::info('No vehicle selected, filtering by activity');
                 // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
                 $query->where(function($q) use ($data) {
-                    \Log::info('Adding defect reports filter');
                     $q->whereHas('defectReports', function($defectQuery) use ($data) {
                         $defectQuery->whereBetween('date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
                     })
                     ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($data) {
-                        \Log::info('Adding purchase orders filter');
                         $poQuery->whereBetween('issue_date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
                     });
                 });
@@ -946,9 +938,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             }
 
             // Get total count before pagination
-            \Log::info('Getting total records count');
             $totalRecords = $query->count();
-            \Log::info('Total records count', ['count' => $totalRecords]);
 
             // Apply ordering
             if (isset($data['order']) && !empty($data['order'])) {
@@ -980,12 +970,9 @@ class ReportsRepository implements ReportsRepositoryInterface
             }
 
             // Apply pagination
-            \Log::info('Applying pagination', ['skip' => $skip, 'take' => $pageLength]);
             $vehicles = $query->skip($skip)->take($pageLength)->get();
-            \Log::info('Vehicles retrieved', ['count' => $vehicles->count()]);
 
             // Calculate statistics for each vehicle
-            \Log::info('Starting statistics calculation');
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($data) {
                 $vehicleId = $vehicle->id;
                 
@@ -998,7 +985,6 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $defectReportsQuery->where('date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $defectReportsCount = $defectReportsQuery->count();
-                \Log::info("Vehicle {$vehicleId} defect reports count: {$defectReportsCount}");
 
                 // Count purchase orders
                 $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
@@ -1011,11 +997,9 @@ class ReportsRepository implements ReportsRepositoryInterface
                     $purchaseOrdersQuery->where('issue_date', '<=', $data['date_to'] . ' 23:59:59');
                 }
                 $purchaseOrdersCount = $purchaseOrdersQuery->count();
-                \Log::info("Vehicle {$vehicleId} purchase orders count: {$purchaseOrdersCount}");
 
                 // Calculate total amount
                 $totalAmount = $purchaseOrdersQuery->sum('acc_amount');
-                \Log::info("Vehicle {$vehicleId} total amount: {$totalAmount}");
 
                 return [
                     'id' => $vehicle->id,
@@ -1032,11 +1016,6 @@ class ReportsRepository implements ReportsRepositoryInterface
                 ];
             });
 
-            \Log::info('Vehicle-wise report completed successfully', [
-                'totalRecords' => $totalRecords,
-                'vehiclesCount' => $vehiclesWithStats->count()
-            ]);
-
             return response()->json([
                 'draw' => intval($data['draw']),
                 'recordsTotal' => $totalRecords,
@@ -1045,7 +1024,97 @@ class ReportsRepository implements ReportsRepositoryInterface
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Vehicle-wise report listing failed', [
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to generate vehicle-wise report listing: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getVehicleWiseReportForExport(array $filters): JsonResponse
+    {
+        try {
+            // Validate required date filters
+            if (empty($filters['date_from']) || empty($filters['date_to'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Start date and end date are required for vehicle-wise report'
+                ], 400);
+            }
+
+            $query = Vehicle::with(['category', 'location']);
+
+            // If specific vehicle is selected, filter by that vehicle
+            if (!empty($filters['vehicle_id'])) {
+                $query->where('id', $filters['vehicle_id']);
+            } else {
+                // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
+                $query->where(function($q) use ($filters) {
+                    $q->whereHas('defectReports', function($defectQuery) use ($filters) {
+                        $defectQuery->whereBetween('date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
+                    })
+                    ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($filters) {
+                        $poQuery->whereBetween('issue_date', [$filters['date_from'], $filters['date_to'] . ' 23:59:59']);
+                    });
+                });
+            }
+
+            // Get all vehicles (no pagination for export)
+            $vehicles = $query->orderBy('vehicle_number', 'asc')->get();
+
+            // Calculate statistics for each vehicle
+            $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
+                $vehicleId = $vehicle->id;
+                
+                // Count defect reports
+                $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
+                if (!empty($filters['date_from'])) {
+                    $defectReportsQuery->where('date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $defectReportsQuery->where('date', '<=', $filters['date_to'] . ' 23:59:59');
+                }
+                $defectReportsCount = $defectReportsQuery->count();
+
+                // Count purchase orders
+                $purchaseOrdersQuery = PurchaseOrder::whereHas('defectReport', function($q) use ($vehicleId) {
+                    $q->where('vehicle_id', $vehicleId);
+                });
+                if (!empty($filters['date_from'])) {
+                    $purchaseOrdersQuery->where('issue_date', '>=', $filters['date_from']);
+                }
+                if (!empty($filters['date_to'])) {
+                    $purchaseOrdersQuery->where('issue_date', '<=', $filters['date_to'] . ' 23:59:59');
+                }
+                $purchaseOrdersCount = $purchaseOrdersQuery->count();
+
+                // Calculate total amount
+                $totalAmount = $purchaseOrdersQuery->sum('acc_amount');
+
+                return [
+                    'id' => $vehicle->id,
+                    'vehicle_number' => $vehicle->vehicle_number,
+                    'category' => $vehicle->category ? $vehicle->category->name : 'N/A',
+                    'location' => $vehicle->location ? $vehicle->location->name : 'N/A',
+                    'defect_reports_count' => $defectReportsCount,
+                    'purchase_orders_count' => $purchaseOrdersCount,
+                    'total_amount' => number_format($totalAmount, 2),
+                    'total_amount_raw' => $totalAmount,
+                    'condition' => $vehicle->condition,
+                    'is_active' => $vehicle->is_active,
+                    'created_at' => $vehicle->created_at
+                ];
+            });
+
+            \Log::info('Vehicle-wise report export completed', ['count' => $vehiclesWithStats->count()]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $vehiclesWithStats->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Vehicle-wise report export failed', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -1054,11 +1123,10 @@ class ReportsRepository implements ReportsRepositoryInterface
             
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate vehicle-wise report listing: ' . $e->getMessage()
+                'message' => 'Failed to generate vehicle-wise report for export: ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
 
     private function extractFiltersFromDataTablesData(array $data): array
     {
