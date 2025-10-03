@@ -880,8 +880,11 @@ class ReportsRepository implements ReportsRepositoryInterface
     public function getVehicleWiseReportListing(array $data): JsonResponse
     {
         try {
+            \Log::info('Vehicle-wise report listing started', ['data' => $data]);
+            
             // Validate required date filters
             if (empty($data['date_from']) || empty($data['date_to'])) {
+                \Log::warning('Missing date filters', ['data' => $data]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Start date and end date are required for vehicle-wise report'
@@ -905,17 +908,22 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             // Build base query
             $query = Vehicle::with(['category', 'location']);
+            \Log::info('Base query created');
 
             // If specific vehicle is selected, filter by that vehicle
             if (!empty($data['vehicle_id'])) {
+                \Log::info('Filtering by specific vehicle', ['vehicle_id' => $data['vehicle_id']]);
                 $query->where('id', $data['vehicle_id']);
             } else {
+                \Log::info('No vehicle selected, filtering by activity');
                 // If no vehicle selected, show only vehicles that have defect reports or purchase orders in the date range
                 $query->where(function($q) use ($data) {
+                    \Log::info('Adding defect reports filter');
                     $q->whereHas('defectReports', function($defectQuery) use ($data) {
                         $defectQuery->whereBetween('date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
                     })
                     ->orWhereHas('defectReports.purchaseOrders', function($poQuery) use ($data) {
+                        \Log::info('Adding purchase orders filter');
                         $poQuery->whereBetween('issue_date', [$data['date_from'], $data['date_to'] . ' 23:59:59']);
                     });
                 });
@@ -938,7 +946,9 @@ class ReportsRepository implements ReportsRepositoryInterface
             }
 
             // Get total count before pagination
+            \Log::info('Getting total records count');
             $totalRecords = $query->count();
+            \Log::info('Total records count', ['count' => $totalRecords]);
 
             // Apply ordering
             if (isset($data['order']) && !empty($data['order'])) {
