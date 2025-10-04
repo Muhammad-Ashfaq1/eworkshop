@@ -10,6 +10,7 @@ use App\Models\DefectReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DefectReportController extends Controller
@@ -56,7 +57,48 @@ class DefectReportController extends Controller
     {
         $this->authorize('create_defect_reports');
 
-        return $this->defectReportRepository->createDefectReport($request->validated());
+        $user = Auth::user();
+        $validatedData = $request->validated();
+        
+        Log::info('Defect Report Creation Started', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'vehicle_id' => $validatedData['vehicle_id'] ?? null,
+            'location_id' => $validatedData['location_id'] ?? null,
+            'driver_name' => $validatedData['driver_name'] ?? null,
+            'request_data' => $validatedData
+        ]);
+
+        try {
+            $result = $this->defectReportRepository->createDefectReport($validatedData);
+            
+            if ($result->getData()->success) {
+                Log::info('Defect Report Creation Successful', [
+                    'user_id' => $user->id,
+                    'defect_report_id' => $result->getData()->defectReport->id ?? null
+                ]);
+            } else {
+                Log::warning('Defect Report Creation Failed', [
+                    'user_id' => $user->id,
+                    'error_message' => $result->getData()->message ?? 'Unknown error',
+                    'request_data' => $validatedData
+                ]);
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Defect Report Creation Exception', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $validatedData
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while creating defect report.'
+            ], 500);
+        }
     }
 
     /**
@@ -92,8 +134,49 @@ class DefectReportController extends Controller
         $this->authorize('update_defect_reports');
 
         $user = Auth::user();
+        $validatedData = $request->validated();
+        
+        Log::info('Defect Report Update Started', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'defect_report_id' => $defectReport->id,
+            'vehicle_id' => $validatedData['vehicle_id'] ?? null,
+            'location_id' => $validatedData['location_id'] ?? null,
+            'request_data' => $validatedData
+        ]);
 
-        return $this->defectReportRepository->updateDefectReport($defectReport->id, $request->validated());
+        try {
+            $result = $this->defectReportRepository->updateDefectReport($defectReport->id, $validatedData);
+            
+            if ($result->getData()->success) {
+                Log::info('Defect Report Update Successful', [
+                    'user_id' => $user->id,
+                    'defect_report_id' => $defectReport->id
+                ]);
+            } else {
+                Log::warning('Defect Report Update Failed', [
+                    'user_id' => $user->id,
+                    'defect_report_id' => $defectReport->id,
+                    'error_message' => $result->getData()->message ?? 'Unknown error',
+                    'request_data' => $validatedData
+                ]);
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Defect Report Update Exception', [
+                'user_id' => $user->id,
+                'defect_report_id' => $defectReport->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $validatedData
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while updating defect report.'
+            ], 500);
+        }
     }
 
     /**

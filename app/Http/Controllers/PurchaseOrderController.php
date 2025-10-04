@@ -9,6 +9,7 @@ use App\Models\PurchaseOrder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseOrderController extends Controller
 {
@@ -96,7 +97,48 @@ class PurchaseOrderController extends Controller
     {
         $this->authorize('create_purchase_orders');
 
-        return $this->purchaseOrderRepository->createPurchaseOrder($request->all());
+        $user = Auth::user();
+        $requestData = $request->all();
+        
+        Log::info('Purchase Order Creation Started', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'defect_report_id' => $requestData['defect_report_id'] ?? null,
+            'po_no' => $requestData['po_no'] ?? null,
+            'issue_date' => $requestData['issue_date'] ?? null,
+            'request_data' => $requestData
+        ]);
+
+        try {
+            $result = $this->purchaseOrderRepository->createPurchaseOrder($requestData);
+            
+            if ($result->getData()->success) {
+                Log::info('Purchase Order Creation Successful', [
+                    'user_id' => $user->id,
+                    'purchase_order_id' => $result->getData()->purchaseOrder->id ?? null
+                ]);
+            } else {
+                Log::warning('Purchase Order Creation Failed', [
+                    'user_id' => $user->id,
+                    'error_message' => $result->getData()->message ?? 'Unknown error',
+                    'request_data' => $requestData
+                ]);
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Purchase Order Creation Exception', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $requestData
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while creating purchase order.'
+            ], 500);
+        }
     }
 
     /**
@@ -143,16 +185,62 @@ class PurchaseOrderController extends Controller
         $this->authorize('update_purchase_orders');
 
         $user = Auth::user();
+        $requestData = $request->all();
+        
+        Log::info('Purchase Order Update Started', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'purchase_order_id' => $purchaseOrder->id,
+            'defect_report_id' => $requestData['defect_report_id'] ?? null,
+            'po_no' => $requestData['po_no'] ?? null,
+            'request_data' => $requestData
+        ]);
 
         // Check if user can update this specific purchase order
         if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
+            Log::warning('Purchase Order Update Authorization Failed', [
+                'user_id' => $user->id,
+                'purchase_order_id' => $purchaseOrder->id
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'You are not authorized to update this purchase order.'
             ], 403);
         }
 
-        return $this->purchaseOrderRepository->updatePurchaseOrder($purchaseOrder->id, $request->all());
+        try {
+            $result = $this->purchaseOrderRepository->updatePurchaseOrder($purchaseOrder->id, $requestData);
+            
+            if ($result->getData()->success) {
+                Log::info('Purchase Order Update Successful', [
+                    'user_id' => $user->id,
+                    'purchase_order_id' => $purchaseOrder->id
+                ]);
+            } else {
+                Log::warning('Purchase Order Update Failed', [
+                    'user_id' => $user->id,
+                    'purchase_order_id' => $purchaseOrder->id,
+                    'error_message' => $result->getData()->message ?? 'Unknown error',
+                    'request_data' => $requestData
+                ]);
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Purchase Order Update Exception', [
+                'user_id' => $user->id,
+                'purchase_order_id' => $purchaseOrder->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $requestData
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while updating purchase order.'
+            ], 500);
+        }
     }
 
     /**
