@@ -229,7 +229,7 @@ class DefectReportController extends Controller
 
     public function archieved()
     {
-        $archievedDefectReports = DefectReport::with( 'vehicle','location','fleetManager','mvi','creator')->onlyTrashed()->get();
+        $archievedDefectReports = DefectReport::with('vehicle','location','fleetManager','mvi','creator','defectWorks')->onlyTrashed()->get();
         return view('defect_reports.archieved', compact('archievedDefectReports'));
     }
 

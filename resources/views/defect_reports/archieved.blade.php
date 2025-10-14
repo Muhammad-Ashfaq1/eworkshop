@@ -45,7 +45,7 @@
                                                     <td>{{ $archievedDefectReport->mvi->name }}</td><!--mvi-->
                                                     <td>{{ $archievedDefectReport->date }}</td>
                                                     <td>{{ ucfirst($archievedDefectReport->type) }}</td>
-                                                    <td>{{ count($archievedDefectReport->Works) }}</td>
+                                                    <td>{{ count($archievedDefectReport->defectWorks ?? []) }}</td>
                                                     <td><a href="{{ $archievedDefectReport->attachment_url }}"
                                                             target="_blank">
                                                             View Attachment</a>

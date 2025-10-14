@@ -38,7 +38,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         }
 
         $query = DefectReport::forUser($user)
-            ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi']);
+            ->with(['creator', 'defectWorks', 'vehicle', 'location', 'fleetManager', 'mvi'])
+            ->withCount('defectWorks');
 
         // Apply date range filter
         if (isset($data['start_date']) && !empty($data['start_date'])) {
@@ -147,7 +148,14 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
     public function getDefectReportById($id)
     {
-        return DefectReport::with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi'])->find($id);
+        return DefectReport::with([
+            'creator', 
+            'defectWorks', // Load only defect-type works, not purchase order works
+            'vehicle', 
+            'location', 
+            'fleetManager', 
+            'mvi'
+        ])->find($id);
     }
 
     public function createDefectReport($data): JsonResponse
@@ -266,7 +274,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 'defect_report_id' => $id,
                 'vehicle_id' => $data['vehicle_id'] ?? null,
                 'location_id' => $data['location_id'] ?? null,
-                'works_count' => isset($data['works']) && is_array($data['works']) ? count($data['works']) : 0
+                'works_count' => isset($data['works']) && is_array($data['works']) ? count($data['works']) : 0,
+                'incoming_data' => $data
             ]);
 
             $defectReport = DefectReport::find($id);
@@ -290,16 +299,25 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             \App\Observers\DefectReportObserver::setOriginalValues($defectReport->id, $originalValues);
             
             // Update defect report fields individually to preserve original values
-            $defectReport->vehicle_id = $data['vehicle_id'];
-            $defectReport->location_id = $data['location_id'];
+            $defectReport->vehicle_id = $data['vehicle_id'] ?? $defectReport->vehicle_id;
+            $defectReport->location_id = $data['location_id'] ?? $defectReport->location_id;
             $defectReport->driver_name = $data['driver_name'];
-            $defectReport->fleet_manager_id = $data['fleet_manager_id'];
-            $defectReport->mvi_id = $data['mvi_id'];
+            $defectReport->fleet_manager_id = $data['fleet_manager_id'] ?? null;
+            $defectReport->mvi_id = $data['mvi_id'] ?? null;
             $defectReport->date = $data['date'];
-            $defectReport->type = $data['type'];
+            $defectReport->type = $data['type'] ?? 'defect_report';
+            
+            Log::info('DefectReportRepository: About to save defect report', [
+                'defect_report_id' => $defectReport->id,
+                'changes' => $defectReport->getDirty()
+            ]);
             
             // Save the changes - this will trigger the observer with proper original values
             $defectReport->save();
+            
+            Log::info('DefectReportRepository: Defect report saved successfully', [
+                'defect_report_id' => $defectReport->id
+            ]);
 
             Log::info('DefectReportRepository: Defect report basic fields updated', [
                 'defect_report_id' => $defectReport->id
@@ -333,40 +351,65 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 }
             }
 
-            // Delete existing works and create new ones
-            $existingWorksCount = $defectReport->works()->count();
-            $defectReport->works()->delete();
+            // Delete only DEFECT type works (preserve purchase order works)
+            $existingDefectWorks = $defectReport->works()->where('type', 'defect')->get();
+            $existingDefectWorksCount = $existingDefectWorks->count();
             
-            Log::info('DefectReportRepository: Existing works deleted', [
+            Log::info('DefectReportRepository: Existing defect works before deletion', [
                 'defect_report_id' => $defectReport->id,
-                'deleted_works_count' => $existingWorksCount
+                'existing_defect_works_count' => $existingDefectWorksCount,
+                'existing_defect_works' => $existingDefectWorks->toArray()
+            ]);
+            
+            $deletedCount = $defectReport->works()->where('type', 'defect')->delete();
+            
+            Log::info('DefectReportRepository: Defect works deleted', [
+                'defect_report_id' => $defectReport->id,
+                'deleted_count' => $deletedCount
             ]);
 
+            // Create new defect works
             if (isset($data['works']) && is_array($data['works'])) {
+                Log::info('DefectReportRepository: Creating new defect works', [
+                    'defect_report_id' => $defectReport->id,
+                    'works_to_create' => count($data['works']),
+                    'works_data' => $data['works']
+                ]);
+                
                 foreach ($data['works'] as $index => $workData) {
                     try {
-                        Work::create([
+                        $workRecord = Work::create([
                             'defect_report_id' => $defectReport->id,
-                            'work' => $workData['work'],
-                            'type' => $workData['type'],
+                            'work' => $workData['work'] ?? null,
+                            'type' => $workData['type'] ?? 'defect',
                             'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
                             'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                         ]);
                         
-                        Log::debug('DefectReportRepository: Work updated', [
+                        Log::info('DefectReportRepository: Work created successfully', [
                             'defect_report_id' => $defectReport->id,
+                            'work_id' => $workRecord->id,
                             'work_index' => $index,
-                            'work_type' => $workData['type']
+                            'work_type' => $workRecord->type,
+                            'work_description' => $workRecord->work
                         ]);
                     } catch (\Exception $workException) {
-                        Log::error('DefectReportRepository: Work update failed', [
+                        Log::error('DefectReportRepository: Work creation failed during update', [
                             'defect_report_id' => $defectReport->id,
                             'work_index' => $index,
-                            'error' => $workException->getMessage()
+                            'work_data' => $workData,
+                            'error' => $workException->getMessage(),
+                            'trace' => $workException->getTraceAsString()
                         ]);
                         throw $workException;
                     }
                 }
+            } else {
+                Log::warning('DefectReportRepository: No works provided in update data', [
+                    'defect_report_id' => $defectReport->id,
+                    'works_isset' => isset($data['works']),
+                    'works_is_array' => isset($data['works']) && is_array($data['works'])
+                ]);
             }
 
             DB::commit();
@@ -436,7 +479,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
     public function getDefectReportsForUser($user, $perPage = 15)
     {
         return DefectReport::forUser($user)
-            ->with(['creator', 'works', 'vehicle', 'location', 'fleetManager', 'mvi'])
+            ->with(['creator', 'defectWorks', 'vehicle', 'location', 'fleetManager', 'mvi'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }

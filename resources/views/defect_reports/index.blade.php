@@ -481,8 +481,8 @@
                         searchable: true
                     },
                     {
-                        data: "works",
-                        name: 'works',
+                        data: "defect_works",
+                        name: 'defect_works',
                         render: function(data, type, row) {
                             return createCountBadge(data, 'Works');
                         },
@@ -862,19 +862,20 @@
             $('#type').val('defect_report');
             $('#attachment_url').prop('disabled', isReadOnly);
 
-            // Populate works
+            // Populate works (only defect type works)
             $('#works-container').empty();
-            if (report.works && report.works.length > 0) {
-                report.works.forEach(function(work, index) {
+            const defectWorks = report.defect_works || report.works || [];
+            if (defectWorks && defectWorks.length > 0) {
+                defectWorks.forEach(function(work, index) {
                     const workNumber = index + 1;
-                    const showRemoveButton = !isReadOnly && report.works.length > 1;
+                    const showRemoveButton = !isReadOnly && defectWorks.length > 1;
                     const workItem = `
                     <div class="work-item row mb-3">
                         <div class="col-md-10">
                             <label class="form-label">Work Description ${workNumber} <x-req /></label>
                             <input type="text" class="form-control work-description"
                                 name="works[${index}][work]" placeholder="Enter work description" value="${work.work || ''}"
-                                maxlength="300" required>
+                                maxlength="300" required ${isReadOnly ? 'readonly' : ''}>
                             <input type="hidden" name="works[${index}][type]" value="defect">
                             <input type="hidden" name="works[${index}][quantity]" value="${work.quantity || ''}">
                             <input type="hidden" name="works[${index}][vehicle_part_id]" value="${work.vehicle_part_id || ''}">
