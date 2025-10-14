@@ -169,14 +169,6 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         try {
             DB::beginTransaction();
 
-            Log::info('PurchaseOrderRepository: Creating purchase order', [
-                'user_id' => Auth::id(),
-                'defect_report_id' => $data['defect_report_id'] ?? null,
-                'po_no' => $data['po_no'] ?? null,
-                'acc_amount' => $data['acc_amount'] ?? null,
-                'parts_count' => isset($data['parts']) && is_array($data['parts']) ? count($data['parts']) : 0
-            ]);
-
             // Create purchase order
             $purchaseOrder = PurchaseOrder::create([
                 'defect_report_id' => $data['defect_report_id'],
@@ -188,23 +180,13 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 'created_by' => Auth::id(),
             ]);
 
-            Log::info('PurchaseOrderRepository: Purchase order created', [
-                'purchase_order_id' => $purchaseOrder->id,
-                'defect_report_id' => $purchaseOrder->defect_report_id
-            ]);
-
             // Handle file upload
             if (isset($data['attachment_url']) && $data['attachment_url']) {
                 try {
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'purchase_orders/');
                     $purchaseOrder->update(['attachment_url' => $file['path']]);
-                    
-                    Log::info('PurchaseOrderRepository: File uploaded successfully', [
-                        'purchase_order_id' => $purchaseOrder->id,
-                        'file_path' => $file['path']
-                    ]);
                 } catch (\Exception $fileException) {
-                    Log::error('PurchaseOrderRepository: File upload failed', [
+                    Log::error('PurchaseOrder file upload failed', [
                         'purchase_order_id' => $purchaseOrder->id,
                         'error' => $fileException->getMessage()
                     ]);
@@ -223,14 +205,8 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
                         ]);
-                        
-                        Log::debug('PurchaseOrderRepository: Work created', [
-                            'purchase_order_id' => $purchaseOrder->id,
-                            'part_index' => $index,
-                            'vehicle_part_id' => $partData['vehicle_part_id']
-                        ]);
                     } catch (\Exception $workException) {
-                        Log::error('PurchaseOrderRepository: Work creation failed', [
+                        Log::error('PurchaseOrder work creation failed', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
                             'error' => $workException->getMessage()
@@ -241,10 +217,6 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             }
 
             DB::commit();
-
-            Log::info('PurchaseOrderRepository: Purchase order creation completed successfully', [
-                'purchase_order_id' => $purchaseOrder->id
-            ]);
 
             $response = [
                 'purchaseOrder' => $purchaseOrder,
@@ -257,11 +229,10 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('PurchaseOrderRepository: Purchase order creation failed', [
+            Log::error('PurchaseOrder creation failed', [
                 'user_id' => Auth::id(),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'data' => $data
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
@@ -276,25 +247,9 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         try {
             DB::beginTransaction();
 
-            Log::info('PurchaseOrderRepository: Updating purchase order', [
-                'user_id' => Auth::id(),
-                'purchase_order_id' => $id,
-                'defect_report_id' => $data['defect_report_id'] ?? null,
-                'po_no' => $data['po_no'] ?? null,
-                'acc_amount' => $data['acc_amount'] ?? null,
-                'parts_count' => isset($data['parts']) && is_array($data['parts']) ? count($data['parts']) : 0,
-                'incoming_parts' => $data['parts'] ?? [],
-                'incoming_data' => $data
-            ]);
-
             $purchaseOrder = PurchaseOrder::find($id);
 
             if (!$purchaseOrder) {
-                Log::warning('PurchaseOrderRepository: Purchase order not found for update', [
-                    'purchase_order_id' => $id,
-                    'user_id' => Auth::id()
-                ]);
-                
                 return response()->json([
                     'success' => false,
                     'message' => 'Purchase order not found'
@@ -317,31 +272,18 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             // Save the changes - this will trigger the observer with proper original values
             $purchaseOrder->save();
 
-            Log::info('PurchaseOrderRepository: Purchase order basic fields updated', [
-                'purchase_order_id' => $purchaseOrder->id
-            ]);
-
             // Handle file upload if provided
             if (isset($data['attachment_url']) && $data['attachment_url']) {
                 try {
                     // Delete old file if exists
                     if ($purchaseOrder->attachment_url) {
                         FileUploadManager::deleteFile($purchaseOrder->attachment_url);
-                        Log::info('PurchaseOrderRepository: Old file deleted', [
-                            'purchase_order_id' => $purchaseOrder->id,
-                            'old_file_path' => $purchaseOrder->attachment_url
-                        ]);
                     }
 
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'purchase_orders/');
                     $purchaseOrder->update(['attachment_url' => $file['path']]);
-                    
-                    Log::info('PurchaseOrderRepository: New file uploaded', [
-                        'purchase_order_id' => $purchaseOrder->id,
-                        'new_file_path' => $file['path']
-                    ]);
                 } catch (\Exception $fileException) {
-                    Log::error('PurchaseOrderRepository: File upload failed during update', [
+                    Log::error('PurchaseOrder file upload failed during update', [
                         'purchase_order_id' => $purchaseOrder->id,
                         'error' => $fileException->getMessage()
                     ]);
@@ -350,20 +292,10 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             }
 
             // Delete only purchase order works for THIS purchase order (preserve defect works)
-            $existingPOWorksCount = $purchaseOrder->works()
-                ->where('purchase_order_id', $purchaseOrder->id)
-                ->where('type', 'purchase_order')
-                ->count();
-            
             $purchaseOrder->works()
                 ->where('purchase_order_id', $purchaseOrder->id)
                 ->where('type', 'purchase_order')
                 ->delete();
-            
-            Log::info('PurchaseOrderRepository: Existing purchase order works deleted', [
-                'purchase_order_id' => $purchaseOrder->id,
-                'deleted_po_works_count' => $existingPOWorksCount
-            ]);
 
             // Create new purchase order works from incoming parts data
             if (isset($data['parts']) && is_array($data['parts'])) {
@@ -376,15 +308,8 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
                         ]);
-                        
-                        Log::debug('PurchaseOrderRepository: Part work created/updated', [
-                            'purchase_order_id' => $purchaseOrder->id,
-                            'part_index' => $index,
-                            'vehicle_part_id' => $partData['vehicle_part_id'],
-                            'quantity' => $partData['quantity'] ?? 1
-                        ]);
                     } catch (\Exception $workException) {
-                        Log::error('PurchaseOrderRepository: Part work creation failed during update', [
+                        Log::error('PurchaseOrder part update failed', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
                             'error' => $workException->getMessage()
@@ -395,10 +320,6 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             }
 
             DB::commit();
-
-            Log::info('PurchaseOrderRepository: Purchase order update completed successfully', [
-                'purchase_order_id' => $purchaseOrder->id
-            ]);
 
             $response = [
                 'purchaseOrder' => $purchaseOrder,
@@ -411,12 +332,11 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('PurchaseOrderRepository: Purchase order update failed', [
+            Log::error('PurchaseOrder update failed', [
                 'user_id' => Auth::id(),
                 'purchase_order_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'data' => $data
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([

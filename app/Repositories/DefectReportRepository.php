@@ -163,13 +163,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         try {
             DB::beginTransaction();
 
-            Log::info('DefectReportRepository: Creating defect report', [
-                'user_id' => Auth::id(),
-                'vehicle_id' => $data['vehicle_id'] ?? null,
-                'location_id' => $data['location_id'] ?? null,
-                'works_count' => isset($data['works']) && is_array($data['works']) ? count($data['works']) : 0
-            ]);
-
             // Create defect report
             $defectReport = DefectReport::create([
                 'vehicle_id' => $data['vehicle_id'],
@@ -183,22 +176,13 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 'created_by' => Auth::id(),
             ]);
 
-            Log::info('DefectReportRepository: Defect report created', [
-                'defect_report_id' => $defectReport->id,
-                'vehicle_id' => $defectReport->vehicle_id
-            ]);
-
             // Handle file upload
             if (isset($data['attachment_url']) && $data['attachment_url']) {
                 try {
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
                     $defectReport->update(['attachment_url' => $file['path']]);
-                    Log::info('DefectReportRepository: File uploaded successfully', [
-                        'defect_report_id' => $defectReport->id,
-                        'file_path' => $file['path']
-                    ]);
                 } catch (\Exception $fileException) {
-                    Log::error('DefectReportRepository: File upload failed', [
+                    Log::error('DefectReport file upload failed', [
                         'defect_report_id' => $defectReport->id,
                         'error' => $fileException->getMessage()
                     ]);
@@ -217,13 +201,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                             'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
                             'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                         ]);
-                        Log::debug('DefectReportRepository: Work created', [
-                            'defect_report_id' => $defectReport->id,
-                            'work_index' => $index,
-                            'work_type' => $workData['type']
-                        ]);
                     } catch (\Exception $workException) {
-                        Log::error('DefectReportRepository: Work creation failed', [
+                        Log::error('DefectReport work creation failed', [
                             'defect_report_id' => $defectReport->id,
                             'work_index' => $index,
                             'error' => $workException->getMessage()
@@ -234,10 +213,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             }
 
             DB::commit();
-
-            Log::info('DefectReportRepository: Defect report creation completed successfully', [
-                'defect_report_id' => $defectReport->id
-            ]);
 
             $response = [
                 'defectReport' => $defectReport,
@@ -250,11 +225,10 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('DefectReportRepository: Defect report creation failed', [
+            Log::error('DefectReport creation failed', [
                 'user_id' => Auth::id(),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'data' => $data
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
@@ -269,23 +243,9 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         try {
             DB::beginTransaction();
 
-            Log::info('DefectReportRepository: Updating defect report', [
-                'user_id' => Auth::id(),
-                'defect_report_id' => $id,
-                'vehicle_id' => $data['vehicle_id'] ?? null,
-                'location_id' => $data['location_id'] ?? null,
-                'works_count' => isset($data['works']) && is_array($data['works']) ? count($data['works']) : 0,
-                'incoming_data' => $data
-            ]);
-
             $defectReport = DefectReport::find($id);
 
             if (!$defectReport) {
-                Log::warning('DefectReportRepository: Defect report not found for update', [
-                    'defect_report_id' => $id,
-                    'user_id' => Auth::id()
-                ]);
-                
                 return response()->json([
                     'success' => false,
                     'message' => 'Defect report not found'
@@ -307,21 +267,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $defectReport->date = $data['date'];
             $defectReport->type = $data['type'] ?? 'defect_report';
             
-            Log::info('DefectReportRepository: About to save defect report', [
-                'defect_report_id' => $defectReport->id,
-                'changes' => $defectReport->getDirty()
-            ]);
-            
             // Save the changes - this will trigger the observer with proper original values
             $defectReport->save();
-            
-            Log::info('DefectReportRepository: Defect report saved successfully', [
-                'defect_report_id' => $defectReport->id
-            ]);
-
-            Log::info('DefectReportRepository: Defect report basic fields updated', [
-                'defect_report_id' => $defectReport->id
-            ]);
 
             // Handle file upload if provided
             if (isset($data['attachment_url']) && $data['attachment_url']) {
@@ -329,21 +276,12 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                     // Delete old file if exists
                     if ($defectReport->attachment_url) {
                         FileUploadManager::deleteFile($defectReport->attachment_url);
-                        Log::info('DefectReportRepository: Old file deleted', [
-                            'defect_report_id' => $defectReport->id,
-                            'old_file_path' => $defectReport->attachment_url
-                        ]);
                     }
 
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
                     $defectReport->update(['attachment_url' => $file['path']]);
-                    
-                    Log::info('DefectReportRepository: New file uploaded', [
-                        'defect_report_id' => $defectReport->id,
-                        'new_file_path' => $file['path']
-                    ]);
                 } catch (\Exception $fileException) {
-                    Log::error('DefectReportRepository: File upload failed during update', [
+                    Log::error('DefectReport file upload failed during update', [
                         'defect_report_id' => $defectReport->id,
                         'error' => $fileException->getMessage()
                     ]);
@@ -352,71 +290,31 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             }
 
             // Delete only DEFECT type works (preserve purchase order works)
-            $existingDefectWorks = $defectReport->works()->where('type', 'defect')->get();
-            $existingDefectWorksCount = $existingDefectWorks->count();
-            
-            Log::info('DefectReportRepository: Existing defect works before deletion', [
-                'defect_report_id' => $defectReport->id,
-                'existing_defect_works_count' => $existingDefectWorksCount,
-                'existing_defect_works' => $existingDefectWorks->toArray()
-            ]);
-            
-            $deletedCount = $defectReport->works()->where('type', 'defect')->delete();
-            
-            Log::info('DefectReportRepository: Defect works deleted', [
-                'defect_report_id' => $defectReport->id,
-                'deleted_count' => $deletedCount
-            ]);
+            $defectReport->works()->where('type', 'defect')->delete();
 
             // Create new defect works
             if (isset($data['works']) && is_array($data['works'])) {
-                Log::info('DefectReportRepository: Creating new defect works', [
-                    'defect_report_id' => $defectReport->id,
-                    'works_to_create' => count($data['works']),
-                    'works_data' => $data['works']
-                ]);
-                
                 foreach ($data['works'] as $index => $workData) {
                     try {
-                        $workRecord = Work::create([
+                        Work::create([
                             'defect_report_id' => $defectReport->id,
                             'work' => $workData['work'] ?? null,
                             'type' => $workData['type'] ?? 'defect',
                             'quantity' => !empty($workData["quantity"]) ? $workData["quantity"] : null,
                             'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                         ]);
-                        
-                        Log::info('DefectReportRepository: Work created successfully', [
-                            'defect_report_id' => $defectReport->id,
-                            'work_id' => $workRecord->id,
-                            'work_index' => $index,
-                            'work_type' => $workRecord->type,
-                            'work_description' => $workRecord->work
-                        ]);
                     } catch (\Exception $workException) {
-                        Log::error('DefectReportRepository: Work creation failed during update', [
+                        Log::error('DefectReport work update failed', [
                             'defect_report_id' => $defectReport->id,
                             'work_index' => $index,
-                            'work_data' => $workData,
-                            'error' => $workException->getMessage(),
-                            'trace' => $workException->getTraceAsString()
+                            'error' => $workException->getMessage()
                         ]);
                         throw $workException;
                     }
                 }
-            } else {
-                Log::warning('DefectReportRepository: No works provided in update data', [
-                    'defect_report_id' => $defectReport->id,
-                    'works_isset' => isset($data['works']),
-                    'works_is_array' => isset($data['works']) && is_array($data['works'])
-                ]);
             }
 
             DB::commit();
-
-            Log::info('DefectReportRepository: Defect report update completed successfully', [
-                'defect_report_id' => $defectReport->id
-            ]);
 
             $response = [
                 'defectReport' => $defectReport,
@@ -429,12 +327,11 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('DefectReportRepository: Defect report update failed', [
+            Log::error('DefectReport update failed', [
                 'user_id' => Auth::id(),
                 'defect_report_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'data' => $data
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
