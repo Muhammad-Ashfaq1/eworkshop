@@ -282,7 +282,9 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 'defect_report_id' => $data['defect_report_id'] ?? null,
                 'po_no' => $data['po_no'] ?? null,
                 'acc_amount' => $data['acc_amount'] ?? null,
-                'parts_count' => isset($data['parts']) && is_array($data['parts']) ? count($data['parts']) : 0
+                'parts_count' => isset($data['parts']) && is_array($data['parts']) ? count($data['parts']) : 0,
+                'incoming_parts' => $data['parts'] ?? [],
+                'incoming_data' => $data
             ]);
 
             $purchaseOrder = PurchaseOrder::find($id);
@@ -347,15 +349,23 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 }
             }
 
-            // Delete existing works and create new ones
-            $existingWorksCount = $purchaseOrder->works()->count();
-            $purchaseOrder->works()->delete();
+            // Delete only purchase order works for THIS purchase order (preserve defect works)
+            $existingPOWorksCount = $purchaseOrder->works()
+                ->where('purchase_order_id', $purchaseOrder->id)
+                ->where('type', 'purchase_order')
+                ->count();
             
-            Log::info('PurchaseOrderRepository: Existing works deleted', [
+            $purchaseOrder->works()
+                ->where('purchase_order_id', $purchaseOrder->id)
+                ->where('type', 'purchase_order')
+                ->delete();
+            
+            Log::info('PurchaseOrderRepository: Existing purchase order works deleted', [
                 'purchase_order_id' => $purchaseOrder->id,
-                'deleted_works_count' => $existingWorksCount
+                'deleted_po_works_count' => $existingPOWorksCount
             ]);
 
+            // Create new purchase order works from incoming parts data
             if (isset($data['parts']) && is_array($data['parts'])) {
                 foreach ($data['parts'] as $index => $partData) {
                     try {
@@ -367,13 +377,14 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'vehicle_part_id' => $partData['vehicle_part_id'],
                         ]);
                         
-                        Log::debug('PurchaseOrderRepository: Work updated', [
+                        Log::debug('PurchaseOrderRepository: Part work created/updated', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
-                            'vehicle_part_id' => $partData['vehicle_part_id']
+                            'vehicle_part_id' => $partData['vehicle_part_id'],
+                            'quantity' => $partData['quantity'] ?? 1
                         ]);
                     } catch (\Exception $workException) {
-                        Log::error('PurchaseOrderRepository: Work update failed', [
+                        Log::error('PurchaseOrderRepository: Part work creation failed during update', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
                             'error' => $workException->getMessage()
