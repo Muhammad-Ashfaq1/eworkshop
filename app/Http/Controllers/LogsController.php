@@ -10,11 +10,11 @@ class LogsController extends Controller
     public function index()
     {
         $this->authorize('view_report_logs');
-        
-        $report_logs = ReportAudit::with('modifier')
+
+        $report_logs = ReportAudit::with(['modifier', 'originalCreator'])
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return view('admin.report-logs.index', compact('report_logs'));
     }
 
@@ -24,9 +24,9 @@ class LogsController extends Controller
     public function getLogDetails($id)
     {
         $this->authorize('view_report_logs');
-        
-        $log = ReportAudit::with('modifier')->findOrFail($id);
-        
+
+        $log = ReportAudit::with(['modifier', 'originalCreator'])->findOrFail($id);
+
         return response()->json([
             'success' => true,
             'log' => $log
@@ -39,10 +39,10 @@ class LogsController extends Controller
     public function destroy($id)
     {
         $this->authorize('delete_report_logs');
-        
+
         $log = ReportAudit::findOrFail($id);
         $log->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Report log deleted successfully'

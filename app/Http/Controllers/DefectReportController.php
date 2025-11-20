@@ -59,7 +59,7 @@ class DefectReportController extends Controller
 
         $user = Auth::user();
         $validatedData = $request->validated();
-        
+
         Log::info('Defect Report Creation Started', [
             'user_id' => $user->id,
             'user_email' => $user->email,
@@ -71,7 +71,7 @@ class DefectReportController extends Controller
 
         try {
             $result = $this->defectReportRepository->createDefectReport($validatedData);
-            
+
             if ($result->getData()->success) {
                 Log::info('Defect Report Creation Successful', [
                     'user_id' => $user->id,
@@ -84,7 +84,7 @@ class DefectReportController extends Controller
                     'request_data' => $validatedData
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Defect Report Creation Exception', [
@@ -93,7 +93,7 @@ class DefectReportController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $validatedData
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while creating defect report.'
@@ -135,7 +135,7 @@ class DefectReportController extends Controller
 
         $user = Auth::user();
         $validatedData = $request->validated();
-        
+
         Log::info('Defect Report Update Started', [
             'user_id' => $user->id,
             'user_email' => $user->email,
@@ -147,7 +147,7 @@ class DefectReportController extends Controller
 
         try {
             $result = $this->defectReportRepository->updateDefectReport($defectReport->id, $validatedData);
-            
+
             if ($result->getData()->success) {
                 Log::info('Defect Report Update Successful', [
                     'user_id' => $user->id,
@@ -161,7 +161,7 @@ class DefectReportController extends Controller
                     'request_data' => $validatedData
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Defect Report Update Exception', [
@@ -171,7 +171,7 @@ class DefectReportController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'request_data' => $validatedData
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while updating defect report.'

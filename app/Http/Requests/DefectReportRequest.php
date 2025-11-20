@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DefectReportRequest extends FormRequest
 {
@@ -22,7 +23,14 @@ class DefectReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vehicle_id' => 'nullable|exists:vehicles,id',
+            'vehicle_id' => [
+                'nullable',
+                'exists:vehicles,id',
+                Rule::unique('defect_reports', 'vehicle_id')
+                    ->where(fn ($query) => $query
+                        ->where('date', $this->input('date'))
+                        ->whereNull('deleted_at')),
+            ],
             'location_id' => 'nullable|exists:locations,id',
             'driver_name' => 'required|string|max:255',
             'fleet_manager_id' => 'nullable|exists:fleet_managers,id',
@@ -45,6 +53,7 @@ class DefectReportRequest extends FormRequest
     {
         return [
             'vehicle_id.exists' => 'The selected vehicle is invalid.',
+            'vehicle_id.unique' => 'A defect report already exists for this vehicle on the selected date.',
             'location_id.exists' => 'The selected office/town is invalid.',
             'fleet_manager_id.exists' => 'The selected fleet manager is invalid.',
             'mvi_id.exists' => 'The selected MVI is invalid.',

@@ -112,31 +112,31 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                       ->orderBy('vehicles.vehicle_number', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'location.name':
                 $query->join('locations', 'defect_reports.location_id', '=', 'locations.id')
                       ->orderBy('locations.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'fleet_manager.name':
                 $query->leftJoin('fleet_managers as fleet_managers', 'defect_reports.fleet_manager_id', '=', 'fleet_managers.id')
                       ->orderBy('fleet_managers.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'mvi.name':
                 $query->leftJoin('fleet_managers as mvis', 'defect_reports.mvi_id', '=', 'mvis.id')
                       ->orderBy('mvis.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             case 'creator.name':
                 $query->leftJoin('users as creators', 'defect_reports.created_by', '=', 'creators.id')
                       ->orderBy('creators.name', $direction)
                       ->select('defect_reports.*');
                 break;
-                
+
             default:
                 // Handle direct column sorting
                 if (strpos($columnName, '.') === false) {
@@ -149,11 +149,11 @@ class DefectReportRepository implements DefectReportRepositoryInterface
     public function getDefectReportById($id)
     {
         return DefectReport::with([
-            'creator', 
+            'creator',
             'defectWorks', // Load only defect-type works, not purchase order works
-            'vehicle', 
-            'location', 
-            'fleetManager', 
+            'vehicle',
+            'location',
+            'fleetManager',
             'mvi'
         ])->find($id);
     }
@@ -161,6 +161,20 @@ class DefectReportRepository implements DefectReportRepositoryInterface
     public function createDefectReport($data): JsonResponse
     {
         try {
+            if (!empty($data['vehicle_id']) && !empty($data['date'])) {
+                $alreadyExists = DefectReport::where('vehicle_id', $data['vehicle_id'])
+                    ->where('date', $data['date'])
+                    ->whereNull('deleted_at')
+                    ->exists();
+
+                if ($alreadyExists) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'A defect report already exists for this vehicle on the selected date.',
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            }
+
             DB::beginTransaction();
 
             // Create defect report
@@ -252,12 +266,29 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            if (!empty($data['vehicle_id']) && !empty($data['date'])) {
+                $alreadyExists = DefectReport::where('vehicle_id', $data['vehicle_id'])
+                    ->where('date', $data['date'])
+                    ->whereNull('deleted_at')
+                    ->where('id', '!=', $id)
+                    ->exists();
+
+                if ($alreadyExists) {
+                    DB::rollBack();
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'A defect report already exists for this vehicle on the selected date.',
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            }
+
             // Store original values BEFORE any modifications
             $originalValues = $defectReport->getAttributes();
-            
+
             // Store the original values in the observer's static property
             \App\Observers\DefectReportObserver::setOriginalValues($defectReport->id, $originalValues);
-            
+
             // Update defect report fields individually to preserve original values
             $defectReport->vehicle_id = $data['vehicle_id'] ?? $defectReport->vehicle_id;
             $defectReport->location_id = $data['location_id'] ?? $defectReport->location_id;
@@ -266,7 +297,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $defectReport->mvi_id = $data['mvi_id'] ?? null;
             $defectReport->date = $data['date'];
             $defectReport->type = $data['type'] ?? 'defect_report';
-            
+
             // Save the changes - this will trigger the observer with proper original values
             $defectReport->save();
 
