@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Interfaces\ReportsRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
@@ -19,10 +20,10 @@ class ReportsController extends Controller
     public function index()
     {
         $this->authorize('access_admin_panel');
-        
+
         // Get filter options for dropdowns
         $filterOptions = $this->reportsRepository->getFilterOptions();
-        
+
         return view('admin.reports.index', compact('filterOptions'));
     }
 
@@ -77,13 +78,13 @@ class ReportsController extends Controller
     public function getVehicleWiseReport(Request $request): JsonResponse
     {
         // Check if user is super admin or admin only
-        if (!auth()->user()->hasRole(['super_admin', 'admin'])) {
+        if (!Auth::user() || !Auth::user()->hasRole(['super_admin', 'admin'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Access denied. This report is only available for Super Admin and Admin users.'
             ], 403);
         }
-        
+
         $this->authorize('access_admin_panel');
         return $this->reportsRepository->getVehicleWiseReport($request->all());
     }
@@ -139,13 +140,13 @@ class ReportsController extends Controller
     public function getVehicleWiseReportListing(Request $request): JsonResponse
     {
         // Check if user is super admin or admin only
-        if (!auth()->user()->hasRole(['super_admin', 'admin'])) {
+        if (!Auth::user() || !Auth::user()->hasRole(['super_admin', 'admin'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Access denied. This report is only available for Super Admin and Admin users.'
             ], 403);
         }
-        
+
         $this->authorize('access_admin_panel');
         return $this->reportsRepository->getVehicleWiseReportListing($request->all());
     }
@@ -157,5 +158,14 @@ class ReportsController extends Controller
     {
         $this->authorize('export_data');
         return $this->reportsRepository->exportReport($request->all());
+    }
+
+    /**
+     * Export report data as PDF
+     */
+    public function exportPDF(Request $request)
+    {
+        $this->authorize('export_data');
+        return $this->reportsRepository->exportPDF($request->all());
     }
 }

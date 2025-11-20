@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportsRepository implements ReportsRepositoryInterface
 {
@@ -261,7 +263,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'vehicle_number', 'condition', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -324,7 +326,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'driver_name', 'type', 'date', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -381,7 +383,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'name', 'slug', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -417,7 +419,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             $query = Location::query();
 
             // Debug: Log the received data
-            \Log::info('Locations Report Listing - Received data:', $data);
+            Log::info('Locations Report Listing - Received data:', $data);
 
             // Get total count before applying any filters
             $totalRecords = Location::count();
@@ -442,7 +444,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'name', 'location_type', 'is_active', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -504,7 +506,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (!empty($data['order'])) {
                 $columnIndex = $data['order'][0]['column'];
                 $columnDirection = $data['order'][0]['dir'];
-                
+
                 $columns = ['id', 'po_no', 'issue_date', 'acc_amount', 'created_at'];
                 if (isset($columns[$columnIndex])) {
                     $query->orderBy($columns[$columnIndex], $columnDirection);
@@ -535,7 +537,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     {
         try {
             $reportType = $filters['report_type'] ?? 'vehicles';
-            
+
             switch ($reportType) {
                 case 'vehicles':
                     $data = $this->getVehiclesReport($filters);
@@ -561,7 +563,7 @@ class ReportsRepository implements ReportsRepositoryInterface
 
             // Convert data to CSV format
             $csvContent = $this->convertToCSV($data->getData(true)['data'], $reportType);
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $csvContent,
@@ -746,7 +748,7 @@ class ReportsRepository implements ReportsRepositoryInterface
     }
 
     private function applyLocationFilters($query, array $filters): void
-    {        
+    {
         if (!empty($filters['location_type'])) {
             $query->where('location_type', $filters['location_type']);
         }
@@ -822,7 +824,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             // Get vehicle statistics
             $vehicles = $query->get()->map(function($vehicle) use ($filters) {
                 $vehicleId = $vehicle->id;
-                
+
                 // Count defect reports for this vehicle
                 $defectReportsQuery = DefectReport::where('vehicle_id', $vehicleId);
                 if (!empty($filters['date_from'])) {
@@ -939,7 +941,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             if (isset($data['order']) && !empty($data['order'])) {
                 $orderColumn = $data['columns'][$data['order'][0]['column']]['name'] ?? 'vehicle_number';
                 $orderDirection = $data['order'][0]['dir'] ?? 'asc';
-                
+
                 // Handle special cases for non-orderable columns
                 if ($orderColumn === '#' || $orderColumn === null || $orderColumn === '') {
                     $query->orderBy('vehicle_number', 'asc');
@@ -970,7 +972,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             // Calculate statistics for each vehicle
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($data) {
                 $vehicleId = $vehicle->id;
-                
+
                 // Count defect reports (no date filter - count all defect reports for the vehicle)
                 $defectReportsCount = DefectReport::where('vehicle_id', $vehicleId)->count();
 
@@ -1048,7 +1050,7 @@ class ReportsRepository implements ReportsRepositoryInterface
             // Calculate statistics for each vehicle
             $vehiclesWithStats = $vehicles->map(function($vehicle) use ($filters) {
                 $vehicleId = $vehicle->id;
-                
+
                 // Count defect reports (no date filter - count all defect reports for the vehicle)
                 $defectReportsCount = DefectReport::where('vehicle_id', $vehicleId)->count();
 
@@ -1082,7 +1084,7 @@ class ReportsRepository implements ReportsRepositoryInterface
                 ];
             });
 
-            \Log::info('Vehicle-wise report export completed', ['count' => $vehiclesWithStats->count()]);
+            Log::info('Vehicle-wise report export completed', ['count' => $vehiclesWithStats->count()]);
 
             return response()->json([
                 'success' => true,
@@ -1090,13 +1092,13 @@ class ReportsRepository implements ReportsRepositoryInterface
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Vehicle-wise report export failed', [
+            Log::error('Vehicle-wise report export failed', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to generate vehicle-wise report for export: ' . $e->getMessage()
@@ -1107,14 +1109,212 @@ class ReportsRepository implements ReportsRepositoryInterface
     private function extractFiltersFromDataTablesData(array $data): array
     {
         $filters = [];
-        
+
         // Extract filters from DataTables data - only vehicle_id and dates for vehicle-wise report
         foreach ($data as $key => $value) {
             if (in_array($key, ['vehicle_id', 'date_from', 'date_to'])) {
                 $filters[$key] = $value;
             }
         }
-        
+
         return $filters;
+    }
+
+    /**
+     * Export report data as PDF
+     */
+    public function exportPDF(array $filters)
+    {
+        try {
+            $reportType = $filters['report_type'] ?? 'vehicles';
+
+            // Get report data based on type
+            switch ($reportType) {
+                case 'vehicles':
+                    $data = $this->getVehiclesReport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Vehicles Report';
+                    $headers = ['#', 'Vehicle Number', 'Category', 'Location', 'Condition', 'Status', 'Created At'];
+                    break;
+                case 'defect_reports':
+                    $data = $this->getDefectReportsReport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Defect Reports';
+                    $headers = ['#', 'Driver Name', 'Type', 'Vehicle', 'Location', 'Date', 'Created By'];
+                    break;
+                case 'purchase_orders':
+                    $data = $this->getPurchaseOrdersReport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Purchase Orders Report';
+                    $headers = ['#', 'PO Number', 'Vehicle', 'Location', 'Issue Date', 'Amount', 'Created By'];
+                    break;
+                case 'vehicle_parts':
+                    $data = $this->getVehiclePartsReport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Vehicle Parts Report';
+                    $headers = ['#', 'Name', 'Slug', 'Status', 'Created At'];
+                    break;
+                case 'locations':
+                    $data = $this->getLocationsReport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Locations Report';
+                    $headers = ['#', 'Name', 'Type', 'Status', 'Created At'];
+                    break;
+                case 'vehicle_wise':
+                    $data = $this->getVehicleWiseReportForExport($filters);
+                    $reportData = $data->getData(true)['data'];
+                    $reportTitle = 'Vehicle-wise Report';
+                    $headers = ['#', 'Vehicle Number', 'Category', 'Location', 'Defect Reports', 'Purchase Orders', 'Total Amount', 'Status'];
+                    break;
+                default:
+                    throw new \Exception('Invalid report type');
+            }
+
+            // Format data for PDF
+            $formattedData = $this->formatDataForPDF($reportData, $reportType);
+
+            // Generate filename
+            $filename = $this->generatePDFFileName($filters, $reportType);
+
+            // Generate PDF
+            $pdf = Pdf::loadView('admin.reports.pdf', [
+                'title' => $reportTitle,
+                'headers' => $headers,
+                'data' => $formattedData,
+                'filters' => $filters,
+                'generatedAt' => now()->format('Y-m-d H:i:s')
+            ]);
+
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            Log::error('PDF export failed', [
+                'error' => $e->getMessage(),
+                'filters' => $filters
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to export PDF: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Format data for PDF display
+     */
+    private function formatDataForPDF(array $data, string $reportType): array
+    {
+        $formatted = [];
+        $index = 1;
+
+        foreach ($data as $row) {
+            $formattedRow = ['#' => $index++];
+
+            switch ($reportType) {
+                case 'vehicles':
+                    $formattedRow['Vehicle Number'] = $row['vehicle_number'] ?? 'N/A';
+                    $formattedRow['Category'] = $row['category']['name'] ?? 'N/A';
+                    $formattedRow['Location'] = $row['location']['name'] ?? 'N/A';
+                    $formattedRow['Condition'] = isset($row['condition']) ? ucfirst($row['condition']) : 'N/A';
+                    $formattedRow['Status'] = isset($row['is_active']) ? ($row['is_active'] ? 'Active' : 'Inactive') : 'N/A';
+                    $formattedRow['Created At'] = isset($row['created_at']) ? date('M d, Y', strtotime($row['created_at'])) : 'N/A';
+                    break;
+
+                case 'defect_reports':
+                    $formattedRow['Driver Name'] = $row['driver_name'] ?? 'N/A';
+                    $formattedRow['Type'] = isset($row['type']) ? ucfirst($row['type']) : 'N/A';
+                    $formattedRow['Vehicle'] = $row['vehicle']['vehicle_number'] ?? 'N/A';
+                    $formattedRow['Location'] = $row['location']['name'] ?? 'N/A';
+                    $formattedRow['Date'] = isset($row['date']) ? date('M d, Y', strtotime($row['date'])) : 'N/A';
+                    $formattedRow['Created By'] = $this->getCreatorName($row['creator'] ?? null);
+                    break;
+
+                case 'purchase_orders':
+                    $formattedRow['PO Number'] = $row['po_no'] ?? 'N/A';
+                    $formattedRow['Vehicle'] = $row['defect_report']['vehicle']['vehicle_number'] ?? 'N/A';
+                    $formattedRow['Location'] = $row['defect_report']['location']['name'] ?? 'N/A';
+                    $formattedRow['Issue Date'] = isset($row['issue_date']) ? date('M d, Y', strtotime($row['issue_date'])) : 'N/A';
+                    $formattedRow['Amount'] = isset($row['acc_amount']) ? number_format($row['acc_amount'], 2) : '0.00';
+                    $formattedRow['Created By'] = $this->getCreatorName($row['creator'] ?? null);
+                    break;
+
+                case 'vehicle_parts':
+                    $formattedRow['Name'] = $row['name'] ?? 'N/A';
+                    $formattedRow['Slug'] = $row['slug'] ?? 'N/A';
+                    $formattedRow['Status'] = isset($row['is_active']) ? ($row['is_active'] ? 'Active' : 'Inactive') : 'N/A';
+                    $formattedRow['Created At'] = isset($row['created_at']) ? date('M d, Y', strtotime($row['created_at'])) : 'N/A';
+                    break;
+
+                case 'locations':
+                    $formattedRow['Name'] = $row['name'] ?? 'N/A';
+                    $formattedRow['Type'] = isset($row['location_type']) ? ucfirst($row['location_type']) : 'N/A';
+                    $formattedRow['Status'] = isset($row['is_active']) ? ($row['is_active'] ? 'Active' : 'Inactive') : 'N/A';
+                    $formattedRow['Created At'] = isset($row['created_at']) ? date('M d, Y', strtotime($row['created_at'])) : 'N/A';
+                    break;
+
+                case 'vehicle_wise':
+                    $formattedRow['Vehicle Number'] = $row['vehicle_number'] ?? 'N/A';
+                    $formattedRow['Category'] = $row['category'] ?? 'N/A';
+                    $formattedRow['Location'] = $row['location'] ?? 'N/A';
+                    $formattedRow['Defect Reports'] = $row['defect_reports_count'] ?? '0';
+                    $formattedRow['Purchase Orders'] = $row['purchase_orders_count'] ?? '0';
+                    $formattedRow['Total Amount'] = $row['total_amount'] ?? '0.00';
+                    $formattedRow['Status'] = isset($row['is_active']) ? ($row['is_active'] ? 'Active' : 'Inactive') : 'N/A';
+                    break;
+            }
+
+            $formatted[] = $formattedRow;
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * Get creator name from user data
+     */
+    private function getCreatorName($creator): string
+    {
+        if (!$creator) {
+            return 'N/A';
+        }
+
+        if (isset($creator['full_name'])) {
+            return $creator['full_name'];
+        }
+
+        if (isset($creator['first_name']) && isset($creator['last_name'])) {
+            return $creator['first_name'] . ' ' . $creator['last_name'];
+        }
+
+        if (isset($creator['name'])) {
+            return $creator['name'];
+        }
+
+        return 'N/A';
+    }
+
+    /**
+     * Generate PDF filename
+     */
+    private function generatePDFFileName(array $filters, string $reportType): string
+    {
+        $timestamp = date('Y-m-d');
+        $filename = $reportType . '_' . $timestamp;
+
+        if (!empty($filters['vehicle_id'])) {
+            $filename .= '_vehicle_' . $filters['vehicle_id'];
+        }
+        if (!empty($filters['location_id'])) {
+            $filename .= '_location_' . $filters['location_id'];
+        }
+        if (!empty($filters['date_from'])) {
+            $filename .= '_from_' . $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $filename .= '_to_' . $filters['date_to'];
+        }
+
+        return $filename . '.pdf';
     }
 }

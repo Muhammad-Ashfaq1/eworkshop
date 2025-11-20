@@ -98,6 +98,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/locations/listing', 'getLocationsReportListing')->name('locations.listing');
             Route::get('/vehicle-wise/listing', 'getVehicleWiseReportListing')->name('vehicle-wise.listing');
             Route::post('/export', 'exportReport')->name('export')->middleware(['permission:export_data']);
+            Route::get('/export-pdf', 'exportPDF')->name('export-pdf')->middleware(['permission:export_data']);
         });
 
         // Activity Logs - Super Admin only

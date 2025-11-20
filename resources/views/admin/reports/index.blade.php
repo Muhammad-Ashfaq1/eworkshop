@@ -8,8 +8,11 @@
                 <div class="card-header">
                     <h5 class="card-title mb-0">Reports & Analytics</h5>
                     <div class="float-end">
+                        <button type="button" class="btn btn-danger me-2" id="js-export-pdf-btn">
+                            <i class="ri-file-pdf-line me-1"></i>Export PDF
+                        </button>
                         <button type="button" class="btn btn-success" id="js-export-report-btn">
-                            <i class="ri-download-2-line me-1"></i>Export Report
+                            <i class="ri-download-2-line me-1"></i>Export CSV
                         </button>
                     </div>
                 </div>
@@ -128,10 +131,10 @@
     function initializeReports() {
         // Set default date range
         setDefaultDateRange();
-        
+
         // Show empty state initially (no DataTable initialization)
         showEmptyState();
-        
+
         // Show welcome message
     }
 
@@ -141,7 +144,7 @@
             currentReportType = $(this).val();
             loadDynamicFilters();
             resetToEmptyState();
-            
+
             // Show info message
             const reportTypeNames = {
                 'vehicles': 'Vehicles Report',
@@ -156,7 +159,7 @@
         // Date range change
         $('#dateRange').on('change', function() {
             handleDateRangeChange();
-            
+
             // Show info message
             const range = $(this).val();
             if (range) {
@@ -177,7 +180,7 @@
             // Check if any filters are applied
             const filters = collectFilters();
             const hasFilters = Object.values(filters).some(value => value !== '' && value !== null);
-            
+
             // Special validation for vehicle-wise report
             if (currentReportType === 'vehicle_wise') {
                 if (!filters.date_from || !filters.date_to) {
@@ -185,7 +188,7 @@
                     return;
                 }
             }
-            
+
             refreshDataTable();
         });
 
@@ -194,7 +197,12 @@
             clearFilters();
         });
 
-        // Export report button
+        // Export PDF button
+        $('#js-export-pdf-btn').on('click', function() {
+            exportPDF();
+        });
+
+        // Export CSV button
         $('#js-export-report-btn').on('click', function() {
             exportReport();
         });
@@ -211,13 +219,13 @@
         }
 
         const columns = getDataTableColumns();
-        
+
         reportsDataTable = $('#js-reports-table').DataTable({
         scrollX: false,
-        
+
         scrollCollapse: false,
-        
-        
+
+
             processing: false,
             serverSide: false, // Start with client-side to show empty state
             data: [], // Start with empty data
@@ -244,7 +252,7 @@
         try {
             // Show loading toastr
             toastr.info('Generating report...', 'Please wait');
-            
+
             // Check if table element exists
             const tableElement = $('#js-reports-table');
             if (tableElement.length === 0) {
@@ -261,22 +269,22 @@
                     console.warn('Error destroying existing DataTable:', e);
                 }
             }
-            
+
             // Update table headers based on report type
             updateTableHeaders();
-            
+
             // Clear the table body and add loading row
             tableElement.find('tbody').html('<tr><td colspan="2" class="text-center"><i class="ri-loader-4-line me-1"></i>Loading...</td></tr>');
-            
+
             const columns = getDataTableColumns();
-            
+
             // Initialize DataTable with error handling
             reportsDataTable = tableElement.DataTable({
         scrollX: false,
-        
+
         scrollCollapse: false,
-        
-        
+
+
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -290,10 +298,10 @@
                                 d[key] = filters[key];
                             }
                         });
-                        
+
                         // Debug: Log filters being sent
                         console.log('Applied filters:', filters);
-                        
+
                         return d;
                     },
                     error: function(xhr, error, thrown) {
@@ -317,7 +325,7 @@
                     try {
                         const count = this.api().page.info().recordsDisplay;
                         updateResultsCount(count);
-                        
+
                         // Show success message
                         if (count > 0) {
                             toastr.success(`Report generated successfully with ${count} records`, 'Success');
@@ -352,7 +360,7 @@
     function updateTableHeaders() {
         const thead = $('#js-reports-table thead tr');
         let headers = '';
-        
+
         switch(currentReportType) {
             case 'vehicles':
                 headers = `
@@ -423,7 +431,7 @@
                     <th>Report Data</th>
                 `;
         }
-        
+
         thead.html(headers);
     }
 
@@ -787,7 +795,7 @@
             default:
                 return [
                     { data: null, name: '#', orderable: false, searchable: false },
-                    { data: null, name: 'Report Data', orderable: false, searchable: false, 
+                    { data: null, name: 'Report Data', orderable: false, searchable: false,
                       render: function() { return 'Select report type and click "Generate Report" to view data'; } }
                 ];
         }
@@ -819,7 +827,7 @@
         }
 
         filtersContainer.html(filtersHtml);
-        
+
         // Show/hide general date range filters based on report type
         if (currentReportType === 'vehicle_wise') {
             $('#generalDateRangeContainer').hide();
@@ -830,7 +838,7 @@
             $('#generalFromDateContainer').show();
             $('#generalToDateContainer').show();
         }
-        
+
         // Initialize Select2 for vehicle dropdowns
         setTimeout(function() {
             if (currentReportType === 'purchase_orders' && $('#poVehicle').length > 0) {
@@ -848,7 +856,7 @@
                     dropdownParent: $('#defectVehicle').parent()
                 });
             }
-            
+
             // Initialize Select2 for select dropdowns only (exclude date inputs)
             $('.enhanced-dropdown:not(input[type="date"])').each(function() {
                 if (!$(this).hasClass('select2-hidden-accessible')) {
@@ -1029,7 +1037,7 @@
             report_type: currentReportType,
             search: $('#searchTerm').val()
         };
-        
+
         // Only include general date filters if not vehicle-wise report
         if (currentReportType !== 'vehicle_wise') {
             filters.date_from = $('#dateFrom').val();
@@ -1082,10 +1090,10 @@
     function showEmptyState() {
         // Show empty state message
         $('#resultsCount').text('No report generated').removeClass('bg-info bg-success').addClass('bg-secondary');
-        
+
         // Get the correct colspan based on current report type
         const columnCount = getColumnCount();
-        
+
         // Show empty table with message
         $('#js-reports-table tbody').html(`<tr><td colspan="${columnCount}" class="text-center text-muted py-4">Select report type and click "Generate Report" to view data</td></tr>`);
     }
@@ -1096,10 +1104,10 @@
             reportsDataTable.destroy();
             reportsDataTable = null;
         }
-        
+
         // Update headers for new report type
         updateTableHeaders();
-        
+
         // Show empty state
         showEmptyState();
     }
@@ -1108,17 +1116,17 @@
         // Reset all form elements
         $('#dynamicFilters select, #dynamicFilters input').val('');
         $('#searchTerm').val('');
-        
+
         // Only clear general date fields if not vehicle-wise report
         if (currentReportType !== 'vehicle_wise') {
             $('#dateRange, #dateFrom, #dateTo').val('');
             // Set default date range
             setDefaultDateRange();
         }
-        
+
         // Reset to empty state
         resetToEmptyState();
-        
+
         // Show success message
         toastr.success('All filters have been cleared', 'Filters Reset');
     }
@@ -1126,7 +1134,7 @@
     function setDefaultDateRange() {
         const today = new Date();
         const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-        
+
         $('#dateFrom').val(thirtyDaysAgo.toISOString().split('T')[0]);
         $('#dateTo').val(today.toISOString().split('T')[0]);
         $('#dateRange').val('last_30_days');
@@ -1135,7 +1143,7 @@
     function handleDateRangeChange() {
         const range = $('#dateRange').val();
         const today = new Date();
-        
+
         switch(range) {
             case 'today':
                 $('#dateFrom').val(today.toISOString().split('T')[0]);
@@ -1175,10 +1183,10 @@
 
     function exportReport() {
         const filters = collectFilters();
-        
+
         // Show loading message
         toastr.info('Preparing CSV export...', 'Please wait');
-        
+
         // Make AJAX call to export endpoint
         $.ajax({
             url: "{{ route('admin.reports.export') }}",
@@ -1206,7 +1214,7 @@
     function downloadCSV(csvContent, filename) {
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-        
+
         if (link.download !== undefined) {
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
@@ -1218,12 +1226,36 @@
         }
     }
 
+    function exportPDF() {
+        const filters = collectFilters();
+
+        // Show loading message
+        toastr.info('Preparing PDF export...', 'Please wait');
+
+        // Build query string for PDF export
+        const queryParams = new URLSearchParams();
+        Object.keys(filters).forEach(key => {
+            if (filters[key] !== '' && filters[key] !== null) {
+                queryParams.append(key, filters[key]);
+            }
+        });
+
+        // Open PDF in new window
+        const url = "{{ route('admin.reports.export-pdf') }}?" + queryParams.toString();
+        window.open(url, '_blank');
+
+        // Show success message after a short delay
+        setTimeout(function() {
+            toastr.success('PDF export initiated', 'Export');
+        }, 500);
+    }
+
     function generateFileName(filters) {
         const timestamp = new Date().toISOString().slice(0, 10);
         const reportType = filters.report_type || 'report';
-        
+
         let fileName = `${reportType}_${timestamp}`;
-        
+
         // Add filter information to filename
         if (filters.vehicle_id) {
             fileName += '_vehicle_' + filters.vehicle_id;
@@ -1240,7 +1272,7 @@
         if (filters.search) {
             fileName += '_search_' + filters.search.replace(/[^a-zA-Z0-9]/g, '_');
         }
-        
+
         return fileName + '.csv';
     }
 </script>

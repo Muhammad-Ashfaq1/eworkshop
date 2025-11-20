@@ -102,4 +102,11 @@ interface ReportsRepositoryInterface
      * @return JsonResponse
      */
     public function exportReport(array $filters): JsonResponse;
+
+    /**
+     * Export report data as PDF
+     * @param array $filters
+     * @return mixed
+     */
+    public function exportPDF(array $filters);
 }
