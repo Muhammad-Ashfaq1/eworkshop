@@ -18,6 +18,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Modifier Name</th>
+                                            <th>DEO Name (Created By)</th>
                                             <th>Type</th>
                                             <th>Changes Made</th>
                                             <th>Created At</th>
@@ -30,6 +31,7 @@
                                                 <tr>
                                                     <td>{{ $log->id }}</td>
                                                     <td>{{ $log->modifier->full_name ?? 'N/A' }}</td>
+                                                    <td>{{ $log->originalCreator->full_name ?? 'N/A' }}</td>
                                                     <td>
                                                         <span class="badge bg-{{ $log->type === 'defect_report' ? 'warning-subtle text-warning' : 'success-subtle text-success' }}">
                                                             <i class="{{ $log->type === 'defect_report' ? 'ri-tools-line' : 'ri-shopping-cart-line' }} me-1"></i>
@@ -37,7 +39,7 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-outline-info" 
+                                                        <button class="btn btn-sm btn-outline-info"
                                                                 onclick="viewLogDetails({{ $log->id }})">
                                                             <i class="ri-eye-line"></i> View Changes
                                                         </button>
@@ -168,7 +170,7 @@
                 'attachment_url': 'Attachment',
                 'type': 'Type',
                 'created_by': 'Created By',
-                
+
                 // Purchase Order fields
                 'defect_report_id': 'Defect Report',
                 'po_no': 'PO Number',
@@ -180,7 +182,7 @@
             // Display before changes
             let beforeHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             beforeHtml += '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
-            
+
             if (log.before_changing_record_readable) {
                 Object.entries(log.before_changing_record_readable).forEach(([key, value]) => {
                     if (key !== 'created_at' && key !== 'updated_at') {
@@ -196,7 +198,7 @@
             // Display after changes
             let afterHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             afterHtml += '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>';
-            
+
             if (log.after_changing_record_readable) {
                 Object.entries(log.after_changing_record_readable).forEach(([key, value]) => {
                     if (key !== 'created_at' && key !== 'updated_at') {
@@ -212,17 +214,17 @@
             // Display change summary - only show fields that actually changed
             let summaryHtml = '<div class="table-responsive force-table-responsive table-scroll-indicator"><table class="table table-sm">';
             summaryHtml += '<thead><tr><th>Field</th><th>Old Value</th><th>New Value</th><th>Status</th></tr></thead><tbody>';
-            
+
             if (log.before_changing_record_readable && log.after_changing_record_readable) {
                 let hasChanges = false;
-                
+
                 Object.keys(log.before_changing_record_readable).forEach(key => {
                     if (key === 'created_at' || key === 'updated_at') return;
-                    
+
                     const oldValue = log.before_changing_record_readable[key] || 'N/A';
                     const newValue = log.after_changing_record_readable[key] || 'N/A';
                     const hasChanged = oldValue !== newValue;
-                    
+
                     if (hasChanged) {
                         hasChanges = true;
                         summaryHtml += `<tr class="table-warning">
@@ -240,7 +242,7 @@
                         </tr>`;
                     }
                 });
-                
+
                 if (!hasChanges) {
                     summaryHtml += '<tr><td colspan="4" class="text-center text-muted">No fields were modified</td></tr>';
                 }
