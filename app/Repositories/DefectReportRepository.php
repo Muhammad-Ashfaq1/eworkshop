@@ -9,7 +9,6 @@ use App\Helpers\FileUploadManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class DefectReportRepository implements DefectReportRepositoryInterface
@@ -196,10 +195,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
                     $defectReport->update(['attachment_url' => $file['path']]);
                 } catch (\Exception $fileException) {
-                    Log::error('DefectReport file upload failed', [
-                        'defect_report_id' => $defectReport->id,
-                        'error' => $fileException->getMessage()
-                    ]);
                     throw $fileException;
                 }
             }
@@ -216,11 +211,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                             'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                         ]);
                     } catch (\Exception $workException) {
-                        Log::error('DefectReport work creation failed', [
-                            'defect_report_id' => $defectReport->id,
-                            'work_index' => $index,
-                            'error' => $workException->getMessage()
-                        ]);
                         throw $workException;
                     }
                 }
@@ -238,12 +228,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
 
         } catch (\Exception $e) {
             DB::rollBack();
-
-            Log::error('DefectReport creation failed', [
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
 
             return response()->json([
                 'success' => false,
@@ -312,10 +296,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                     $file = FileUploadManager::uploadFile($data['attachment_url'], 'defect_reports/');
                     $defectReport->update(['attachment_url' => $file['path']]);
                 } catch (\Exception $fileException) {
-                    Log::error('DefectReport file upload failed during update', [
-                        'defect_report_id' => $defectReport->id,
-                        'error' => $fileException->getMessage()
-                    ]);
                     throw $fileException;
                 }
             }
@@ -335,11 +315,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
                             'vehicle_part_id' => !empty($workData["vehicle_part_id"]) ? $workData["vehicle_part_id"] : null,
                         ]);
                     } catch (\Exception $workException) {
-                        Log::error('DefectReport work update failed', [
-                            'defect_report_id' => $defectReport->id,
-                            'work_index' => $index,
-                            'error' => $workException->getMessage()
-                        ]);
                         throw $workException;
                     }
                 }
@@ -358,12 +333,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('DefectReport update failed', [
-                'user_id' => Auth::id(),
-                'defect_report_id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
 
             return response()->json([
                 'success' => false,
