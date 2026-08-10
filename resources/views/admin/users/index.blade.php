@@ -105,6 +105,18 @@
                                                                 <i class="ri-lock-password-line"></i>
                                                             </button>
                                                         @endcan
+                                                        @can('impersonate_users')
+                                                            @if ($user->hasRole('deo') && $user->is_active && $user->id !== auth()->id())
+                                                                <form action="{{ route('admin.user.impersonate', $user) }}" method="POST" class="d-inline impersonate-form">
+                                                                    @csrf
+                                                                    <button type="submit"
+                                                                        class="btn btn-sm btn-soft-warning"
+                                                                        title="Impersonate DEO">
+                                                                        <i class="ri-user-shared-line"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                        @endcan
                                                         @can('delete_users')
                                                             <button type="button"
                                                                 class="btn btn-sm btn-soft-danger delete-user-btn"
@@ -316,6 +328,13 @@
                 $(document).on('click', '.reset-password-btn', function() {
                     const userId = $(this).data('user-id');
                     resetPassword(userId);
+                });
+
+                // Impersonate confirmation
+                $(document).on('submit', '.impersonate-form', function(e) {
+                    if (!confirm('Login as this DEO user? You can return to your admin account anytime.')) {
+                        e.preventDefault();
+                    }
                 });
 
                 // Toggle Status Checkboxes

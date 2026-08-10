@@ -12,6 +12,10 @@ use App\Http\Controllers\Admin\FleetManagerController;
 use App\Http\Controllers\Admin\VehicleCategoryController;
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // Leave impersonation must remain available while logged in as the impersonated DEO
+    Route::post('users/leave-impersonation', [UserController::class, 'leaveImpersonation'])
+        ->name('user.leave.impersonation');
+
     // User Management Routes - Super Admin only
     Route::controller(UserController::class)->prefix('users')
         ->name('user.')->middleware(['permission:create_users'])->group(function () {
@@ -22,6 +26,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::delete('destroy/{user}', 'destroy')->name('destroy')->middleware('permission:delete_users');
             Route::post('reset-password/{user}', 'resetPassword')->name('reset.password')->middleware('permission:update_users');
             Route::post('toggle-status/{user}', 'toggleStatus')->name('toggle.status')->middleware('permission:update_users');
+            Route::post('impersonate/{user}', 'impersonate')->name('impersonate')->middleware('permission:impersonate_users');
         });
 
     // Location Management Routes
