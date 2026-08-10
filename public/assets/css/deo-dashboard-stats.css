@@ -1,0 +1,218 @@
+/*
+ * DEO dashboard stats — screen CSS on top of pos-glass primitives.
+ * Colors follow Velzon / eworkshop tokens (--vz-*).
+ * Namespace: .deo-ds-*
+ */
+
+.deo-ds-section {
+    --deo-text: var(--vz-body-color, #212529);
+    --deo-muted: var(--vz-secondary-color, #878a99);
+    --deo-heading: var(--vz-heading-color, #212529);
+    --deo-success: var(--vz-success, #0ab39c);
+    --deo-danger: var(--vz-danger, #f06548);
+    --deo-warning: var(--vz-warning, #f7b84b);
+    --deo-info: var(--vz-info, #299cdb);
+    --deo-primary: var(--vz-primary, #405189);
+    margin-block-end: 1.5rem;
+}
+
+.deo-ds-section .pos-stat-label,
+.deo-ds-section .pos-glass-intro-subtitle,
+.deo-ds-section .pos-glass-control-label,
+.deo-ds-email,
+.deo-ds-metric-label,
+.deo-ds-empty,
+.deo-ds-loading {
+    color: var(--deo-muted);
+}
+
+.deo-ds-section .pos-stat-value,
+.deo-ds-section .pos-glass-intro-title,
+.deo-ds-metric-value {
+    color: var(--deo-heading);
+}
+
+.deo-ds-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1rem;
+}
+
+.deo-ds-filters .pos-glass-control {
+    flex: 1 1 10rem;
+    max-width: 14rem;
+}
+
+.deo-ds-filters .pos-glass-control .form-control,
+.deo-ds-filters .pos-glass-control .form-select {
+    min-width: 0;
+    width: 100%;
+    border-color: rgba(var(--pos-tone-rgb), 0.28);
+    background-color: var(--vz-secondary-bg, #fff);
+    color: var(--deo-heading);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.deo-ds-filters .pos-glass-control .form-control:focus,
+.deo-ds-filters .pos-glass-control .form-select:focus {
+    border-color: rgba(var(--pos-tone-rgb), 0.55);
+    box-shadow:
+        0 0 0 0.2rem rgba(var(--pos-tone-rgb), 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.deo-ds-filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.deo-ds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr));
+    gap: 1rem;
+}
+
+.deo-ds-card .pos-stat-body {
+    min-block-size: 100%;
+}
+
+.deo-ds-section .pos-stat-icon.has-avatar {
+    padding: 0;
+    overflow: hidden;
+    background-image: none;
+    box-shadow:
+        0 6px 14px -6px rgba(var(--pos-tone-rgb), 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.deo-ds-avatar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.deo-ds-email {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.deo-ds-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem;
+    margin-block-start: 0.25rem;
+}
+
+.deo-ds-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.75rem;
+}
+
+.deo-ds-metric.is-dr {
+    border: 1px solid rgba(var(--vz-warning-rgb, 247, 184, 75), 0.28);
+    background-color: rgba(var(--vz-warning-rgb, 247, 184, 75), 0.12);
+}
+
+.deo-ds-metric.is-dr .deo-ds-metric-label,
+.deo-ds-metric.is-dr .deo-ds-metric-value {
+    color: var(--deo-warning);
+}
+
+.deo-ds-metric.is-po {
+    border: 1px solid rgba(var(--vz-success-rgb, 10, 179, 156), 0.28);
+    background-color: rgba(var(--vz-success-rgb, 10, 179, 156), 0.12);
+}
+
+.deo-ds-metric.is-po .deo-ds-metric-label,
+.deo-ds-metric.is-po .deo-ds-metric-value {
+    color: var(--deo-success);
+}
+
+.deo-ds-metric-label {
+    margin: 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.deo-ds-metric-value {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.deo-ds-empty,
+.deo-ds-loading {
+    grid-column: 1 / -1;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.deo-ds-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-block-start: auto;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.deo-ds-status.is-active {
+    color: var(--deo-success);
+}
+
+.deo-ds-status.is-inactive {
+    color: var(--deo-danger);
+}
+
+/* Match dashboard avatar-title subtle tiles for DEO icon */
+.deo-ds-section .pos-tone-primary .pos-stat-icon {
+    background-image: linear-gradient(135deg, var(--deo-primary) 0%, rgba(var(--vz-primary-rgb, 64, 81, 137), 0.82) 100%);
+}
+
+.deo-ds-section .pos-tone-info .pos-stat-icon {
+    background-image: linear-gradient(135deg, var(--deo-info) 0%, rgba(var(--vz-info-rgb, 41, 156, 219), 0.82) 100%);
+}
+
+.deo-ds-section .pos-tone-success .pos-stat-icon {
+    background-image: linear-gradient(135deg, var(--deo-success) 0%, rgba(var(--vz-success-rgb, 10, 179, 156), 0.82) 100%);
+}
+
+.deo-ds-section .pos-tone-warning .pos-stat-icon {
+    background-image: linear-gradient(135deg, var(--deo-warning) 0%, rgba(var(--vz-warning-rgb, 247, 184, 75), 0.82) 100%);
+}
+
+.deo-ds-section .pos-tone-secondary .pos-stat-icon {
+    background-image: linear-gradient(135deg, var(--vz-secondary, #3577f1) 0%, rgba(var(--vz-secondary-rgb, 53, 119, 241), 0.82) 100%);
+}
+
+@media (max-width: 575.98px) {
+    .deo-ds-filters .pos-glass-control {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+
+    .deo-ds-filter-actions {
+        width: 100%;
+    }
+
+    .deo-ds-filter-actions .btn {
+        flex: 1 1 auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .deo-ds-card {
+        transition: none;
+    }
+}

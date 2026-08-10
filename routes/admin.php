@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\DeoStatsController;
 use App\Http\Controllers\Admin\VehicleController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\VehiclePartController;
@@ -99,6 +100,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/vehicle-wise/listing', 'getVehicleWiseReportListing')->name('vehicle-wise.listing');
             Route::post('/export', 'exportReport')->name('export')->middleware(['permission:export_data']);
             Route::get('/export-pdf', 'exportPDF')->name('export-pdf')->middleware(['permission:export_data']);
+        });
+
+    // DEO Performance Stats - Admin and Super Admin only
+    Route::controller(DeoStatsController::class)->prefix('deo-stats')
+        ->name('deo-stats.')->middleware(['permission:view_reports'])->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/listing', 'listing')->name('listing');
+            Route::get('/cards', 'cards')->name('cards');
         });
 
         // Activity Logs - Super Admin only

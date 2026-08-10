@@ -2,6 +2,11 @@
 
 @section('title', 'Super Admin Dashboard')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/pos-glass.css') }}?v={{ @filemtime(public_path('assets/css/pos-glass.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/deo-dashboard-stats.css') }}?v={{ @filemtime(public_path('assets/css/deo-dashboard-stats.css')) }}" />
+@endsection
+
 @section('content')
 <div class="page-content">
     <div class="container-fluid">
@@ -180,6 +185,8 @@
                         </div>
                     </div>
 
+                    @include('partials.deo-stats-cards')
+
                     <!-- Quick Actions -->
                     <div class="row">
                         <div class="col-12">
@@ -223,4 +230,8 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('assets/js/deo-dashboard-stats.js') }}?v={{ @filemtime(public_path('assets/js/deo-dashboard-stats.js')) }}"></script>
 @endsection
