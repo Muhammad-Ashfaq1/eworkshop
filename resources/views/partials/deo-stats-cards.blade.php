@@ -1,4 +1,7 @@
-<div class="deo-ds-section" id="deo-dashboard-stats" data-cards-url="{{ route('admin.deo-stats.cards') }}">
+<div class="deo-ds-section"
+     id="deo-dashboard-stats"
+     data-cards-url="{{ route('admin.deo-stats.cards') }}"
+     data-export-url="{{ route('admin.deo-stats.export') }}">
     <div class="row g-3 mb-3">
         <div class="col-12">
             <div class="pos-glass-card pos-tone-primary">
@@ -35,7 +38,7 @@
                     <div class="deo-ds-filters w-100">
                         <div class="pos-glass-control">
                             <label class="pos-glass-control-label" for="deo-ds-range">Date Range</label>
-                            <select class="form-select form-select-sm" id="deo-ds-range">
+                            <select class="form-select" id="deo-ds-range">
                                 <option value="today" selected>Today</option>
                                 <option value="last_7_days">Last 7 Days</option>
                                 <option value="last_30_days">Last 30 Days</option>
@@ -43,20 +46,25 @@
                             </select>
                         </div>
                         <div class="pos-glass-control">
-                            <label class="pos-glass-control-label" for="deo-ds-from">From</label>
-                            <input type="date" class="form-control form-control-sm" id="deo-ds-from" readonly>
+                            <label class="pos-glass-control-label" for="deo-ds-from">From Date</label>
+                            <input type="date" class="form-control" id="deo-ds-from" name="deo-ds-from">
                         </div>
                         <div class="pos-glass-control">
-                            <label class="pos-glass-control-label" for="deo-ds-to">To</label>
-                            <input type="date" class="form-control form-control-sm" id="deo-ds-to" readonly>
+                            <label class="pos-glass-control-label" for="deo-ds-to">To Date</label>
+                            <input type="date" class="form-control" id="deo-ds-to" name="deo-ds-to">
                         </div>
                         <div class="deo-ds-filter-actions">
                             <button type="button" class="btn btn-sm btn-primary" id="deo-ds-apply">
                                 <i class="ri-search-line me-1" aria-hidden="true"></i>Filter
                             </button>
-                            <button type="button" class="btn btn-sm btn-soft-secondary" id="deo-ds-clear">
+                            <button type="button" class="btn btn-sm btn-label-secondary" id="deo-ds-clear">
                                 <i class="ri-refresh-line me-1" aria-hidden="true"></i>Clear
                             </button>
+                            @can('export_data')
+                                <button type="button" class="btn btn-sm btn-success" id="deo-ds-export">
+                                    <i class="ri-download-2-line me-1" aria-hidden="true"></i>Export CSV
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>

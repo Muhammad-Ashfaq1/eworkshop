@@ -15,4 +15,9 @@ interface DeoStatsRepositoryInterface
      * Get DEO performance cards for dashboard widgets.
      */
     public function getCards(array $filters): JsonResponse;
+
+    /**
+     * Export DEO performance stats as CSV.
+     */
+    public function exportCsv(array $filters): JsonResponse;
 }

@@ -77,23 +77,8 @@ class DeoStatsRepository implements DeoStatsRepositoryInterface
     {
         try {
             [$dateFrom, $dateTo] = $this->resolveDateRange($filters);
-
-            $deos = $this->baseQuery($dateFrom, $dateTo)
-                ->orderBy('first_name')
-                ->orderBy('last_name')
-                ->get()
-                ->map(function (User $user) {
-                    return [
-                        'id' => $user->id,
-                        'name' => $user->full_name,
-                        'email' => $user->email,
-                        'image_url' => $user->image_url,
-                        'is_active' => (bool) $user->is_active,
-                        'defect_reports_count' => (int) $user->defect_reports_count,
-                        'purchase_orders_count' => (int) $user->purchase_orders_count,
-                        'total_count' => (int) $user->defect_reports_count + (int) $user->purchase_orders_count,
-                    ];
-                });
+            // Only DEOs with DR/PO activity in the selected date range
+            $deos = $this->fetchDeoRows($dateFrom, $dateTo, false, true);
 
             return response()->json([
                 'success' => true,
@@ -114,35 +99,153 @@ class DeoStatsRepository implements DeoStatsRepositoryInterface
         }
     }
 
+    public function exportCsv(array $filters): JsonResponse
+    {
+        try {
+            [$dateFrom, $dateTo] = $this->resolveDateRange($filters);
+            // CSV: active DEOs that have activity in the selected range
+            $deos = $this->fetchDeoRows($dateFrom, $dateTo, true, true);
+
+            $lines = [
+                ['DEO Name', 'Email', 'Status', 'Defect Reports', 'Purchase Orders', 'Total'],
+            ];
+
+            foreach ($deos as $deo) {
+                $lines[] = [
+                    $deo['name'],
+                    $deo['email'],
+                    'Active',
+                    $deo['defect_reports_count'],
+                    $deo['purchase_orders_count'],
+                    $deo['total_count'],
+                ];
+            }
+
+            $csv = collect($lines)
+                ->map(fn (array $row) => $this->toCsvLine($row))
+                ->implode("\n");
+
+            $timestamp = now()->toDateString();
+            $filename = "deo_performance_{$timestamp}";
+            if ($dateFrom) {
+                $filename .= '_from_'.$dateFrom->toDateString();
+            }
+            if ($dateTo) {
+                $filename .= '_to_'.$dateTo->toDateString();
+            }
+            $filename .= '.csv';
+
+            return response()->json([
+                'success' => true,
+                'data' => $csv,
+                'filename' => $filename,
+                'message' => 'DEO performance exported successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to export DEO stats: '.$e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private function fetchDeoRows($dateFrom, $dateTo, bool $activeOnly = false, bool $withActivityOnly = false)
+    {
+        $query = $this->baseQuery($dateFrom, $dateTo);
+
+        if ($activeOnly) {
+            $query->where('is_active', true);
+        }
+
+        $rows = $query
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get()
+            ->map(function (User $user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->full_name,
+                    'email' => $user->email,
+                    'image_url' => $user->image_url,
+                    'is_active' => (bool) $user->is_active,
+                    'defect_reports_count' => (int) $user->defect_reports_count,
+                    'purchase_orders_count' => (int) $user->purchase_orders_count,
+                    'total_count' => (int) $user->defect_reports_count + (int) $user->purchase_orders_count,
+                ];
+            });
+
+        if ($withActivityOnly) {
+            $rows = $rows
+                ->filter(fn (array $deo) => $deo['total_count'] > 0)
+                ->values();
+        }
+
+        return $rows;
+    }
+
+    private function toCsvLine(array $row): string
+    {
+        return collect($row)
+            ->map(function ($value) {
+                $value = (string) $value;
+                if (str_contains($value, ',') || str_contains($value, '"') || str_contains($value, "\n")) {
+                    return '"'.str_replace('"', '""', $value).'"';
+                }
+
+                return $value;
+            })
+            ->implode(',');
+    }
+
     private function baseQuery($dateFrom, $dateTo): Builder
     {
         return User::role(UserRoles::DEO)
             ->select('users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.image_url', 'users.is_active')
             ->withCount([
-                'defectReports as defect_reports_count' => fn (Builder $q) => $this->applyCreatedAtRange($q, $dateFrom, $dateTo),
-                'purchaseOrders as purchase_orders_count' => fn (Builder $q) => $this->applyCreatedAtRange($q, $dateFrom, $dateTo),
+                // DEO performance = when the DEO created the record (created_at)
+                'defectReports as defect_reports_count' => function (Builder $q) use ($dateFrom, $dateTo) {
+                    $this->applyDateColumnRange($q, 'created_at', $dateFrom, $dateTo);
+                },
+                'purchaseOrders as purchase_orders_count' => function (Builder $q) use ($dateFrom, $dateTo) {
+                    $this->applyDateColumnRange($q, 'created_at', $dateFrom, $dateTo);
+                },
             ]);
     }
 
     /**
-     * @return array{0:?string,1:?string}
+     * @return array{0:\Illuminate\Support\Carbon,1:\Illuminate\Support\Carbon}
      */
     private function resolveDateRange(array $data): array
     {
-        $dateFrom = ! empty($data['date_from']) ? Carbon::parse($data['date_from'])->startOfDay() : null;
-        $dateTo = ! empty($data['date_to']) ? Carbon::parse($data['date_to'])->endOfDay() : null;
+        $hasFrom = ! empty($data['date_from']);
+        $hasTo = ! empty($data['date_to']);
+
+        // No date range selected → current day (dashboard DEO Performance default)
+        if (! $hasFrom && ! $hasTo) {
+            return [
+                Carbon::today()->startOfDay(),
+                Carbon::today()->endOfDay(),
+            ];
+        }
+
+        $dateFrom = $hasFrom
+            ? Carbon::parse($data['date_from'])->startOfDay()
+            : Carbon::today()->startOfDay();
+        $dateTo = $hasTo
+            ? Carbon::parse($data['date_to'])->endOfDay()
+            : Carbon::today()->endOfDay();
 
         return [$dateFrom, $dateTo];
     }
 
-    private function applyCreatedAtRange(Builder $query, $dateFrom, $dateTo): void
+    private function applyDateColumnRange(Builder $query, string $column, $dateFrom, $dateTo): void
     {
         if ($dateFrom) {
-            $query->where('created_at', '>=', $dateFrom);
+            $query->whereDate($column, '>=', $dateFrom->toDateString());
         }
 
         if ($dateTo) {
-            $query->where('created_at', '<=', $dateTo);
+            $query->whereDate($column, '<=', $dateTo->toDateString());
         }
     }
 

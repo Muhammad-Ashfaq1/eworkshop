@@ -2,7 +2,10 @@
     'use strict';
 
     function formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
     }
 
     function escapeHtml(value) {
@@ -14,6 +17,20 @@
             .replace(/'/g, '&#039;');
     }
 
+    function downloadCsv(csvContent, filename) {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     function initDeoDashboardStats() {
         const $root = $('#deo-dashboard-stats');
         if (!$root.length) {
@@ -21,6 +38,8 @@
         }
 
         const cardsUrl = $root.data('cards-url');
+        const exportUrl = $root.data('export-url');
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const $range = $('#deo-ds-range');
         const $from = $('#deo-ds-from');
         const $to = $('#deo-ds-to');
@@ -32,9 +51,9 @@
             let to = today;
 
             if (range === 'last_7_days') {
-                from = new Date(today.getTime() - (7 * 24 * 60 * 60 * 1000));
+                from = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
             } else if (range === 'last_30_days') {
-                from = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+                from = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29);
             } else if (range === 'custom') {
                 return;
             }
@@ -43,9 +62,37 @@
             $to.val(formatDate(to));
         }
 
-        function toggleCustom(isCustom) {
-            $from.prop('readonly', !isCustom);
-            $to.prop('readonly', !isCustom);
+        function ensureDefaultDates() {
+            if (!$from.val() || !$to.val()) {
+                $range.val('today');
+                applyPreset('today');
+            }
+        }
+
+        function validateDates(required) {
+            ensureDefaultDates();
+
+            const from = $from.val();
+            const to = $to.val();
+
+            if (required && (!from || !to)) {
+                if (window.toastr) {
+                    toastr.error('Please select both from and to dates', 'Validation Error');
+                }
+                return false;
+            }
+
+            if (from && to && from > to) {
+                if (window.toastr) {
+                    toastr.error('From date cannot be greater than to date', 'Validation Error');
+                }
+                return false;
+            }
+
+            return {
+                date_from: from || '',
+                date_to: to || ''
+            };
         }
 
         function renderCards(items) {
@@ -73,11 +120,11 @@
                     '    </div>',
                     '    <p class="deo-ds-email">' + escapeHtml(deo.email) + '</p>',
                     '    <div class="deo-ds-metrics">',
-                    '      <div class="deo-ds-metric is-dr">',
+                    '      <div class="deo-ds-metric pos-tone-warning">',
                     '        <p class="deo-ds-metric-label">Defect Reports</p>',
                     '        <p class="deo-ds-metric-value">' + deo.defect_reports_count + '</p>',
                     '      </div>',
-                    '      <div class="deo-ds-metric is-po">',
+                    '      <div class="deo-ds-metric pos-tone-success">',
                     '        <p class="deo-ds-metric-label">Purchase Orders</p>',
                     '        <p class="deo-ds-metric-value">' + deo.purchase_orders_count + '</p>',
                     '      </div>',
@@ -100,17 +147,8 @@
         }
 
         function loadCards() {
-            if (!$from.val() || !$to.val()) {
-                if (window.toastr) {
-                    toastr.error('Please select both from and to dates', 'Validation Error');
-                }
-                return;
-            }
-
-            if ($from.val() > $to.val()) {
-                if (window.toastr) {
-                    toastr.error('From date cannot be greater than to date', 'Validation Error');
-                }
+            const dates = validateDates(true);
+            if (!dates) {
                 return;
             }
 
@@ -119,10 +157,8 @@
             $.ajax({
                 url: cardsUrl,
                 type: 'GET',
-                data: {
-                    date_from: $from.val(),
-                    date_to: $to.val()
-                },
+                cache: false,
+                data: dates,
                 success: function (response) {
                     if (!response.success) {
                         if (window.toastr) {
@@ -144,26 +180,77 @@
             });
         }
 
+        function exportCsv() {
+            // Empty dates → current day (server defaults); UI unchanged
+            const dates = validateDates(false);
+            if (!dates || !exportUrl) {
+                return;
+            }
+
+            if (window.toastr) {
+                toastr.info('Preparing CSV export...', 'Please wait');
+            }
+
+            $.ajax({
+                url: exportUrl,
+                type: 'POST',
+                data: dates,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    if (!response.success) {
+                        if (window.toastr) {
+                            toastr.error(response.message || 'Export failed', 'Export Error');
+                        }
+                        return;
+                    }
+
+                    downloadCsv(response.data, response.filename || 'deo_performance.csv');
+                    if (window.toastr) {
+                        toastr.success('Export completed successfully!', 'Export');
+                    }
+                },
+                error: function (xhr) {
+                    const message = xhr.status === 403
+                        ? 'You do not have permission to export data'
+                        : 'Export failed. Please try again.';
+                    if (window.toastr) {
+                        toastr.error(message, 'Export Error');
+                    }
+                }
+            });
+        }
+
         $range.on('change', function () {
             const range = $(this).val();
-            toggleCustom(range === 'custom');
             applyPreset(range);
             if (range !== 'custom') {
+                // Force reload with the newly filled From/To
                 loadCards();
             }
         });
 
+        $from.add($to).on('change', function () {
+            $range.val('custom');
+        });
+
         $('#deo-ds-apply').on('click', loadCards);
+        $('#deo-ds-export').on('click', exportCsv);
 
         $('#deo-ds-clear').on('click', function () {
             $range.val('today');
-            toggleCustom(false);
             applyPreset('today');
             loadCards();
         });
 
+        $from.add($to).on('keypress', function (e) {
+            if (e.which === 13) {
+                loadCards();
+            }
+        });
+
         applyPreset('today');
-        toggleCustom(false);
         loadCards();
     }
 

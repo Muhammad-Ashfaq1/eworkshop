@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
+<html lang="en" class="pos-theme-lake" data-pos-theme="lake" data-bs-theme="light" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
 <head>
     <meta charset="utf-8" />
     <title>LWMC Workshop - @yield('title', 'LWMC Workshop')</title>
@@ -45,6 +45,8 @@
     <link href="{{ asset('assets/css/badge-improvements.css')}}" rel="stylesheet" type="text/css" />
     <!-- DataTable Sorting Icons CSS V2 -->
     <link href="{{ asset('assets/css/datatable-sorting-icons-v2.css')}}" rel="stylesheet" type="text/css" />
+    <!-- POS lake theme (colors only; glass is dashboard-scoped) -->
+    <link href="{{ asset('assets/css/eworkshop-pos-theme.css') }}?v={{ @filemtime(public_path('assets/css/eworkshop-pos-theme.css')) }}" rel="stylesheet" type="text/css" />
     <!-- Toastr CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" >
     <!-- Google Fonts for Inter font family -->
