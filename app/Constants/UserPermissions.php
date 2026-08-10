@@ -11,6 +11,7 @@ class UserPermissions
     const DELETE_USERS = 'delete_users';
 
     const RESET_USER_PASSWORD='reset_user_password';
+    const IMPERSONATE_USERS = 'impersonate_users';
 
     // Admin management permissions
     const CREATE_ADMIN = 'create_admin';
@@ -127,6 +128,7 @@ class UserPermissions
             self::UPDATE_USERS,
             self::DELETE_USERS,
             self::RESET_USER_PASSWORD,
+            self::IMPERSONATE_USERS,
             // Admin management permissions
             self::CREATE_ADMIN,
             self::READ_ADMIN,

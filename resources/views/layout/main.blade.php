@@ -163,6 +163,23 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
+                    @if (session()->has('impersonator_id'))
+                        <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3" role="alert">
+                            <div>
+                                <i class="ri-user-shared-line me-1"></i>
+                                You are impersonating <strong>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</strong>
+                                @if (session('impersonator_name'))
+                                    <span class="text-muted">(impersonated by {{ session('impersonator_name') }})</span>
+                                @endif
+                            </div>
+                            <form action="{{ route('admin.user.leave.impersonation') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-dark">
+                                    <i class="ri-arrow-go-back-line me-1"></i>Return to Admin
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                     @yield('content')
                 </div>
                 <!-- container-fluid -->
@@ -247,5 +264,14 @@
     <!-- Common DataTable Responsive Configuration -->
 
     @yield('scripts')
+
+    <script>
+        @if (session('success'))
+            toastr.success(@json(session('success')));
+        @endif
+        @if (session('error'))
+            toastr.error(@json(session('error')));
+        @endif
+    </script>
 </body>
 </html>

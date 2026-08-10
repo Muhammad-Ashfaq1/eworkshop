@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\UserRoles;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\DashboardController;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -253,5 +255,71 @@ class UserController extends Controller
             'message' => 'User status updated successfully.',
             'is_active' => $user->is_active,
         ]);
+    }
+
+    /**
+     * Impersonate a DEO user.
+     */
+    public function impersonate(User $user)
+    {
+        $this->authorize('impersonate_users');
+
+        if (session()->has('impersonator_id')) {
+            return redirect()->back()->with('error', 'You are already impersonating a user. Leave impersonation first.');
+        }
+
+        if ($user->id === Auth::id()) {
+            return redirect()->back()->with('error', 'You cannot impersonate yourself.');
+        }
+
+        if (! $user->hasRole(UserRoles::DEO)) {
+            return redirect()->back()->with('error', 'You can only impersonate DEO users.');
+        }
+
+        if (! $user->is_active) {
+            return redirect()->back()->with('error', 'Cannot impersonate an inactive user.');
+        }
+
+        session([
+            'impersonator_id' => Auth::id(),
+            'impersonator_name' => Auth::user()->first_name.' '.Auth::user()->last_name,
+        ]);
+
+        Auth::login($user);
+        request()->session()->regenerate();
+
+        return redirect()
+            ->route(UserRoles::getDashboardRoutes()[UserRoles::DEO])
+            ->with('success', 'You are now impersonating '.$user->first_name.' '.$user->last_name.'.');
+    }
+
+    /**
+     * Stop impersonating and return to the original admin user.
+     */
+    public function leaveImpersonation()
+    {
+        $impersonatorId = session('impersonator_id');
+
+        if (! $impersonatorId) {
+            return redirect()->route('home')->with('error', 'You are not impersonating anyone.');
+        }
+
+        $impersonator = User::find($impersonatorId);
+
+        if (! $impersonator || ! $impersonator->is_active) {
+            session()->forget(['impersonator_id', 'impersonator_name']);
+            Auth::logout();
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'Original admin account is unavailable. Please log in again.');
+        }
+
+        session()->forget(['impersonator_id', 'impersonator_name']);
+        Auth::login($impersonator);
+        request()->session()->regenerate();
+
+        return redirect(DashboardController::getDashboardRoute())
+            ->with('success', 'Returned to your admin account.');
     }
 }

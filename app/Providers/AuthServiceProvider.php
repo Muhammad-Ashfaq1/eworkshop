@@ -38,6 +38,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasPermissionTo('delete_users');
         });
 
+        Gate::define('impersonate_users', function ($user) {
+            return $user->hasPermissionTo('impersonate_users');
+        });
+
         Gate::define('create_admin', function ($user) {
             return $user->hasPermissionTo('create_admin');
         });

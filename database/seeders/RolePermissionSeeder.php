@@ -36,6 +36,7 @@ class RolePermissionSeeder extends Seeder
             UserPermissions::READ_USERS,
             UserPermissions::UPDATE_USERS,
             UserPermissions::RESET_USER_PASSWORD,
+            UserPermissions::IMPERSONATE_USERS,
            // UserPermissions::DELETE_USERS,
             UserPermissions::CREATE_DEO,
             UserPermissions::READ_DEO,
