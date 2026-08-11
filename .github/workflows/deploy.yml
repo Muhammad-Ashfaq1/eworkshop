@@ -36,9 +36,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sshpass
 
-      # IMPORTANT: never use rsync --delete here.
-      # Without --delete, server-only files (uploads, .env, etc.) are never removed.
-      - name: Deploy to Hostinger
+      # Password auth (matches Termius).
+      # Use SSHPASS env + sshpass -e so $, !, * in the password are not mangled by the shell.
+      - name: Test SSH Connection
         env:
           SSHPASS: ${{ secrets.ELWMC_SSH }}
         run: |
@@ -47,9 +47,30 @@ jobs:
             exit 1
           fi
 
+          # Trim accidental trailing newline/spaces from the GitHub secret
+          SSHPASS="$(printf '%s' "$SSHPASS" | tr -d '\r\n')"
+          export SSHPASS
+
+          echo "Testing SSH login to Hostinger..."
+          sshpass -e ssh -o StrictHostKeyChecking=no \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            -o NumberOfPasswordPrompts=1 \
+            -p 65002 \
+            u617995438@89.117.27.62 'echo SSH_OK && whoami'
+
+      # IMPORTANT: never use rsync --delete here.
+      # Without --delete, server-only files (uploads, .env, etc.) are never removed.
+      - name: Deploy to Hostinger
+        env:
+          SSHPASS: ${{ secrets.ELWMC_SSH }}
+        run: |
+          SSHPASS="$(printf '%s' "$SSHPASS" | tr -d '\r\n')"
+          export SSHPASS
+
           echo "Deploying files to Hostinger..."
           sshpass -e rsync -avz \
-            -e "ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -p 65002" \
+            -e "ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -o NumberOfPasswordPrompts=1 -p 65002" \
             --exclude '.git/' \
             --exclude '.github/' \
             --exclude 'node_modules/' \
@@ -65,7 +86,15 @@ jobs:
         env:
           SSHPASS: ${{ secrets.ELWMC_SSH }}
         run: |
-          sshpass -e ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -p 65002 u617995438@89.117.27.62 << 'EOF'
+          SSHPASS="$(printf '%s' "$SSHPASS" | tr -d '\r\n')"
+          export SSHPASS
+
+          sshpass -e ssh -o StrictHostKeyChecking=no \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            -o NumberOfPasswordPrompts=1 \
+            -p 65002 \
+            u617995438@89.117.27.62 << 'EOF'
           cd /home/u617995438/domains/elwmc.com/public_html/eworkshop/
           php artisan migrate --force
           php artisan db:seed --class=RolePermissionSeeder --force
