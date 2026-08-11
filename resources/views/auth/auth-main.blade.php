@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg"
+<html lang="en" class="pos-theme-lake" data-pos-theme="lake" data-bs-theme="light" data-layout="vertical" data-topbar="light" data-sidebar="light" data-sidebar-size="lg"
     data-sidebar-image="none" data-preloader="disable" data-theme="default" data-theme-colors="default">
 
 <head>
@@ -24,6 +24,8 @@
     <link href="{{ asset('assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Global UI Styles -->
     <link href="{{ asset('assets/css/global-ui-styles.css') }}" rel="stylesheet" type="text/css" />
+    <!-- POS lake theme (colors only) -->
+    <link href="{{ asset('assets/css/eworkshop-pos-theme.css') }}?v={{ @filemtime(public_path('assets/css/eworkshop-pos-theme.css')) }}" rel="stylesheet" type="text/css" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 

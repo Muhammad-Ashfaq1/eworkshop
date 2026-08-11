@@ -1,35 +1,11 @@
 /*
- * DEO dashboard stats — screen CSS on top of pos-glass primitives.
- * Colors follow Velzon / eworkshop tokens (--vz-*).
+ * DEO dashboard stats — screen CSS on POS glass kit.
+ * Theme colors come from global html.pos-theme-lake (eworkshop-pos-theme.css).
  * Namespace: .deo-ds-*
  */
 
 .deo-ds-section {
-    --deo-text: var(--vz-body-color, #212529);
-    --deo-muted: var(--vz-secondary-color, #878a99);
-    --deo-heading: var(--vz-heading-color, #212529);
-    --deo-success: var(--vz-success, #0ab39c);
-    --deo-danger: var(--vz-danger, #f06548);
-    --deo-warning: var(--vz-warning, #f7b84b);
-    --deo-info: var(--vz-info, #299cdb);
-    --deo-primary: var(--vz-primary, #405189);
     margin-block-end: 1.5rem;
-}
-
-.deo-ds-section .pos-stat-label,
-.deo-ds-section .pos-glass-intro-subtitle,
-.deo-ds-section .pos-glass-control-label,
-.deo-ds-email,
-.deo-ds-metric-label,
-.deo-ds-empty,
-.deo-ds-loading {
-    color: var(--deo-muted);
-}
-
-.deo-ds-section .pos-stat-value,
-.deo-ds-section .pos-glass-intro-title,
-.deo-ds-metric-value {
-    color: var(--deo-heading);
 }
 
 .deo-ds-filters {
@@ -40,17 +16,19 @@
 }
 
 .deo-ds-filters .pos-glass-control {
-    flex: 1 1 10rem;
-    max-width: 14rem;
+    flex: 1 1 16rem;
+    max-width: 24rem;
+    min-width: 14rem;
 }
 
 .deo-ds-filters .pos-glass-control .form-control,
 .deo-ds-filters .pos-glass-control .form-select {
     min-width: 0;
     width: 100%;
+    min-height: 2.375rem;
     border-color: rgba(var(--pos-tone-rgb), 0.28);
-    background-color: var(--vz-secondary-bg, #fff);
-    color: var(--deo-heading);
+    background-color: rgba(255, 255, 255, 0.72);
+    color: var(--bs-heading-color, var(--bs-body-color));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
@@ -65,6 +43,7 @@
 .deo-ds-filter-actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
 }
 
@@ -98,6 +77,7 @@
     margin: 0;
     font-size: 0.75rem;
     line-height: 1.35;
+    color: var(--bs-secondary-color);
     overflow-wrap: anywhere;
 }
 
@@ -114,26 +94,8 @@
     gap: 0.2rem;
     padding: 0.625rem 0.75rem;
     border-radius: 0.75rem;
-}
-
-.deo-ds-metric.is-dr {
-    border: 1px solid rgba(var(--vz-warning-rgb, 247, 184, 75), 0.28);
-    background-color: rgba(var(--vz-warning-rgb, 247, 184, 75), 0.12);
-}
-
-.deo-ds-metric.is-dr .deo-ds-metric-label,
-.deo-ds-metric.is-dr .deo-ds-metric-value {
-    color: var(--deo-warning);
-}
-
-.deo-ds-metric.is-po {
-    border: 1px solid rgba(var(--vz-success-rgb, 10, 179, 156), 0.28);
-    background-color: rgba(var(--vz-success-rgb, 10, 179, 156), 0.12);
-}
-
-.deo-ds-metric.is-po .deo-ds-metric-label,
-.deo-ds-metric.is-po .deo-ds-metric-value {
-    color: var(--deo-success);
+    border: 1px solid rgba(var(--pos-tone-rgb), 0.18);
+    background-color: rgba(var(--pos-tone-rgb), 0.08);
 }
 
 .deo-ds-metric-label {
@@ -142,6 +104,7 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    color: var(--bs-secondary-color);
 }
 
 .deo-ds-metric-value {
@@ -149,6 +112,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.15;
+    color: rgb(var(--pos-tone-rgb));
 }
 
 .deo-ds-empty,
@@ -156,6 +120,7 @@
     grid-column: 1 / -1;
     padding: 2rem 1rem;
     text-align: center;
+    color: var(--bs-secondary-color);
 }
 
 .deo-ds-status {
@@ -168,32 +133,11 @@
 }
 
 .deo-ds-status.is-active {
-    color: var(--deo-success);
+    color: var(--bs-success);
 }
 
 .deo-ds-status.is-inactive {
-    color: var(--deo-danger);
-}
-
-/* Match dashboard avatar-title subtle tiles for DEO icon */
-.deo-ds-section .pos-tone-primary .pos-stat-icon {
-    background-image: linear-gradient(135deg, var(--deo-primary) 0%, rgba(var(--vz-primary-rgb, 64, 81, 137), 0.82) 100%);
-}
-
-.deo-ds-section .pos-tone-info .pos-stat-icon {
-    background-image: linear-gradient(135deg, var(--deo-info) 0%, rgba(var(--vz-info-rgb, 41, 156, 219), 0.82) 100%);
-}
-
-.deo-ds-section .pos-tone-success .pos-stat-icon {
-    background-image: linear-gradient(135deg, var(--deo-success) 0%, rgba(var(--vz-success-rgb, 10, 179, 156), 0.82) 100%);
-}
-
-.deo-ds-section .pos-tone-warning .pos-stat-icon {
-    background-image: linear-gradient(135deg, var(--deo-warning) 0%, rgba(var(--vz-warning-rgb, 247, 184, 75), 0.82) 100%);
-}
-
-.deo-ds-section .pos-tone-secondary .pos-stat-icon {
-    background-image: linear-gradient(135deg, var(--vz-secondary, #3577f1) 0%, rgba(var(--vz-secondary-rgb, 53, 119, 241), 0.82) 100%);
+    color: var(--bs-danger);
 }
 
 @media (max-width: 575.98px) {

@@ -1,0 +1,210 @@
+/*
+ * Dashboard-only glass look (POS lake accents).
+ * Scope: .ew-dashboard-glass — do not load site-wide.
+ */
+
+.ew-dashboard-glass {
+    --bs-primary: #696cff;
+    --bs-primary-rgb: 105, 108, 255;
+    --bs-info: #03c3ec;
+    --bs-info-rgb: 3, 195, 236;
+    --bs-success: #71dd37;
+    --bs-success-rgb: 113, 221, 55;
+    --bs-warning: #ffab00;
+    --bs-warning-rgb: 255, 171, 0;
+    --bs-danger: #ff3e1d;
+    --bs-danger-rgb: 255, 62, 29;
+    --bs-secondary: #8592a3;
+    --bs-secondary-rgb: 133, 146, 163;
+    --bs-body-color: #2f2b3d;
+    --bs-secondary-color: #5d5a6f;
+    --bs-heading-color: #1f1c2c;
+    --bs-border-color: rgba(47, 43, 61, 0.12);
+
+    --vz-primary: #696cff;
+    --vz-primary-rgb: 105, 108, 255;
+    --vz-success: #71dd37;
+    --vz-success-rgb: 113, 221, 55;
+    --vz-info: #03c3ec;
+    --vz-info-rgb: 3, 195, 236;
+    --vz-warning: #ffab00;
+    --vz-warning-rgb: 255, 171, 0;
+    --vz-danger: #ff3e1d;
+    --vz-danger-rgb: 255, 62, 29;
+    --vz-secondary: #8592a3;
+    --vz-secondary-rgb: 133, 146, 163;
+    --vz-body-color: #2f2b3d;
+    --vz-heading-color: #1f1c2c;
+    --vz-secondary-color: #5d5a6f;
+    --vz-border-color: rgba(47, 43, 61, 0.12);
+
+    position: relative;
+    color: var(--bs-body-color);
+    background-image:
+        radial-gradient(circle at top right, rgba(105, 108, 255, 0.08), transparent 42%),
+        radial-gradient(circle at 10% 30%, rgba(3, 195, 236, 0.06), transparent 36%);
+    background-repeat: no-repeat;
+}
+
+.ew-dashboard-glass .text-muted,
+.ew-dashboard-glass small.text-muted {
+    color: var(--bs-secondary-color) !important;
+}
+
+/* Glass cards on dashboard only */
+.ew-dashboard-glass .card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(105, 108, 255, 0.14) !important;
+    border-radius: 1rem !important;
+    background-color: rgba(255, 255, 255, 0.78) !important;
+    background-image: linear-gradient(
+        135deg,
+        rgba(105, 108, 255, 0.09) 0%,
+        rgba(105, 108, 255, 0.025) 42%,
+        rgba(105, 108, 255, 0) 72%
+    ) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(145%);
+    backdrop-filter: blur(14px) saturate(145%);
+    box-shadow:
+        0 8px 22px -12px rgba(105, 108, 255, 0.28),
+        0 1px 2px rgba(47, 43, 61, 0.04) !important;
+}
+
+.ew-dashboard-glass .card:hover {
+    border-color: rgba(105, 108, 255, 0.26) !important;
+    box-shadow:
+        0 14px 28px -14px rgba(105, 108, 255, 0.36),
+        0 1px 2px rgba(47, 43, 61, 0.05) !important;
+}
+
+.ew-dashboard-glass .card-header {
+    background: transparent !important;
+    border-bottom-color: rgba(105, 108, 255, 0.1) !important;
+}
+
+.ew-dashboard-glass .card.border-primary {
+    border-color: rgba(105, 108, 255, 0.28) !important;
+}
+
+.ew-dashboard-glass .card.border-primary > .card-header.bg-light {
+    background: rgba(105, 108, 255, 0.06) !important;
+}
+
+/* Soft glassy tiles (no solid green over purple glass) */
+.ew-dashboard-glass .bg-primary-subtle,
+.ew-dashboard-glass .badge.bg-primary,
+.ew-dashboard-glass .avatar-title.bg-primary-subtle {
+    background: linear-gradient(135deg, rgba(105, 108, 255, 0.18), rgba(105, 108, 255, 0.08)) !important;
+    color: #696cff !important;
+    border: 1px solid rgba(105, 108, 255, 0.22) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .text-primary {
+    color: #696cff !important;
+}
+
+.ew-dashboard-glass .bg-success-subtle,
+.ew-dashboard-glass .badge.bg-success,
+.ew-dashboard-glass .avatar-title.bg-success-subtle {
+    background: linear-gradient(135deg, rgba(113, 221, 55, 0.16), rgba(105, 108, 255, 0.06)) !important;
+    color: #56ca00 !important;
+    border: 1px solid rgba(113, 221, 55, 0.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .text-success {
+    color: #56ca00 !important;
+}
+
+.ew-dashboard-glass .bg-info-subtle,
+.ew-dashboard-glass .badge.bg-info,
+.ew-dashboard-glass .avatar-title.bg-info-subtle,
+.ew-dashboard-glass .badge.bg-info-subtle {
+    background: linear-gradient(135deg, rgba(3, 195, 236, 0.16), rgba(105, 108, 255, 0.06)) !important;
+    color: #0289a8 !important;
+    border: 1px solid rgba(3, 195, 236, 0.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .text-info {
+    color: #03c3ec !important;
+}
+
+.ew-dashboard-glass .bg-warning-subtle,
+.ew-dashboard-glass .badge.bg-warning,
+.ew-dashboard-glass .avatar-title.bg-warning-subtle {
+    background: linear-gradient(135deg, rgba(255, 171, 0, 0.18), rgba(105, 108, 255, 0.05)) !important;
+    color: #e09600 !important;
+    border: 1px solid rgba(255, 171, 0, 0.3) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .text-warning {
+    color: #e09600 !important;
+}
+
+.ew-dashboard-glass .bg-danger-subtle,
+.ew-dashboard-glass .badge.bg-danger,
+.ew-dashboard-glass .avatar-title.bg-danger-subtle {
+    background: linear-gradient(135deg, rgba(255, 62, 29, 0.14), rgba(105, 108, 255, 0.05)) !important;
+    color: #ff3e1d !important;
+    border: 1px solid rgba(255, 62, 29, 0.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .text-danger {
+    color: #ff3e1d !important;
+}
+
+.ew-dashboard-glass .status-badge.active {
+    background: linear-gradient(135deg, rgba(113, 221, 55, 0.2), rgba(105, 108, 255, 0.1)) !important;
+    color: #3d8b00 !important;
+    border: 1px solid rgba(113, 221, 55, 0.32) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 14px rgba(105, 108, 255, 0.08) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .status-badge.active:hover {
+    background: linear-gradient(135deg, rgba(113, 221, 55, 0.28), rgba(105, 108, 255, 0.12)) !important;
+}
+
+.ew-dashboard-glass .status-badge.pending {
+    background: linear-gradient(135deg, rgba(255, 171, 0, 0.22), rgba(105, 108, 255, 0.08)) !important;
+    color: #b36b00 !important;
+    border: 1px solid rgba(255, 171, 0, 0.35) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 14px rgba(105, 108, 255, 0.08) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .status-badge.inactive,
+.ew-dashboard-glass .status-badge.rejected {
+    background: linear-gradient(135deg, rgba(255, 62, 29, 0.16), rgba(105, 108, 255, 0.06)) !important;
+    color: #d93616 !important;
+    border: 1px solid rgba(255, 62, 29, 0.3) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 14px rgba(105, 108, 255, 0.08) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.ew-dashboard-glass .status-badge.approved {
+    background: linear-gradient(135deg, rgba(105, 108, 255, 0.18), rgba(3, 195, 236, 0.1)) !important;
+    color: #4f52d6 !important;
+    border: 1px solid rgba(105, 108, 255, 0.28) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 14px rgba(105, 108, 255, 0.08) !important;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}

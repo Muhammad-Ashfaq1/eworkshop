@@ -32,14 +32,14 @@
 
 /* ── Tone palette ───────────────────────────────────────────────────── */
 
-/* Prefer Velzon (--vz-*) tokens used by eworkshop; fall back to Bootstrap. */
-.pos-tone-primary   { --pos-tone-rgb: var(--vz-primary-rgb, var(--bs-primary-rgb, 64, 81, 137)); }
-.pos-tone-info      { --pos-tone-rgb: var(--vz-info-rgb, var(--bs-info-rgb, 41, 156, 219)); }
-.pos-tone-success   { --pos-tone-rgb: var(--vz-success-rgb, var(--bs-success-rgb, 10, 179, 156)); }
-.pos-tone-warning   { --pos-tone-rgb: var(--vz-warning-rgb, var(--bs-warning-rgb, 247, 184, 75)); }
-.pos-tone-danger    { --pos-tone-rgb: var(--vz-danger-rgb, var(--bs-danger-rgb, 240, 101, 72)); }
-.pos-tone-secondary { --pos-tone-rgb: var(--vz-secondary-rgb, var(--bs-secondary-rgb, 53, 119, 241)); }
-.pos-tone-dark      { --pos-tone-rgb: var(--vz-dark-rgb, var(--bs-dark-rgb, 33, 37, 41)); }
+/* POS kit tones: Bootstrap theme RGB first (scoped lake on .deo-ds-section), Velzon fallback. */
+.pos-tone-primary   { --pos-tone-rgb: var(--bs-primary-rgb, var(--vz-primary-rgb, 105, 108, 255)); }
+.pos-tone-info      { --pos-tone-rgb: var(--bs-info-rgb, var(--vz-info-rgb, 3, 195, 236)); }
+.pos-tone-success   { --pos-tone-rgb: var(--bs-success-rgb, var(--vz-success-rgb, 113, 221, 55)); }
+.pos-tone-warning   { --pos-tone-rgb: var(--bs-warning-rgb, var(--vz-warning-rgb, 255, 171, 0)); }
+.pos-tone-danger    { --pos-tone-rgb: var(--bs-danger-rgb, var(--vz-danger-rgb, 255, 62, 29)); }
+.pos-tone-secondary { --pos-tone-rgb: var(--bs-secondary-rgb, var(--vz-secondary-rgb, 133, 146, 163)); }
+.pos-tone-dark      { --pos-tone-rgb: var(--bs-dark-rgb, var(--vz-dark-rgb, 47, 43, 61)); }
 
 /* ── The surface ────────────────────────────────────────────────────── */
 

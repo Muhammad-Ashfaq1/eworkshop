@@ -33,4 +33,11 @@ class DeoStatsController extends Controller
 
         return $this->deoStatsRepository->getCards($request->only(['date_from', 'date_to']));
     }
+
+    public function export(Request $request): JsonResponse
+    {
+        $this->authorize('export_data');
+
+        return $this->deoStatsRepository->exportCsv($request->only(['date_from', 'date_to']));
+    }
 }

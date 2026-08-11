@@ -113,6 +113,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/listing', 'listing')->name('listing');
             Route::get('/cards', 'cards')->name('cards');
+            Route::post('/export', 'export')->name('export')->middleware(['permission:export_data']);
         });
 
         // Activity Logs - Super Admin only

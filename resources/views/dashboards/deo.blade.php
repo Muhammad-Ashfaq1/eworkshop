@@ -2,8 +2,13 @@
 
 @section('title', 'DEO Dashboard')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/pos-glass.css') }}?v={{ @filemtime(public_path('assets/css/pos-glass.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard-glass.css') }}?v={{ @filemtime(public_path('assets/css/dashboard-glass.css')) }}" />
+@endsection
+
 @section('content')
-<div class="page-content">
+<div class="page-content ew-dashboard-glass">
     <div class="container-fluid">
         <!-- Start page title -->
         <div class="row">
