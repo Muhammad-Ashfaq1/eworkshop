@@ -31,7 +31,7 @@ class DashboardController extends Controller
             }
         }
 
-        return route('home');
+        return route('login');
     }
 
     /**
@@ -53,7 +53,7 @@ class DashboardController extends Controller
             }
         }
 
-        return 'home';
+        return 'login';
     }
 
     /**

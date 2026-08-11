@@ -12,7 +12,7 @@ use App\Models\DefectReport;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(DashboardController::getDashboardRoute());
 })->name('home')->middleware('auth');
 
 Route::get('login', [AuthController::class, 'login'])->name('login');

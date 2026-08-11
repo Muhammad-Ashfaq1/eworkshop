@@ -407,7 +407,7 @@
                                                             @else
                                                                 <div class="text-muted">
                                                                     <div><i class="ri-user-line me-1"></i>{{ $report->received_by }}</div>
-                                                                    <small><i class="ri-money-dollar-circle-line me-1"></i>₹{{ number_format($report->acc_amount, 2) }}</small>
+                                                                    <small><i class="ri-money-dollar-circle-line me-1"></i>PKR {{ number_format($report->acc_amount, 2) }}</small>
                                                                 </div>
                                                             @endif
                                                         </td>
