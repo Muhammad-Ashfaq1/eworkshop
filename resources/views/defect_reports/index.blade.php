@@ -3,8 +3,6 @@
 @section('title', 'Defect Reports')
 
 @section('content')
-    <div class="page-content">
-        <div class="container-fluid">
             <!-- Start page title -->
             <div class="row">
                 <div class="col-12">
@@ -151,8 +149,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     <!-- Unified Defect Report Modal -->
     <div class="modal fade" id="defectReportModal" tabindex="-1" aria-labelledby="defectReportModalLabel"
