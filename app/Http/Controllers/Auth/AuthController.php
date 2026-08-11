@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -90,24 +92,40 @@ class AuthController extends Controller
 
     public function updatePassword(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
-        ]);
+        if ((int) Auth::id() !== (int) $id) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'You are not authorized.'], 403);
+            }
 
-        if (Auth::user()->id != $id) {
             return redirect()->route('profile')->withErrors(['message' => 'You are not authorized.']);
         }
 
+        $validated = $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'current_password.required' => 'Current password is required.',
+            'new_password.required' => 'New password is required.',
+            'new_password.confirmed' => 'Password confirmation does not match.',
+        ]);
+
         $user = User::findOrFail($id);
 
-        if (! Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        if (! Hash::check($validated['current_password'], (string) $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => 'Your current password is incorrect.',
+            ]);
         }
 
         $user->update([
-            'password' => Hash::make($request->new_password),
+            'password' => Hash::make($validated['new_password']),
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Password updated successfully.',
+            ]);
+        }
 
         return redirect()->back()->with('status', 'Password updated successfully.');
     }

@@ -77,8 +77,8 @@ class DeoStatsRepository implements DeoStatsRepositoryInterface
     {
         try {
             [$dateFrom, $dateTo] = $this->resolveDateRange($filters);
-            // Only DEOs with DR/PO activity in the selected date range
-            $deos = $this->fetchDeoRows($dateFrom, $dateTo, false, true);
+            // All active DEOs for the range (0 DR/PO when no activity)
+            $deos = $this->fetchDeoRows($dateFrom, $dateTo, true, false);
 
             return response()->json([
                 'success' => true,
