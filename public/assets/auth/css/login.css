@@ -201,6 +201,28 @@ body {
     transition: all 0.3s ease;
 }
 
+.form-input.password-input {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #666;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.password-toggle:hover {
+    color: #2d5a4a;
+}
+
 .form-input:focus {
     outline: none;
     border-color: #7dd3c0;
