@@ -9,8 +9,7 @@
 @endsection
 
 @section('content')
-<div class="page-content ew-dashboard-glass">
-    <div class="container-fluid">
+<div class="ew-dashboard-glass">
         <!-- Start page title -->
         <div class="row">
             <div class="col-12">
@@ -246,7 +245,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 @endsection
 
