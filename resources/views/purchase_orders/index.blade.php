@@ -3,8 +3,6 @@
 @section('title', 'Purchase Orders')
 
 @section('content')
-    <div class="page-content">
-        <div class="container-fluid">
             <!-- Start page title -->
             <div class="row">
                 <div class="col-12">
@@ -134,8 +132,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     <!-- Unified Purchase Order Modal -->
     <div class="modal fade" id="purchaseOrderModal" tabindex="-1" aria-labelledby="purchaseOrderModalLabel"
