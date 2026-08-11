@@ -659,12 +659,17 @@ h1, h2, h3, h4, h5, h6 {
 .container-fluid {
     padding-left: 16px !important;
     padding-right: 16px !important;
-    padding-top: 70px ;
+    padding-top: 0 !important;
 }
 
-/* Clean margins for page content */
+/* Clear fixed 70px navbar + small gap so page title is not stuck to topbar */
 .page-content {
-    padding-top: 20px !important;
+    padding-top: calc(70px + 1rem) !important;
+}
+
+/* Do not pull page title up under the navbar */
+.page-title-box {
+    margin-top: 0 !important;
 }
 
 /* ===============================================

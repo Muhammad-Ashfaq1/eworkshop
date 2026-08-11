@@ -73,6 +73,14 @@ trait AttachmentStatus
     // Common helper method
     protected function getImageUrl($value)
     {
-        return $value ? asset('storage/' . $value) : null;
+        if (! $value) {
+            return null;
+        }
+
+        if (preg_match('#^https?://#i', $value)) {
+            return $value;
+        }
+
+        return '/storage/'.ltrim($value, '/');
     }
 }

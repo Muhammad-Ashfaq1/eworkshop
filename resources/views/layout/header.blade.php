@@ -32,51 +32,68 @@
                         <span></span>
                     </span>
                 </button>
-
             </div>
 
+            @php
+                $headerUser = auth()->user();
+                $headerName = trim(($headerUser->first_name ?? '') . ' ' . ($headerUser->last_name ?? ''));
+                $headerRole = strtoupper(str_replace('_', ' ', $headerUser->getRoleNames()->first() ?? 'user'));
+                $headerAvatar = $headerUser->image_url;
+                $headerInitials = strtoupper(substr($headerUser->first_name ?? 'U', 0, 1) . substr($headerUser->last_name ?? '', 0, 1));
+                $isProfileRoute = request()->routeIs('profile') || request()->routeIs('update.user') || request()->routeIs('update.password');
+            @endphp
+
             <div class="d-flex align-items-center">
-                <div class="dropdown ms-sm-3 header-item topbar-user">
-                    <button type="button" class="btn material-shadow-none" id="page-header-user-dropdown"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="d-flex align-items-center">
-                            @if (auth()->user()->image_url)
-                                <img class="rounded-circle header-profile-user" src="{{ auth()->user()->image_url }}"
-                                    alt="Header Avatar">
+                <div class="dropdown header-item pos-header-user">
+                    <a class="nav-link dropdown-toggle hide-arrow p-0 pos-header-user-btn"
+                       href="javascript:void(0);"
+                       id="page-header-user-dropdown"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true"
+                       aria-expanded="false">
+                        <div class="pos-header-avatar avatar-online">
+                            @if ($headerAvatar)
+                                <img src="{{ $headerAvatar }}"
+                                     alt="{{ $headerName }}"
+                                     class="rounded-circle pos-header-avatar-img">
                             @else
-                                <div class="avatar-xs">
-                                    <div class="avatar-title rounded-circle bg-primary text-white">
-                                        {{ strtoupper(substr(auth()->user()->first_name, 0, 1)) }}{{ strtoupper(substr(auth()->user()->last_name ?? '', 0, 1)) }}
-                                    </div>
-                                </div>
+                                <span class="pos-header-avatar-initial rounded-circle">{{ $headerInitials }}</span>
                             @endif
-                            <span class="text-start ms-xl-2">
-                                <span
-                                    class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ auth()->user()->first_name }}
-                                    {{ auth()->user()->last_name }}</span>
-                                <span
-                                    class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{ ucfirst(auth()->user()->getRoleNames()->first()) }}</span>
-                            </span>
-                        </span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <!-- item-->
-                        <h6 class="dropdown-header">Welcome {{ auth()->user()->first_name }}!</h6>
-                        <a class="dropdown-item" href="{{ route('profile') }}">
-                            <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle">Profile</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
-                            <span class="align-middle" data-key="t-logout">Logout</span>
-                        </a>
-                        <!-- Hidden logout form -->
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </div>
+                        </div>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end pos-header-dropdown" aria-labelledby="page-header-user-dropdown">
+                        <li>
+                            <div class="dropdown-item-text">
+                                <div class="fw-medium">{{ $headerName }}</div>
+                                <small class="text-muted">{{ $headerUser->email }}</small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <div class="dropdown-item-text">
+                                <small class="text-muted text-uppercase">{{ $headerRole }}</small>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item {{ $isProfileRoute ? 'active' : '' }}" href="{{ route('profile') }}">
+                                <i class="ri-user-line me-2"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="ri-logout-box-r-line me-2"></i>
+                                Sign out
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

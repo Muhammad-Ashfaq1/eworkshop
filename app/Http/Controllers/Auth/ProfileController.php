@@ -27,10 +27,16 @@ class ProfileController extends Controller
         $this->authorize('update_profile');
 
         $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'sometimes|string',
-            'phone_number' => 'sometimes|min:6|max:12',
-            'image_url' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'first_name' => 'required|string|max:75',
+            'last_name' => 'required|string|max:75',
+            'phone_number' => 'nullable|string|max:30',
+            'image_url' => 'sometimes|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'first_name.required' => 'First name is required.',
+            'first_name.max' => 'First name may not be greater than 75 characters.',
+            'last_name.required' => 'Last name is required.',
+            'last_name.max' => 'Last name may not be greater than 75 characters.',
+            'phone_number.max' => 'Phone number may not be greater than 30 characters.',
         ]);
 
         $user = User::findOrFail($id);
@@ -39,7 +45,6 @@ class ProfileController extends Controller
             $data = [
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'email' => $request->email,
                 'phone_number' => $request->phone_number,
             ];
 
