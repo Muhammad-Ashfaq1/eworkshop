@@ -3,80 +3,69 @@ name: Deploy Laravel Application
 on:
   push:
     branches:
-      - main  # Replace with your branch name
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Set up PHP 8.3
       - name: Set up PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
 
-      # Verify PHP version
       - name: Verify PHP Version
         run: echo "PHP version $(php -v)"
 
-      # Install Composer 2
       - name: Install Composer 2
         run: |
           curl -sS https://getcomposer.org/installer | php -- --2
           sudo mv composer.phar /usr/local/bin/composer
           composer --version
 
-      # Install Laravel Dependencies
       - name: Install Laravel Dependencies
         run: |
           composer install --no-dev --optimize-autoloader
 
-      # Install sshpass
       - name: Install sshpass
         run: |
           sudo apt-get update
           sudo apt-get install -y sshpass
 
-      # Deploy files to Hostinger
+      # IMPORTANT: never use rsync --delete here.
+      # Without --delete, server-only files (uploads, .env, etc.) are never removed.
       - name: Deploy to Hostinger
+        env:
+          SSHPASS: ${{ secrets.ELWMC_SSH }}
         run: |
+          if [ -z "$SSHPASS" ]; then
+            echo "ELWMC_SSH secret is empty or missing"
+            exit 1
+          fi
+
           echo "Deploying files to Hostinger..."
-          sshpass -p "${{ secrets.ELWMC_SSH }}" rsync -avz -e "ssh -o StrictHostKeyChecking=no -p 65002" ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
+          sshpass -e rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -p 65002" \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'node_modules/' \
+            --exclude '.env' \
+            --exclude '.env.*' \
+            --exclude 'storage/' \
+            --exclude 'bootstrap/cache/' \
+            --exclude 'public/storage' \
+            ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
           echo "Deployed files to Hostinger"
-      # Run npm install
-      # - name: Run npm install and build
-      #   run: |
-      #     sshpass -p "${{ secrets.ELWMC_SSH }}" ssh -o StrictHostKeyChecking=no -p 65002u617995438@89.117.27.62 << 'EOF'
-      #     cd /home/u617995438/domains/elwmc/public_html/eworkshop/
 
-      #     # Set Node.js memory limit for build process
-      #     export NODE_OPTIONS="--max-old-space-size=2048"
-
-      #     # Clean npm cache to avoid potential issues
-      #     npm cache clean --force
-
-      #     # Install dependencies
-      #     npm install --no-audit --no-fund
-
-      #     # Run build with production mode
-      #     npm run build -- --mode production
-
-      #     # Verify build output
-      #     ls -la public/build/
-      #     EOF
-
-
-
-
-      # Run Laravel Commands
       - name: Run Laravel Commands
+        env:
+          SSHPASS: ${{ secrets.ELWMC_SSH }}
         run: |
-          sshpass -p "${{ secrets.ELWMC_SSH }}" ssh -o StrictHostKeyChecking=no -p 65002 u617995438@89.117.27.62 << 'EOF'
+          sshpass -e ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -p 65002 u617995438@89.117.27.62 << 'EOF'
           cd /home/u617995438/domains/elwmc.com/public_html/eworkshop/
           php artisan migrate --force
           php artisan db:seed --class=RolePermissionSeeder --force
@@ -84,13 +73,11 @@ jobs:
           php artisan route:cache
           php artisan view:cache
           php artisan optimize:clear
-          # Create symbolic link for storage
-          ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
-          # Set correct permissions
-          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/*
-          chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage/*
+
+          # Storage symlink — uncomment if public/storage link is missing on the server
+          # ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
+          # chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage
           EOF
 
-      # Completion message
       - name: Completion Message
         run: echo "Laravel application deployed successfully!"
