@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PurchaseOrderReceivedBy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PurchaseOrderRequest extends FormRequest
 {
@@ -35,7 +37,8 @@ class PurchaseOrderRequest extends FormRequest
             ],
             'po_no' => 'required|string|max:255|unique:purchase_orders,po_no',
             'issue_date' => 'required|date',
-            'received_by' => 'required|string|max:255',
+            'received_by' => ['required', Rule::enum(PurchaseOrderReceivedBy::class)],
+            'received_by_other' => ['nullable', 'string', 'max:255', 'required_if:received_by,'.PurchaseOrderReceivedBy::Other->value],
             'acc_amount' => 'required|numeric|min:0',
             'attachment_url' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
             'parts' => 'required|array|min:1',
@@ -46,8 +49,6 @@ class PurchaseOrderRequest extends FormRequest
 
     /**
      * Get custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {
@@ -57,7 +58,8 @@ class PurchaseOrderRequest extends FormRequest
             'po_no.required' => 'Please enter the purchase order number.',
             'po_no.unique' => 'This purchase order number already exists.',
             'issue_date.required' => 'Please select the issue date.',
-            'received_by.required' => 'Please enter who received the order.',
+            'received_by.required' => 'Please select who received the order.',
+            'received_by_other.required_if' => 'Please enter who received the order.',
             'acc_amount.required' => 'Please enter the account amount.',
             'acc_amount.numeric' => 'Account amount must be a number.',
             'acc_amount.min' => 'Account amount must be greater than or equal to 0.',

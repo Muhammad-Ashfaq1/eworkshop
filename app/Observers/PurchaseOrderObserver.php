@@ -2,8 +2,9 @@
 
 namespace App\Observers;
 
-use App\Models\ReportAudit;
+use App\Enums\PurchaseOrderReceivedBy;
 use App\Models\PurchaseOrder;
+use App\Models\ReportAudit;
 use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrderObserver
@@ -46,13 +47,13 @@ class PurchaseOrderObserver
         // Get the original values from the static property
         $originalData = static::$originalValues[$purchaseOrder->id] ?? [];
         $newData = $purchaseOrder->getAttributes();
-        
+
         // Only create audit log if there are actual changes (excluding timestamps)
         $changedFields = $this->getChangedFields($originalData, $newData);
-        
+
         // Only create audit log if there are actual changes AND we have original data
         // This prevents audit logs for new records (which have no original data)
-        if (!empty($changedFields) && !empty($originalData)) {
+        if (! empty($changedFields) && ! empty($originalData)) {
             // Get human-readable values for better audit logs
             $originalReadable = $this->getHumanReadableValues($purchaseOrder, $originalData);
             $newReadable = $this->getHumanReadableValues($purchaseOrder, $newData);
@@ -69,7 +70,7 @@ class PurchaseOrderObserver
                 'type' => 'purchase_order',
             ]);
         }
-        
+
         // Clean up the static property
         unset(static::$originalValues[$purchaseOrder->id]);
     }
@@ -105,21 +106,21 @@ class PurchaseOrderObserver
     {
         $changedFields = [];
         $excludeFields = ['created_at', 'updated_at']; // Exclude timestamp fields
-        
+
         foreach ($newData as $key => $value) {
             if (in_array($key, $excludeFields)) {
                 continue;
             }
-            
+
             $originalValue = $originalData[$key] ?? null;
             if ($originalValue !== $value) {
                 $changedFields[$key] = [
                     'from' => $originalValue,
-                    'to' => $value
+                    'to' => $value,
                 ];
             }
         }
-        
+
         return $changedFields;
     }
 
@@ -129,7 +130,7 @@ class PurchaseOrderObserver
     private function getHumanReadableValues($purchaseOrder, $data)
     {
         $readableData = [];
-        
+
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'defect_report_id':
@@ -146,7 +147,7 @@ class PurchaseOrderObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-                    
+
                 case 'created_by':
                     if ($value) {
                         $creator = \App\Models\User::find($value);
@@ -155,25 +156,29 @@ class PurchaseOrderObserver
                         $readableData[$key] = 'N/A';
                     }
                     break;
-                    
+
                 case 'issue_date':
                     $readableData[$key] = $value ? date('d/m/Y', strtotime($value)) : 'N/A';
                     break;
-                    
+
                 case 'acc_amount':
                     $readableData[$key] = $value ? number_format($value, 2) : '0.00';
                     break;
-                    
+
+                case 'received_by':
+                    $readableData[$key] = PurchaseOrderReceivedBy::tryFrom($value)?->label() ?? 'N/A';
+                    break;
+
                 case 'attachment_url':
                     $readableData[$key] = $value ? 'File Attached' : 'No File';
                     break;
-                    
+
                 default:
                     $readableData[$key] = $value;
                     break;
             }
         }
-        
+
         return $readableData;
     }
 }
