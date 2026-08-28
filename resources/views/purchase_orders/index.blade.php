@@ -186,11 +186,20 @@
                                         value="{{ date('Y-m-d') }}" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="received-by-column">
                                 <div class="mb-3">
                                     <label for="received_by" class="form-label">Received By <x-req /></label>
-                                    <input type="text" class="form-control enhanced-dropdown" id="received_by" name="received_by"
-                                        placeholder="Enter who received the order" required>
+                                    <select class="form-select enhanced-dropdown" id="received_by" name="received_by" required>
+                                        <option value="store_keeper" selected>Store Keeper</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-none" id="received-by-other-group">
+                                <div class="mb-2">
+                                    <label for="received_by_other" class="form-label">Other Recipient <x-req /></label>
+                                    <input type="text" class="form-control form-control-sm enhanced-dropdown" id="received_by_other" name="received_by_other"
+                                        placeholder="Enter who received the order" maxlength="255">
                                 </div>
                             </div>
                         </div>
@@ -285,6 +294,9 @@
             setupParts();
             setupFormValidation();
             setupDateFilter();
+            $(document).on('change', '#received_by', function() {
+                setReceivedByFields(this.value);
+            });
 
             // Handle modal close to reset Select2
             $('#purchaseOrderModal').on('hidden.bs.modal', function() {
@@ -444,7 +456,7 @@
                         searchable: false
                     },
                     {
-                        data: "received_by",
+                        data: "received_by_display",
                         name: 'received_by',
                         render: function(data, type, row) {
                             return data || 'N/A';
@@ -833,7 +845,12 @@
                         required: true
                     },
                     received_by: {
-                        required: true,
+                        required: true
+                    },
+                    received_by_other: {
+                        required: function() {
+                            return $('#received_by').val() === 'other';
+                        },
                         minlength: 2
                     },
                     acc_amount: {
@@ -866,8 +883,11 @@
                         required: "Please select issue date"
                     },
                     received_by: {
+                        required: "Please select who received the order"
+                    },
+                    received_by_other: {
                         required: "Please enter who received the order",
-                        minlength: "Received by must be at least 2 characters"
+                        minlength: "Recipient must be at least 2 characters"
                     },
                     acc_amount: {
                         required: "Please enter account amount",
@@ -1000,6 +1020,7 @@
             // Clear validation errors
             $('#purchaseOrderForm').find('.error').remove();
             $('#purchaseOrderForm').find('.is-invalid').removeClass('is-invalid');
+            setReceivedByFields('store_keeper');
 
             // Enable all form fields
             enableFormFields();
@@ -1027,6 +1048,14 @@
             $('#purchaseOrderForm input, #purchaseOrderForm select, #purchaseOrderForm textarea').prop('disabled', false);
             $('#add-part').prop('disabled', false);
             $('.remove-part').prop('disabled', false);
+        }
+
+        function setReceivedByFields(receivedBy, otherRecipient = '') {
+            const isOther = receivedBy === 'other';
+            $('#received_by').val(receivedBy || 'store_keeper');
+            $('#received_by_other').val(otherRecipient).prop('required', isOther);
+            $('#received-by-other-group').toggleClass('d-none', !isOther);
+            $('#received-by-column').toggleClass('col-md-6', !isOther).toggleClass('col-md-3', isOther);
         }
 
         function disableFormFields() {
@@ -1111,7 +1140,7 @@
             }
             $('#issue_date').val(issueDate);
 
-            $('#received_by').val(po.received_by);
+            setReceivedByFields(po.received_by, po.received_by_other);
             $('#acc_amount').val(po.acc_amount);
 
             // Set defect report ID after ensuring dropdown is loaded
@@ -1217,7 +1246,7 @@
             }
             $('#issue_date').val(issueDate);
 
-            $('#received_by').val(po.received_by);
+            setReceivedByFields(po.received_by, po.received_by_other);
             $('#acc_amount').val(po.acc_amount);
 
             console.log('Setting defect_report_id to:', po.defect_report_id); // Debug log

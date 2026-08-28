@@ -38,7 +38,7 @@
                                             <td>{{ $purchaseOrder->defectReport->vehicle->vehicle_number ?? 'N/A' }}</td>
                                             <td>{{ $purchaseOrder->defectReport->location->name ?? 'N/A' }}</td>
                                             <td>{{ $purchaseOrder->issue_date->format('d/m/Y') }}</td>
-                                            <td>{{ $purchaseOrder->received_by }}</td>
+                                            <td>{{ $purchaseOrder->received_by_display }}</td>
                                             <td>₹{{ number_format($purchaseOrder->acc_amount, 2) }}</td>
                                             <td>{{ $purchaseOrder->creator->full_name ?? 'N/A' }}</td>
                                             <td>{{ $purchaseOrder->created_at->format('d/m/Y H:i') }}</td>
