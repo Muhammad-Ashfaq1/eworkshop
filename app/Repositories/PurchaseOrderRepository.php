@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Helpers\FileUploadManager;
 use App\Interfaces\PurchaseOrderRepositoryInterface;
 use App\Models\PurchaseOrder;
 use App\Models\Work;
-use App\Helpers\FileUploadManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +23,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             'draw' => 1,
             'search' => ['value' => ''],
             'order' => [],
-            'columns' => []
+            'columns' => [],
         ], $data);
 
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
@@ -31,7 +31,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
         $search['search'] = $data['search']['value']; // gets the search value from request
 
-        if (isset($data['order']) && !empty($data['order'])) {
+        if (isset($data['order']) && ! empty($data['order'])) {
             $index = $data['order'][0]['column'];
             $search['direction'] = $data['order'][0]['dir'];
             $search['column_name'] = $data['columns'][$index]['name'] ?? 'created_at';
@@ -41,32 +41,33 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location', 'defectReport']);
 
         // Apply date range filter
-        if (isset($data['start_date']) && !empty($data['start_date'])) {
+        if (isset($data['start_date']) && ! empty($data['start_date'])) {
             $query->where('issue_date', '>=', $data['start_date']);
         }
-        if (isset($data['end_date']) && !empty($data['end_date'])) {
+        if (isset($data['end_date']) && ! empty($data['end_date'])) {
             $query->where('issue_date', '<=', $data['end_date']);
         }
 
         // Apply search filter
-        if (!empty($search['search'])) {
-            $query->where(function($q) use ($search) {
-                $q->where('po_no', 'like', '%' . $search['search'] . '%')
-                  ->orWhere('received_by', 'like', '%' . $search['search'] . '%')
-                  ->orWhere('issue_date', 'like', '%' . $search['search'] . '%')
-                  ->orWhereHas('defectReport', function($defectQuery) use ($search) {
-                      $defectQuery->where('reference_number', 'like', '%' . $search['search'] . '%')
-                                  ->orWhereHas('vehicle', function($vehicleQuery) use ($search) {
-                                      $vehicleQuery->where('vehicle_number', 'like', '%' . $search['search'] . '%');
-                                  })
-                                  ->orWhereHas('location', function($locationQuery) use ($search) {
-                                      $locationQuery->where('name', 'like', '%' . $search['search'] . '%');
-                                  });
-                  })
-                  ->orWhereHas('creator', function($creatorQuery) use ($search) {
-                      $creatorQuery->where('first_name', 'like', '%' . $search['search'] . '%')
-                                   ->orWhere('last_name', 'like', '%' . $search['search'] . '%');
-                  });
+        if (! empty($search['search'])) {
+            $query->where(function ($q) use ($search) {
+                $q->where('po_no', 'like', '%'.$search['search'].'%')
+                    ->orWhere('received_by', 'like', '%'.$search['search'].'%')
+                    ->orWhere('received_by_other', 'like', '%'.$search['search'].'%')
+                    ->orWhere('issue_date', 'like', '%'.$search['search'].'%')
+                    ->orWhereHas('defectReport', function ($defectQuery) use ($search) {
+                        $defectQuery->where('reference_number', 'like', '%'.$search['search'].'%')
+                            ->orWhereHas('vehicle', function ($vehicleQuery) use ($search) {
+                                $vehicleQuery->where('vehicle_number', 'like', '%'.$search['search'].'%');
+                            })
+                            ->orWhereHas('location', function ($locationQuery) use ($search) {
+                                $locationQuery->where('name', 'like', '%'.$search['search'].'%');
+                            });
+                    })
+                    ->orWhereHas('creator', function ($creatorQuery) use ($search) {
+                        $creatorQuery->where('first_name', 'like', '%'.$search['search'].'%')
+                            ->orWhere('last_name', 'like', '%'.$search['search'].'%');
+                    });
             });
         }
 
@@ -104,52 +105,52 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         switch ($columnName) {
             case 'defect_report.vehicle.vehicle_number':
                 $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
-                      ->join('vehicles', 'defect_reports.vehicle_id', '=', 'vehicles.id')
-                      ->orderBy('vehicles.vehicle_number', $direction)
-                      ->select('purchase_orders.*');
+                    ->join('vehicles', 'defect_reports.vehicle_id', '=', 'vehicles.id')
+                    ->orderBy('vehicles.vehicle_number', $direction)
+                    ->select('purchase_orders.*');
                 break;
-                
+
             case 'defect_report.location.name':
                 $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
-                      ->join('locations', 'defect_reports.location_id', '=', 'locations.id')
-                      ->orderBy('locations.name', $direction)
-                      ->select('purchase_orders.*');
+                    ->join('locations', 'defect_reports.location_id', '=', 'locations.id')
+                    ->orderBy('locations.name', $direction)
+                    ->select('purchase_orders.*');
                 break;
-                
+
             case 'creator.name':
                 $query->leftJoin('users as creators', 'purchase_orders.created_by', '=', 'creators.id')
-                      ->orderByRaw("CONCAT(creators.first_name, ' ', creators.last_name) " . $direction)
-                      ->select('purchase_orders.*');
+                    ->orderByRaw("CONCAT(creators.first_name, ' ', creators.last_name) ".$direction)
+                    ->select('purchase_orders.*');
                 break;
             case 'parts_count':
                 $query->orderBy('created_at', $direction);
                 break;
                 $query->orderBy('po_no', $direction);
                 break;
-                
+
             case 'received_by':
                 $query->orderBy('received_by', $direction);
                 break;
-                
+
             case 'acc_amount':
                 $query->orderBy('acc_amount', $direction);
                 break;
-                
+
             case 'issue_date':
                 $query->orderBy('issue_date', $direction);
                 break;
-                
+
             case 'defect_report_ref':
                 $query->join('defect_reports', 'purchase_orders.defect_report_id', '=', 'defect_reports.id')
-                      ->orderBy('defect_reports.reference_number', $direction)
-                      ->select('purchase_orders.*');
+                    ->orderBy('defect_reports.reference_number', $direction)
+                    ->select('purchase_orders.*');
                 break;
-                
+
             case 'parts_count':
                 $query->orderBy('works_count', $direction)
-                      ->select('purchase_orders.*');
+                    ->select('purchase_orders.*');
                 break;
-                
+
             default:
                 // Handle direct column sorting
                 if (strpos($columnName, '.') === false) {
@@ -175,6 +176,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 'po_no' => $data['po_no'],
                 'issue_date' => $data['issue_date'],
                 'received_by' => $data['received_by'],
+                'received_by_other' => $data['received_by_other'] ?? null,
                 'acc_amount' => $data['acc_amount'],
                 'attachment_url' => null,
                 'created_by' => Auth::id(),
@@ -188,7 +190,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 } catch (\Exception $fileException) {
                     Log::error('PurchaseOrder file upload failed', [
                         'purchase_order_id' => $purchaseOrder->id,
-                        'error' => $fileException->getMessage()
+                        'error' => $fileException->getMessage(),
                     ]);
                     throw $fileException;
                 }
@@ -209,7 +211,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                         Log::error('PurchaseOrder work creation failed', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
-                            'error' => $workException->getMessage()
+                            'error' => $workException->getMessage(),
                         ]);
                         throw $workException;
                     }
@@ -232,12 +234,12 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             Log::error('PurchaseOrder creation failed', [
                 'user_id' => Auth::id(),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create purchase order. ' . $e->getMessage(),
+                'message' => 'Failed to create purchase order. '.$e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -249,26 +251,27 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 
             $purchaseOrder = PurchaseOrder::find($id);
 
-            if (!$purchaseOrder) {
+            if (! $purchaseOrder) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Purchase order not found'
+                    'message' => 'Purchase order not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
             // Store original values BEFORE any modifications
             $originalValues = $purchaseOrder->getAttributes();
-            
+
             // Store the original values in the observer's static property
             \App\Observers\PurchaseOrderObserver::setOriginalValues($purchaseOrder->id, $originalValues);
-            
+
             // Update purchase order fields individually to preserve original values
             $purchaseOrder->defect_report_id = $data['defect_report_id'];
             $purchaseOrder->po_no = $data['po_no'];
             $purchaseOrder->issue_date = $data['issue_date'];
             $purchaseOrder->received_by = $data['received_by'];
+            $purchaseOrder->received_by_other = $data['received_by_other'] ?? null;
             $purchaseOrder->acc_amount = $data['acc_amount'];
-            
+
             // Save the changes - this will trigger the observer with proper original values
             $purchaseOrder->save();
 
@@ -285,7 +288,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 } catch (\Exception $fileException) {
                     Log::error('PurchaseOrder file upload failed during update', [
                         'purchase_order_id' => $purchaseOrder->id,
-                        'error' => $fileException->getMessage()
+                        'error' => $fileException->getMessage(),
                     ]);
                     throw $fileException;
                 }
@@ -312,7 +315,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                         Log::error('PurchaseOrder part update failed', [
                             'purchase_order_id' => $purchaseOrder->id,
                             'part_index' => $index,
-                            'error' => $workException->getMessage()
+                            'error' => $workException->getMessage(),
                         ]);
                         throw $workException;
                     }
@@ -336,12 +339,12 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 'user_id' => Auth::id(),
                 'purchase_order_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update purchase order. ' . $e->getMessage(),
+                'message' => 'Failed to update purchase order. '.$e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
@@ -351,10 +354,10 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         try {
             $purchaseOrder = PurchaseOrder::find($id);
 
-            if (!$purchaseOrder) {
+            if (! $purchaseOrder) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Purchase order not found'
+                    'message' => 'Purchase order not found',
                 ], Response::HTTP_NOT_FOUND);
             }
 
@@ -370,13 +373,13 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 
             return response()->json([
                 'success' => true,
-                'message' => 'Purchase order deleted successfully'
+                'message' => 'Purchase order deleted successfully',
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete purchase order. ' . $e->getMessage(),
+                'message' => 'Failed to delete purchase order. '.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
