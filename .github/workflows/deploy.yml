@@ -30,6 +30,7 @@ jobs:
       - name: Install Laravel Dependencies
         run: |
           composer install --no-dev --optimize-autoloader
+          composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Install sshpass
         run: |
@@ -95,7 +96,13 @@ jobs:
             -o NumberOfPasswordPrompts=1 \
             -p 65002 \
             u617995438@89.117.27.62 << 'EOF'
+            u617995438@89.117.27.62 bash -s << 'EOF'
+          set -e
           cd /home/u617995438/domains/elwmc.com/public_html/eworkshop/
+          mkdir -p bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
+          chmod -R ug+rwx bootstrap/cache storage
+          rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+          php artisan package:discover --ansi
           php artisan migrate --force
           php artisan db:seed --class=RolePermissionSeeder --force
           php artisan config:cache
