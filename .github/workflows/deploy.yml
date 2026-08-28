@@ -29,7 +29,6 @@ jobs:
 
       - name: Install Laravel Dependencies
         run: |
-          composer install --no-dev --optimize-autoloader
           composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Install sshpass
@@ -58,7 +57,7 @@ jobs:
             -o PubkeyAuthentication=no \
             -o NumberOfPasswordPrompts=1 \
             -p 65002 \
-            u617995438@89.117.27.62 'echo SSH_OK && whoami'
+            u617995438@153.92.8.124 'echo SSH_OK && whoami'
 
       # IMPORTANT: never use rsync --delete here.
       # Without --delete, server-only files (uploads, .env, etc.) are never removed.
@@ -80,7 +79,7 @@ jobs:
             --exclude 'storage/' \
             --exclude 'bootstrap/cache/' \
             --exclude 'public/storage' \
-            ./ u617995438@89.117.27.62:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
+            ./ u617995438@153.92.8.124:/home/u617995438/domains/elwmc.com/public_html/eworkshop/
           echo "Deployed files to Hostinger"
 
       - name: Run Laravel Commands
@@ -95,8 +94,7 @@ jobs:
             -o PubkeyAuthentication=no \
             -o NumberOfPasswordPrompts=1 \
             -p 65002 \
-            u617995438@89.117.27.62 << 'EOF'
-            u617995438@89.117.27.62 bash -s << 'EOF'
+            u617995438@153.92.8.124 bash -s << 'EOF'
           set -e
           cd /home/u617995438/domains/elwmc.com/public_html/eworkshop/
           mkdir -p bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
@@ -105,14 +103,7 @@ jobs:
           php artisan package:discover --ansi
           php artisan migrate --force
           php artisan db:seed --class=RolePermissionSeeder --force
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
           php artisan optimize:clear
-
-          # Storage symlink — uncomment if public/storage link is missing on the server
-          # ln -sfn /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage/app/public /home/u617995438/domains/elwmc.com/public_html/eworkshop/public/storage
-          # chmod -R 755 /home/u617995438/domains/elwmc.com/public_html/eworkshop/storage
           EOF
 
       - name: Completion Message
