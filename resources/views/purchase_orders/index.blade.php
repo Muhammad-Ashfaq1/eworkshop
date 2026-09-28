@@ -262,9 +262,6 @@
                     </div>
                     <div class="modal-footer">
                         <div class="d-flex flex-wrap gap-2 justify-content-end w-100">
-                            <button type="button" class="btn btn-secondary flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
-                                <i class="ri-close-line me-1"></i>Close
-                            </button>
                             <button type="submit" class="btn btn-primary flex-fill flex-sm-grow-0" id="purchaseOrderSubmit"
                                 style="display: none;">
                                 <i class="ri-save-line me-1"></i>Create Purchase Order
