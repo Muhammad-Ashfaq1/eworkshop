@@ -89,6 +89,20 @@
                 return false;
             }
 
+            if (from && (from < '2026-07-01' || from > '2027-06-30')) {
+                if (window.toastr) {
+                    toastr.error('From date must fall within Financial Year 2026-2027 (1st July 2026 to 30th June 2027)', 'Validation Error');
+                }
+                return false;
+            }
+
+            if (to && (to < '2026-07-01' || to > '2027-06-30')) {
+                if (window.toastr) {
+                    toastr.error('To date must fall within Financial Year 2026-2027 (1st July 2026 to 30th June 2027)', 'Validation Error');
+                }
+                return false;
+            }
+
             return {
                 date_from: from || '',
                 date_to: to || ''

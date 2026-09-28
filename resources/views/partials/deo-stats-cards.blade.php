@@ -47,11 +47,11 @@
                         </div>
                         <div class="pos-glass-control">
                             <label class="pos-glass-control-label" for="deo-ds-from">From Date</label>
-                            <input type="date" class="form-control" id="deo-ds-from" name="deo-ds-from">
+                            <input type="date" class="form-control" id="deo-ds-from" name="deo-ds-from" min="2026-07-01" max="2027-06-30">
                         </div>
                         <div class="pos-glass-control">
                             <label class="pos-glass-control-label" for="deo-ds-to">To Date</label>
-                            <input type="date" class="form-control" id="deo-ds-to" name="deo-ds-to">
+                            <input type="date" class="form-control" id="deo-ds-to" name="deo-ds-to" min="2026-07-01" max="2027-06-30">
                         </div>
                         <div class="deo-ds-filter-actions">
                             <button type="button" class="btn btn-sm btn-primary" id="deo-ds-apply">
