@@ -188,6 +188,8 @@
 
                     @include('partials.deo-stats-cards')
 
+                    @include('partials.year-wise-performance')
+
                     <!-- Quick Actions -->
                     <div class="row">
                         <div class="col-12">

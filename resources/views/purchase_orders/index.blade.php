@@ -183,7 +183,8 @@
                                 <div class="mb-3">
                                     <label for="issue_date" class="form-label">Issue Date <x-req /></label>
                                     <input type="date" class="form-control enhanced-dropdown" id="issue_date" name="issue_date"
-                                        value="{{ date('Y-m-d') }}" required>
+                                        min="2026-07-01" max="2027-06-30"
+                                        value="{{ date('Y-m-d') >= '2026-07-01' && date('Y-m-d') <= '2027-06-30' ? date('Y-m-d') : '2026-07-01' }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6" id="received-by-column">
@@ -261,9 +262,6 @@
                     </div>
                     <div class="modal-footer">
                         <div class="d-flex flex-wrap gap-2 justify-content-end w-100">
-                            <button type="button" class="btn btn-secondary flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
-                                <i class="ri-close-line me-1"></i>Close
-                            </button>
                             <button type="submit" class="btn btn-primary flex-fill flex-sm-grow-0" id="purchaseOrderSubmit"
                                 style="display: none;">
                                 <i class="ri-save-line me-1"></i>Create Purchase Order
@@ -842,7 +840,9 @@
                         minlength: 2
                     },
                     issue_date: {
-                        required: true
+                        required: true,
+                        min: '2026-07-01',
+                        max: '2027-06-30'
                     },
                     received_by: {
                         required: true
@@ -880,7 +880,9 @@
                         minlength: "PO number must be at least 2 characters"
                     },
                     issue_date: {
-                        required: "Please select issue date"
+                        required: "Please select issue date",
+                        min: "Issue date must be on or after 1st July 2026",
+                        max: "Issue date must be on or before 30th June 2027"
                     },
                     received_by: {
                         required: "Please select who received the order"

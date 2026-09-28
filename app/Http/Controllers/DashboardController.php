@@ -57,6 +57,72 @@ class DashboardController extends Controller
     }
 
     /**
+     * Helper to compute monthly performance chart data for FY 2026-27 (Jul 2026 to Jun 2027) using 100% real database records
+     */
+    private function getYearWisePerformanceData($user): array
+    {
+        $months = [
+            ['label' => 'Jul 2026', 'start' => '2026-07-01', 'end' => '2026-07-31'],
+            ['label' => 'Aug 2026', 'start' => '2026-08-01', 'end' => '2026-08-31'],
+            ['label' => 'Sep 2026', 'start' => '2026-09-01', 'end' => '2026-09-30'],
+            ['label' => 'Oct 2026', 'start' => '2026-10-01', 'end' => '2026-10-31'],
+            ['label' => 'Nov 2026', 'start' => '2026-11-01', 'end' => '2026-11-30'],
+            ['label' => 'Dec 2026', 'start' => '2026-12-01', 'end' => '2026-12-31'],
+            ['label' => 'Jan 2027', 'start' => '2027-01-01', 'end' => '2027-01-31'],
+            ['label' => 'Feb 2027', 'start' => '2027-02-01', 'end' => '2027-02-28'],
+            ['label' => 'Mar 2027', 'start' => '2027-03-01', 'end' => '2027-03-31'],
+            ['label' => 'Apr 2027', 'start' => '2027-04-01', 'end' => '2027-04-30'],
+            ['label' => 'May 2027', 'start' => '2027-05-01', 'end' => '2027-05-31'],
+            ['label' => 'Jun 2027', 'start' => '2027-06-01', 'end' => '2027-06-30'],
+        ];
+
+        $categories = array_column($months, 'label');
+        $reportsData = [];
+        $ordersData = [];
+        $fineData = [];
+
+        foreach ($months as $m) {
+            $reportsCount = DefectReport::forUser($user)
+                ->whereBetween('created_at', [$m['start'] . ' 00:00:00', $m['end'] . ' 23:59:59'])
+                ->count();
+
+            $ordersCount = PurchaseOrder::forUser($user)
+                ->whereBetween('issue_date', [$m['start'], $m['end']])
+                ->count();
+
+            $fineCount = \App\Models\Work::whereHas('defectReport', function($q) use ($user) {
+                    $q->forUser($user);
+                })
+                ->whereBetween('created_at', [$m['start'] . ' 00:00:00', $m['end'] . ' 23:59:59'])
+                ->count();
+
+            $reportsData[] = $reportsCount;
+            $ordersData[] = $ordersCount;
+            $fineData[] = $fineCount;
+        }
+
+        $totalReports = array_sum($reportsData);
+        $totalOrders  = array_sum($ordersData);
+        $totalFine    = array_sum($fineData);
+        $grandTotal   = $totalReports + $totalOrders + $totalFine;
+
+        return [
+            'categories' => $categories,
+            'series' => [
+                ['name' => 'Reports', 'data' => $reportsData],
+                ['name' => 'Orders', 'data' => $ordersData],
+                ['name' => 'Fine', 'data' => $fineData],
+            ],
+            'totals' => [
+                'reports' => $totalReports,
+                'orders' => $totalOrders,
+                'fine' => $totalFine,
+                'grand_total' => $grandTotal,
+            ],
+        ];
+    }
+
+    /**
      * Super Admin Dashboard
      */
     public function superAdmin()
@@ -87,6 +153,7 @@ class DashboardController extends Controller
             'user' => $user,
             'stats' => array_merge($stats, $adminStats),
             'recentReports' => $user->getRecentReports(),
+            'chartData' => $this->getYearWisePerformanceData($user),
         ];
 
         return view('dashboards.super_admin', $data);
@@ -127,6 +194,7 @@ class DashboardController extends Controller
             'user' => $user,
             'stats' => array_merge($stats, $adminStats),
             'recentReports' => $user->getRecentReports(),
+            'chartData' => $this->getYearWisePerformanceData($user),
         ];
 
         return view('dashboards.admin', $data);
@@ -170,6 +238,7 @@ class DashboardController extends Controller
             'user' => $user,
             'stats' => array_merge($stats, $deoStats),
             'recentReports' => $user->getRecentReports(),
+            'chartData' => $this->getYearWisePerformanceData($user),
         ];
 
         return view('dashboards.deo', $data);
