@@ -56,10 +56,10 @@ class PurchaseOrderController extends Controller
         $user = Auth::user();
 
         // Check if user can view this specific purchase order
-        if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
+        if (! $this->canViewPurchaseOrder($user, $purchaseOrder)) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to view this purchase order.'
+                'message' => 'You are not authorized to view this purchase order.',
             ], 403);
         }
 
@@ -67,7 +67,7 @@ class PurchaseOrderController extends Controller
         $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($purchaseOrder->id);
 
         // Ensure we have the works relationship loaded
-        if (!$purchaseOrder->relationLoaded('works')) {
+        if (! $purchaseOrder->relationLoaded('works')) {
             $purchaseOrder->load('works.vehiclePart');
         }
 
@@ -79,14 +79,13 @@ class PurchaseOrderController extends Controller
 
     /**
      * Get purchase orders listing for datatable
-     * @param Request $request
-     * @return JsonResponse
      */
     public function getPurchaseOrderListing(Request $request): JsonResponse
     {
         $this->authorize('read_purchase_orders');
 
         $user = Auth::user();
+
         return $this->purchaseOrderRepository->getPurchaseOrderListing($request->all(), $user);
     }
 
@@ -99,44 +98,44 @@ class PurchaseOrderController extends Controller
 
         $user = Auth::user();
         $requestData = $request->all();
-        
+
         Log::info('Purchase Order Creation Started', [
             'user_id' => $user->id,
             'user_email' => $user->email,
             'defect_report_id' => $requestData['defect_report_id'] ?? null,
             'po_no' => $requestData['po_no'] ?? null,
             'issue_date' => $requestData['issue_date'] ?? null,
-            'request_data' => $requestData
+            'request_data' => $requestData,
         ]);
 
         try {
             $result = $this->purchaseOrderRepository->createPurchaseOrder($requestData);
-            
+
             if ($result->getData()->success) {
                 Log::info('Purchase Order Creation Successful', [
                     'user_id' => $user->id,
-                    'purchase_order_id' => $result->getData()->purchaseOrder->id ?? null
+                    'purchase_order_id' => $result->getData()->purchaseOrder->id ?? null,
                 ]);
             } else {
                 Log::warning('Purchase Order Creation Failed', [
                     'user_id' => $user->id,
                     'error_message' => $result->getData()->message ?? 'Unknown error',
-                    'request_data' => $requestData
+                    'request_data' => $requestData,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Purchase Order Creation Exception', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $requestData
+                'request_data' => $requestData,
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong while creating purchase order.'
+                'message' => 'Something went wrong while creating purchase order.',
             ], 500);
         }
     }
@@ -150,24 +149,24 @@ class PurchaseOrderController extends Controller
 
         $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($id);
 
-        if (!$purchaseOrder) {
+        if (! $purchaseOrder) {
             return response()->json([
                 'success' => false,
-                'message' => 'Purchase order not found'
+                'message' => 'Purchase order not found',
             ], 404);
         }
 
         // Check if user can view this specific purchase order
         $user = Auth::user();
-        if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
+        if (! $this->canViewPurchaseOrder($user, $purchaseOrder)) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to view this purchase order.'
+                'message' => 'You are not authorized to view this purchase order.',
             ], 403);
         }
 
         // Ensure we have the works relationship loaded
-        if (!$purchaseOrder->relationLoaded('works')) {
+        if (! $purchaseOrder->relationLoaded('works')) {
             $purchaseOrder->load('works.vehiclePart');
         }
 
@@ -186,46 +185,46 @@ class PurchaseOrderController extends Controller
 
         $user = Auth::user();
         $requestData = $request->all();
-        
+
         Log::info('Purchase Order Update Started', [
             'user_id' => $user->id,
             'user_email' => $user->email,
             'purchase_order_id' => $purchaseOrder->id,
             'defect_report_id' => $requestData['defect_report_id'] ?? null,
             'po_no' => $requestData['po_no'] ?? null,
-            'request_data' => $requestData
+            'request_data' => $requestData,
         ]);
 
         // Check if user can update this specific purchase order
-        if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
+        if (! $this->canViewPurchaseOrder($user, $purchaseOrder)) {
             Log::warning('Purchase Order Update Authorization Failed', [
                 'user_id' => $user->id,
-                'purchase_order_id' => $purchaseOrder->id
+                'purchase_order_id' => $purchaseOrder->id,
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to update this purchase order.'
+                'message' => 'You are not authorized to update this purchase order.',
             ], 403);
         }
 
         try {
             $result = $this->purchaseOrderRepository->updatePurchaseOrder($purchaseOrder->id, $requestData);
-            
+
             if ($result->getData()->success) {
                 Log::info('Purchase Order Update Successful', [
                     'user_id' => $user->id,
-                    'purchase_order_id' => $purchaseOrder->id
+                    'purchase_order_id' => $purchaseOrder->id,
                 ]);
             } else {
                 Log::warning('Purchase Order Update Failed', [
                     'user_id' => $user->id,
                     'purchase_order_id' => $purchaseOrder->id,
                     'error_message' => $result->getData()->message ?? 'Unknown error',
-                    'request_data' => $requestData
+                    'request_data' => $requestData,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Purchase Order Update Exception', [
@@ -233,12 +232,12 @@ class PurchaseOrderController extends Controller
                 'purchase_order_id' => $purchaseOrder->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $requestData
+                'request_data' => $requestData,
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong while updating purchase order.'
+                'message' => 'Something went wrong while updating purchase order.',
             ], 500);
         }
     }
@@ -253,10 +252,10 @@ class PurchaseOrderController extends Controller
         $user = Auth::user();
 
         // Check if user can delete this specific purchase order
-        if (!$this->canViewPurchaseOrder($user, $purchaseOrder)) {
+        if (! $this->canViewPurchaseOrder($user, $purchaseOrder)) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to delete this purchase order.'
+                'message' => 'You are not authorized to delete this purchase order.',
             ], 403);
         }
 
@@ -270,6 +269,7 @@ class PurchaseOrderController extends Controller
     {
         // $this->authorize('read_purchase_orders');
         $archivedPurchaseOrders = PurchaseOrder::with(['creator', 'defectReport.vehicle', 'defectReport.location'])->onlyTrashed()->get();
+
         return view('purchase_orders.archived', compact('archivedPurchaseOrders'));
     }
 
@@ -281,18 +281,27 @@ class PurchaseOrderController extends Controller
         $this->authorize('restore_purchase_orders');
         $purchaseOrder = PurchaseOrder::withTrashed()->find($id);
 
-        if (!$purchaseOrder) {
+        if (! $purchaseOrder) {
             return response()->json([
                 'success' => false,
-                'message' => 'Purchase order not found'
+                'message' => 'Purchase order not found',
             ], 404);
+        }
+
+        if (PurchaseOrder::isPoNumberExistsInFiscalYear($purchaseOrder->po_no, $purchaseOrder->issue_date, $purchaseOrder->id)) {
+            $fy = PurchaseOrder::getFiscalYearRange($purchaseOrder->issue_date);
+
+            return response()->json([
+                'success' => false,
+                'message' => "Cannot restore: Purchase order number '{$purchaseOrder->po_no}' already exists for financial year {$fy['full_label']}.",
+            ], 422);
         }
 
         $purchaseOrder->restore();
 
         return response()->json([
             'success' => true,
-            'message' => 'Purchase order restored successfully'
+            'message' => 'Purchase order restored successfully',
         ]);
     }
 

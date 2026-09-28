@@ -971,8 +971,13 @@
                         },
                         error: function(xhr) {
                             let errorMessage = 'Something went wrong!';
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMessage = xhr.responseJSON.message;
+                            if (xhr.responseJSON) {
+                                if (xhr.responseJSON.errors) {
+                                    const allErrors = Object.values(xhr.responseJSON.errors).flat();
+                                    errorMessage = allErrors.join('<br>');
+                                } else if (xhr.responseJSON.message) {
+                                    errorMessage = xhr.responseJSON.message;
+                                }
                             }
                             toastr.error(errorMessage);
                         },

@@ -52,4 +52,54 @@ class PurchaseOrder extends Model
 
         return $query->where('id', 0);
     }
+
+    /**
+     * Get the Financial Year (1st July to 30th June) date range for a given date.
+     *
+     * @param  \Carbon\Carbon|string|\DateTimeInterface|null  $date
+     * @return array{start_date: string, end_date: string, label: string, full_label: string}
+     */
+    public static function getFiscalYearRange($date = null): array
+    {
+        $carbon = $date ? \Carbon\Carbon::parse($date) : now();
+        $year = (int) $carbon->format('Y');
+        $month = (int) $carbon->format('n');
+
+        $startYear = $month >= 7 ? $year : $year - 1;
+        $endYear = $startYear + 1;
+
+        return [
+            'start_date' => sprintf('%04d-07-01', $startYear),
+            'end_date' => sprintf('%04d-06-30', $endYear),
+            'label' => "FY {$startYear}-".substr((string) $endYear, -2),
+            'full_label' => "{$startYear}-{$endYear}",
+        ];
+    }
+
+    /**
+     * Check if a PO number already exists in the given date's financial year.
+     *
+     * @param  string|int|null  $poNo
+     * @param  \Carbon\Carbon|string|\DateTimeInterface|null  $date
+     * @param  int|null  $ignoreId
+     */
+    public static function isPoNumberExistsInFiscalYear($poNo, $date, $ignoreId = null): bool
+    {
+        if (empty($poNo) || empty($date)) {
+            return false;
+        }
+
+        try {
+            $fy = self::getFiscalYearRange($date);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return self::where('po_no', $poNo)
+            ->whereBetween('issue_date', [$fy['start_date'], $fy['end_date']])
+            ->when($ignoreId, function ($query, $ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            })
+            ->exists();
+    }
 }

@@ -23,13 +23,36 @@ class UpdatePurchaseOrderRequest extends FormRequest
      */
     public function rules(): array
     {
+        $purchaseOrder = $this->route('purchaseOrder');
+        $ignoreId = $purchaseOrder instanceof \App\Models\PurchaseOrder ? $purchaseOrder->id : $purchaseOrder;
+
         return [
             'defect_report_id' => 'required|exists:defect_reports,id',
             'po_no' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('purchase_orders')->ignore($this->route('purchaseOrder')),
+                Rule::unique('purchase_orders', 'po_no')
+                    ->ignore($ignoreId)
+                    ->where(function ($query) use ($purchaseOrder, $ignoreId) {
+                        $issueDate = $this->input('issue_date');
+                        if (! $issueDate && $purchaseOrder instanceof \App\Models\PurchaseOrder) {
+                            $issueDate = $purchaseOrder->issue_date;
+                        } elseif (! $issueDate && is_numeric($ignoreId)) {
+                            $issueDate = \App\Models\PurchaseOrder::where('id', $ignoreId)->value('issue_date');
+                        }
+
+                        if ($issueDate) {
+                            try {
+                                $fy = \App\Models\PurchaseOrder::getFiscalYearRange($issueDate);
+                                $query->whereBetween('issue_date', [$fy['start_date'], $fy['end_date']]);
+                            } catch (\Exception $e) {
+                                // Invalid date will be caught by issue_date validation
+                            }
+                        }
+
+                        return $query->whereNull('deleted_at');
+                    }),
             ],
             'issue_date' => 'required|date|after_or_equal:2026-07-01|before_or_equal:2027-06-30',
             'received_by' => ['required', Rule::enum(PurchaseOrderReceivedBy::class)],
@@ -51,7 +74,7 @@ class UpdatePurchaseOrderRequest extends FormRequest
             'defect_report_id.required' => 'Please select a defect report reference.',
             'defect_report_id.exists' => 'The selected defect report reference is invalid.',
             'po_no.required' => 'Please enter the purchase order number.',
-            'po_no.unique' => 'This purchase order number already exists.',
+            'po_no.unique' => 'This purchase order number already exists for this financial year (July to June).',
             'issue_date.required' => 'Please select the issue date.',
             'issue_date.after_or_equal' => 'The purchase order issue date must be on or after 1st July 2026.',
             'issue_date.before_or_equal' => 'The purchase order issue date must be on or before 30th June 2027.',
