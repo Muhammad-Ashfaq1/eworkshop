@@ -206,6 +206,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'type' => 'purchase_order',
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
+                            'details' => $partData['details'] ?? null,
                         ]);
                     } catch (\Exception $workException) {
                         Log::error('PurchaseOrder work creation failed', [
@@ -310,6 +311,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'type' => 'purchase_order',
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
+                            'details' => $partData['details'] ?? null,
                         ]);
                     } catch (\Exception $workException) {
                         Log::error('PurchaseOrder part update failed', [

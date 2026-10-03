@@ -62,6 +62,7 @@ class UpdatePurchaseOrderRequest extends FormRequest
             'parts' => 'required|array|min:1',
             'parts.*.vehicle_part_id' => 'required|exists:vehicle_parts,id',
             'parts.*.quantity' => 'required|integer|min:1',
+            'parts.*.details' => 'nullable|string',
         ];
     }
 

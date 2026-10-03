@@ -18,6 +18,7 @@ class Work extends Model
         'type',
         'quantity',
         'vehicle_part_id',
+        'details',
     ];
 
     // Relationships
@@ -50,7 +51,14 @@ class Work extends Model
     public function getWorkDisplayAttribute()
     {
         if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
-            return $this->vehiclePart->name.($this->quantity ? " (Qty: {$this->quantity})" : '');
+            $display = $this->vehiclePart->name;
+            if ($this->details) {
+                $display .= " ({$this->details})";
+            }
+            if ($this->quantity) {
+                $display .= " (Qty: {$this->quantity})";
+            }
+            return $display;
         }
 
         return $this->work ?? 'N/A';
@@ -61,7 +69,14 @@ class Work extends Model
     {
         if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
             $partNumber = $index + 1;
-            return "Part {$partNumber}: " . $this->vehiclePart->name . ($this->quantity ? " (Qty: {$this->quantity})" : '');
+            $display = "Part {$partNumber}: " . $this->vehiclePart->name;
+            if ($this->details) {
+                $display .= " ({$this->details})";
+            }
+            if ($this->quantity) {
+                $display .= " (Qty: {$this->quantity})";
+            }
+            return $display;
         }
 
         $workNumber = $index + 1;
@@ -72,7 +87,11 @@ class Work extends Model
     public function getSimpleDisplayName()
     {
         if ($this->type === self::TYPE_PURCHASE_ORDER && $this->vehiclePart) {
-            return $this->vehiclePart->name;
+            $display = $this->vehiclePart->name;
+            if ($this->details) {
+                $display .= " - {$this->details}";
+            }
+            return $display;
         }
 
         return $this->work ?? 'N/A';
