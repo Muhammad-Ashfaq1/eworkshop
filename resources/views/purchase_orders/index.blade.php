@@ -418,8 +418,15 @@
                         data: "po_no",
                         name: 'po_no',
                         render: function(data, type, row) {
-                            return data || 'N/A';
-                        }
+                            if (data === null || data === undefined || data === '') return 'N/A';
+                            if (type === 'sort' || type === 'type') {
+                                const numericValue = Number(data);
+                                return Number.isFinite(numericValue) ? numericValue : String(data).toLowerCase();
+                            }
+                            return data;
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "defect_report",
@@ -555,9 +562,7 @@
                         className: 'text-center'
                     }
                 ],
-                order: [
-                    [5, 'desc']
-                ]
+                order: []
             });
 
             // Fix DataTable controls layout using utility function
