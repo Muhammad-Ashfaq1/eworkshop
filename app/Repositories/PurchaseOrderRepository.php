@@ -74,8 +74,10 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         // Apply ordering with relationship support
         if (isset($search['column_name']) && isset($search['direction'])) {
             $this->applyOrderBy($query, $search['column_name'], $search['direction']);
+            // Add secondary sort so newest entries appear first on ties
+            $query->orderBy('purchase_orders.id', 'desc');
         } else {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('purchase_orders.id', 'desc');
         }
 
         $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
@@ -122,11 +124,21 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                     ->orderByRaw("CONCAT(creators.first_name, ' ', creators.last_name) ".$direction)
                     ->select('purchase_orders.*');
                 break;
-            case 'parts_count':
-                $query->orderBy('created_at', $direction);
+
+            case 'serial':
+                // PO numbers are often numeric strings; cast so they sort numerically.
+                $query->orderByRaw('CAST(purchase_orders.po_no AS UNSIGNED) '.$direction)
+                    ->orderBy('purchase_orders.id', $direction);
                 break;
-                $query->orderBy('po_no', $direction);
+
+            case 'po_no':
+                // Sort numeric PO numbers by value while keeping text PO numbers ordered too.
+                $query->orderByRaw("CASE WHEN purchase_orders.po_no REGEXP '^[0-9]+$' THEN 0 ELSE 1 END ASC")
+                    ->orderByRaw('CASE WHEN purchase_orders.po_no REGEXP \'^[0-9]+$\' THEN CAST(purchase_orders.po_no AS DECIMAL(20, 0)) END '.$direction)
+                    ->orderBy('purchase_orders.po_no', $direction);
                 break;
+
+
 
             case 'received_by':
                 $query->orderBy('received_by', $direction);
@@ -206,6 +218,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'type' => 'purchase_order',
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
+                            'details' => $partData['details'] ?? null,
                         ]);
                     } catch (\Exception $workException) {
                         Log::error('PurchaseOrder work creation failed', [
@@ -310,6 +323,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                             'type' => 'purchase_order',
                             'quantity' => $partData['quantity'] ?? 1,
                             'vehicle_part_id' => $partData['vehicle_part_id'],
+                            'details' => $partData['details'] ?? null,
                         ]);
                     } catch (\Exception $workException) {
                         Log::error('PurchaseOrder part update failed', [
