@@ -56,11 +56,11 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label for="start_date" class="form-label">Start Date</label>
-                                                    <input type="date" class="form-control" id="start_date" name="start_date">
+                                                    <input type="date" class="form-control" id="start_date" name="start_date" value="2026-07-01">
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="end_date" class="form-label">End Date</label>
-                                                    <input type="date" class="form-control" id="end_date" name="end_date">
+                                                    <input type="date" class="form-control" id="end_date" name="end_date" value="2027-06-30">
                                                 </div>
                                                 <div class="col-md-4 d-flex align-items-end">
                                                     <div class="btn-group" role="group">
@@ -1434,10 +1434,10 @@
             
             // Clear date filter
             $('#clear-date-filter').click(function() {
-                $('#start_date').val('');
-                $('#end_date').val('');
+                $('#start_date').val('2026-07-01');
+                $('#end_date').val('2027-06-30');
                 $('#js-purchase-order-table').DataTable().ajax.reload();
-                toastr.info('Date filter cleared');
+                toastr.info('Date filter reset to default');
             });
             
             // Allow Enter key to apply filter
