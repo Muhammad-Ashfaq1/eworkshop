@@ -75,7 +75,7 @@ class UpdatePurchaseOrderRequest extends FormRequest
             'defect_report_id.required' => 'Please select a defect report reference.',
             'defect_report_id.exists' => 'The selected defect report reference is invalid.',
             'po_no.required' => 'Please enter the purchase order number.',
-            'po_no.unique' => 'This purchase order number already exists for this financial year (July to June).',
+            'po_no.unique' => 'This purchase order number is already in use for the 2026-2027 financial year (1 July 2026 to 30 June 2027).',
             'issue_date.required' => 'Please select the issue date.',
             'issue_date.after_or_equal' => 'The purchase order issue date must be on or after 1st July 2026.',
             'issue_date.before_or_equal' => 'The purchase order issue date must be on or before 30th June 2027.',
