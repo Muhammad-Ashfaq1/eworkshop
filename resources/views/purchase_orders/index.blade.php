@@ -249,6 +249,10 @@
                                                 <i class="ri-delete-bin-line"></i>
                                             </button>
                                         </div>
+                                        <div class="col-md-11 mt-2 job-work-details-container" style="display: none;">
+                                            <label class="form-label text-dark fw-medium" style="color: #000;">Details</label>
+                                            <textarea class="form-control job-work-details-input" name="parts[0][details]" rows="2" placeholder="Enter details for Job Work..."></textarea>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -414,8 +418,15 @@
                         data: "po_no",
                         name: 'po_no',
                         render: function(data, type, row) {
-                            return data || 'N/A';
-                        }
+                            if (data === null || data === undefined || data === '') return 'N/A';
+                            if (type === 'sort' || type === 'type') {
+                                const numericValue = Number(data);
+                                return Number.isFinite(numericValue) ? numericValue : String(data).toLowerCase();
+                            }
+                            return data;
+                        },
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: "defect_report",
@@ -551,9 +562,7 @@
                         className: 'text-center'
                     }
                 ],
-                order: [
-                    [5, 'desc']
-                ]
+                order: []
             });
 
             // Fix DataTable controls layout using utility function
@@ -770,8 +779,32 @@
             });
         }
 
+        // Detects any "Job Work" variant: singular/plural, with dots, hyphens, extra spaces or any casing
+        // e.g. "Job Work", "Job Works", "Job Work.", "Job Works.", "JOB-WORKS", "JobWork"
+        function isJobWorkPart(text) {
+            const normalized = (text || '').toLowerCase().replace(/[^a-z]/g, '');
+            return normalized.includes('jobwork');
+        }
+
+        function checkAndToggleJobWorkDetails($select) {
+            const selectedText = $select.find('option:selected').text();
+            const $partItem = $select.closest('.part-item');
+            const $container = $partItem.find('.job-work-details-container');
+            const $input = $container.find('.job-work-details-input');
+
+            if (isJobWorkPart(selectedText) || ($input.val() && $input.val().trim() !== '')) {
+                $container.slideDown(200);
+            } else {
+                $container.slideUp(200);
+            }
+        }
+
         function setupParts() {
             let partIndex = 1;
+
+            $(document).on('change', '.vehicle-part-select', function() {
+                checkAndToggleJobWorkDetails($(this));
+            });
 
             $('#add-part').click(function() {
                 const partNumber = partIndex + 1;
@@ -791,6 +824,10 @@
                         <button type="button" class="btn btn-danger btn-sm remove-part">
                             <i class="ri-delete-bin-line"></i>
                         </button>
+                    </div>
+                    <div class="col-md-11 mt-2 job-work-details-container" style="display: none;">
+                        <label class="form-label text-dark fw-medium" style="color: #000;">Details</label>
+                        <textarea class="form-control job-work-details-input" name="parts[${partIndex}][details]" rows="2" placeholder="Enter details for Job Work..."></textarea>
                     </div>
                 </div>
             `;
@@ -1003,8 +1040,12 @@
             // Remove all parts except the first one
             $('#parts-container .part-item:not(:first)').remove();
             
+            // Reset the first part details
+            $('#parts-container .part-item:first .job-work-details-input').val('');
+            $('#parts-container .part-item:first .job-work-details-container').hide();
+
             // Update the first part label to show "Part 1"
-            $('#parts-container .part-item:first label').html('Part 1 - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>');
+            $('#parts-container .part-item:first label:first').html('Part 1 - Vehicle Part <span class="text-danger" style="color: red" title="This field is required">*</span>');
 
             // Reset Select2
             $('#defect_report_id').val('').trigger('change');
@@ -1177,6 +1218,10 @@
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
+                        <div class="col-md-11 mt-2 job-work-details-container" style="display: none;">
+                            <label class="form-label text-dark fw-medium" style="color: #000;">Details</label>
+                            <textarea class="form-control job-work-details-input" name="parts[${index}][details]" rows="2" disabled></textarea>
+                        </div>
                     </div>
                 `;
                     $('#parts-container').append(partItem);
@@ -1185,6 +1230,9 @@
                     const newPart = $(`#parts-container .part-item:eq(${index}) .vehicle-part-select`);
                     populateVehiclePartDropdown(newPart);
                     newPart.val(work.vehicle_part_id).trigger('change');
+                    const $detailsInput = $(`#parts-container .part-item:eq(${index}) .job-work-details-input`);
+                    $detailsInput.val(work.details || '');
+                    checkAndToggleJobWorkDetails(newPart);
                 });
             }
 
@@ -1290,6 +1338,10 @@
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                         </div>
+                        <div class="col-md-11 mt-2 job-work-details-container" style="display: none;">
+                            <label class="form-label text-dark fw-medium" style="color: #000;">Details</label>
+                            <textarea class="form-control job-work-details-input" name="parts[${index}][details]" rows="2" placeholder="Enter details for Job Work..."></textarea>
+                        </div>
                     </div>
                 `;
                     $('#parts-container').append(partItem);
@@ -1298,6 +1350,9 @@
                     const newPart = $(`#parts-container .part-item:eq(${index}) .vehicle-part-select`);
                     populateVehiclePartDropdown(newPart);
                     newPart.val(work.vehicle_part_id).trigger('change');
+                    const $detailsInput = $(`#parts-container .part-item:eq(${index}) .job-work-details-input`);
+                    $detailsInput.val(work.details || '');
+                    checkAndToggleJobWorkDetails(newPart);
                 });
             } else {
                 console.log('No works found for this PO'); // Debug log
