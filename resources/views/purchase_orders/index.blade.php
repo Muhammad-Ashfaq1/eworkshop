@@ -1447,5 +1447,15 @@
                 }
             });
         }
+
+        $(document).ready(function() {
+            // Auto-select text inside inputs/textareas when they receive focus (tab switch highlight)
+            $(document).on('focusin', '#purchaseOrderModal input:not([type="file"]):not([type="checkbox"]), #purchaseOrderModal textarea', function() {
+                const element = $(this);
+                setTimeout(function() {
+                    element.select();
+                }, 50);
+            });
+        });
     </script>
 @endsection
