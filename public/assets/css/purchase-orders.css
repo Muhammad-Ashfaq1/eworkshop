@@ -135,9 +135,18 @@
 }
 
 #purchaseOrderModal .form-control:focus,
-#purchaseOrderModal .form-select:focus {
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+#purchaseOrderModal .form-select:focus,
+#purchaseOrderModal .select2-container--default.select2-container--focus .select2-selection,
+#purchaseOrderModal .select2-container--default.select2-container--open .select2-selection {
+    border-color: #7367f0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(115, 103, 240, 0.18) !important;
+    outline: none !important;
+}
+
+#purchaseOrderModal .form-control:hover:not(:focus),
+#purchaseOrderModal .form-select:hover:not(:focus),
+#purchaseOrderModal .select2-container--default:not(.select2-container--focus):not(.select2-container--open) .select2-selection:hover {
+    border-color: var(--bs-gray-600, #6e7987) !important;
 }
 
 /* Parts Section Styling */
