@@ -187,8 +187,6 @@
                         </div>
                     </div>
 
-                    @include('partials.year-wise-performance')
-
                     <!-- Accuracy & Performance Statistics -->
                     @if(isset($stats['accuracy']))
                     <div class="row">
