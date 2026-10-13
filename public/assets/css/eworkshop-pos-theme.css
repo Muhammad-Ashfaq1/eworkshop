@@ -227,8 +227,10 @@ html.pos-theme-lake h6 {
 
 html.pos-theme-lake .form-control:focus,
 html.pos-theme-lake .form-select:focus {
-    border-color: rgba(105, 108, 255, 0.55) !important;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.18) !important;
+    border-color: #696cff !important;
+    border-width: 3px !important;
+    box-shadow: 0 0 0 0.3rem rgba(105, 108, 255, 0.25) !important;
+    outline: none !important;
 }
 
 html.pos-theme-lake .table thead th {
