@@ -1,6 +1,6 @@
 
 // Function to get dynamic dropdown data
-function getDynamicDropdownData(url, target, callback) {
+function getDynamicDropdownData(url, target, callback, useSelect2 = true) {
     $.ajax({
         url: url,
         type: 'GET',
@@ -16,16 +16,27 @@ function getDynamicDropdownData(url, target, callback) {
                 $(target).append($('<option></option>').attr('value', item.id).text(item.name));
             });
 
+            // Some forms use native selects for reliable browser Tab navigation.
+            if (!useSelect2) {
+                if (typeof callback === 'function') callback();
+                return;
+            }
+
             // Initialize Select2 after populating options
             if ($(target).hasClass('select2-hidden-accessible')) {
                 $(target).select2('destroy');
             }
+            // Determine the correct dropdownParent (use modal if inside one, otherwise use parent)
+            var $modal = $(target).closest('.modal');
+            var dropdownParent = $modal.length ? $modal : $(target).parent();
+
             $(target).select2({
                 placeholder: 'Select...',
-                allowClear: true,
+                allowClear: false,
                 width: '100%',
-                dropdownParent: $(target).parent()  // Append to the select's immediate parent for correct positioning
+                dropdownParent: dropdownParent
             });
+
 
             // Execute callback if provided
             if (typeof callback === 'function') {

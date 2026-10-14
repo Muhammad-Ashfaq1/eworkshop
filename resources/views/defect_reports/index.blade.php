@@ -230,7 +230,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="form-label">Report Type<x-req /></label>
-                                    <input type="text" class="form-control enhanced-dropdown" value="Defect Report" readonly>
+                                    <input type="text" class="form-control enhanced-dropdown" id="report_type_display" value="Defect Report" readonly tabindex="0">
                                     <input type="hidden" id="type" name="type" value="defect_report">
                                     <div class="form-text">This will always be a Defect Report</div>
                                 </div>
@@ -295,6 +295,24 @@
 
 @section('scripts')
     <script>
+        // Tab order for defect report form fields
+        var drTabOrder = ['vehicle_id', 'location_id', 'driver_name', 'date', 'mvi_id', 'fleet_manager_id', 'report_type_display', 'attachment_url'];
+
+        function drFocusField(fieldId) {
+            var $f = $('#' + fieldId);
+            if ($f.hasClass('select2-hidden-accessible')) {
+                $f.select2('open');
+            } else {
+                $f.focus();
+            }
+        }
+
+        function drNextField(currentId, reverse) {
+            var i = drTabOrder.indexOf(currentId);
+            if (i === -1) return null;
+            return reverse ? (i > 0 ? drTabOrder[i - 1] : null) : (i < drTabOrder.length - 1 ? drTabOrder[i + 1] : null);
+        }
+
         $(document).ready(function() {
             applyDefectReportsDatatable();
             loadDropdownData();
@@ -306,6 +324,60 @@
             $('#defectReportModal').on('hidden.bs.modal', function() {
                 resetForm();
             });
+
+            // When modal opens, focus the first field (Vehicle)
+            $('#defectReportModal').on('shown.bs.modal', function() {
+                setTimeout(function() { drFocusField('vehicle_id'); }, 200);
+            });
+
+            // --- Manual Tab navigation for Select2 inside modal ---
+
+
+            // 1) Tab on regular inputs → move to next field in order
+            $('#defectReportModal').on('keydown', 'input:not([type=hidden])', function(e) {
+                if (e.key !== 'Tab') return;
+                var id = $(this).attr('id');
+                var next = drNextField(id, e.shiftKey);
+                if (next) {
+                    e.preventDefault();
+                    drFocusField(next);
+                }
+            });
+
+            // 2) Track Tab key inside Select2 dropdown search
+            var drS2Tab = false;
+            $(document).on('keydown', '.select2-search__field', function(e) {
+                if (e.key === 'Tab') {
+                    drS2Tab = e.shiftKey ? 'back' : 'forward';
+                }
+            });
+
+            // 3) When Select2 closes, if Tab was pressed, move to next field
+            $('#defectReportModal').on('select2:close', 'select', function() {
+                if (drS2Tab) {
+                    var dir = drS2Tab;
+                    drS2Tab = false;
+                    var id = $(this).attr('id');
+                    var next = drNextField(id, dir === 'back');
+                    if (next) {
+                        setTimeout(function() { drFocusField(next); }, 10);
+                    }
+                }
+            });
+
+            // 4) Tab on closed Select2 (focus is on .select2-selection span)
+            $('#defectReportModal').on('keydown', '.select2-selection', function(e) {
+                if (e.key !== 'Tab') return;
+                var $select = $(this).closest('.select2-container').prev('select');
+                var id = $select.attr('id');
+                var next = drNextField(id, e.shiftKey);
+                if (next) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    drFocusField(next);
+                }
+            });
+
         });
 
         function updateValidationRules() {
@@ -580,16 +652,22 @@
 
         function loadDropdownData() {
             // Load vehicles
-            getDynamicDropdownData("{{ route('dropdown.getVehicles') }}", '#vehicle_id');
+            getDynamicDropdownData("{{ route('dropdown.getVehicles') }}", '#vehicle_id', setDefectReportDropdownTabStops);
 
             // Load locations
-            getDynamicDropdownData("{{ route('dropdown.getLocations') }}", '#location_id');
+            getDynamicDropdownData("{{ route('dropdown.getLocations') }}", '#location_id', setDefectReportDropdownTabStops);
 
             // Load fleet managers
-            getDynamicDropdownData("{{ route('dropdown.getFleetManagers') }}", '#fleet_manager_id');
+            getDynamicDropdownData("{{ route('dropdown.getFleetManagers') }}", '#fleet_manager_id', setDefectReportDropdownTabStops);
 
             // Load MVIs
-            getDynamicDropdownData("{{ route('dropdown.getMvis') }}", '#mvi_id');
+            getDynamicDropdownData("{{ route('dropdown.getMvis') }}", '#mvi_id', setDefectReportDropdownTabStops);
+        }
+
+        function setDefectReportDropdownTabStops() {
+            $('#vehicle_id, #location_id, #mvi_id, #fleet_manager_id').each(function() {
+                $(this).next('.select2-container').find('.select2-selection').attr('tabindex', this.disabled ? '-1' : '0');
+            });
         }
 
         function setupWorkItems() {
