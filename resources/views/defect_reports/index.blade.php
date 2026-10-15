@@ -937,6 +937,7 @@
             }
 
             $('#type').val('defect_report');
+            $('#report_type_display').val('Defect Report').prop('readonly', true);
             $('#attachment_url').prop('disabled', isReadOnly);
 
             // Populate works (only defect type works)
@@ -1026,8 +1027,9 @@
             // Reset Select2 dropdowns
             $('#vehicle_id, #location_id, #fleet_manager_id, #mvi_id').val('').trigger('change');
             $('.form-control, .form-select').prop('disabled', false).prop('readonly', false);
-            // Ensure type field is always defect_report
+            // Ensure type field is always defect_report and readonly
             $('#type').val('defect_report');
+            $('#report_type_display').val('Defect Report').prop('readonly', true);
             $('#add-work').show();
             $('#defectReportSubmit').show();
 
