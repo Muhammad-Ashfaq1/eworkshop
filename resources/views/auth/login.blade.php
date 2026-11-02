@@ -87,14 +87,9 @@
                     </div> --}}
                 </form>
 
-                <div class="footer">
-                    <div class="footer-logo">
-                        <img src="{{ asset('assets/auth/images/government-logo-small.png') }}" alt="Government Logo"
-                            class="footer-gov-logo">
-                    </div>
+                <div class="footer" style="justify-content: center; text-align: center;">
                     <div class="footer-text">
-                        <span>Managed by Ministry of Climate Change,</span>
-                        <span>Government of Pakistan</span>
+                        <span>Managed by LWMC</span>
                     </div>
                 </div>
             </div>
