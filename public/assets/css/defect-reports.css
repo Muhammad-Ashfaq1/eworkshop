@@ -143,6 +143,17 @@
     margin-right: 5px;
 }
 
+/* Change action button colors only while focused. */
+#defectReportModal #add-work:focus-visible,
+#defectReportModal #defectReportSubmit:focus-visible {
+    background: #047857 !important;
+    border: 2px solid #3b82f6 !important;
+    color: #fff !important;
+    outline: 3px solid #3b82f6 !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #fff !important;
+}
+
 /* Form Field Improvements */
 #defectReportModal .form-label {
     font-weight: 500;
