@@ -353,6 +353,8 @@
             }
         }
 
+        let purchaseOrderDateRangeManuallyChanged = false;
+
         function applyPurchaseOrdersDatatable() {
             // Configure header icons
             const headerConfig = [
@@ -387,11 +389,13 @@
                     url: "{{ route('purchase-orders.listing') }}",
                     type: "GET",
                     data: function(d) {
-                        // Add date filter parameters
-                        if ($('#start_date').val()) {
+                        const searchTerm = d.search && d.search.value ? String(d.search.value).trim() : '';
+                        const applyDateRange = searchTerm === '' || purchaseOrderDateRangeManuallyChanged;
+
+                        if (applyDateRange && $('#start_date').val()) {
                             d.start_date = $('#start_date').val();
                         }
-                        if ($('#end_date').val()) {
+                        if (applyDateRange && $('#end_date').val()) {
                             d.end_date = $('#end_date').val();
                         }
                         return d;
@@ -1429,6 +1433,8 @@
                         message += ` until ${moment(endDate).format('MMM DD, YYYY')}`;
                     }
                     toastr.success(message);
+                } else {
+                    toastr.info('Change a date to apply the date filter');
                 }
             });
             
@@ -1436,8 +1442,13 @@
             $('#clear-date-filter').click(function() {
                 $('#start_date').val('2026-07-01');
                 $('#end_date').val('2027-06-30');
+                purchaseOrderDateRangeManuallyChanged = false;
                 $('#js-purchase-order-table').DataTable().ajax.reload();
-                toastr.info('Date filter reset to default');
+                toastr.info('Date filter reset to the default range');
+            });
+
+            $('#start_date, #end_date').off('change.purchaseOrderDateFilter').on('change.purchaseOrderDateFilter', function() {
+                purchaseOrderDateRangeManuallyChanged = true;
             });
             
             // Allow Enter key to apply filter

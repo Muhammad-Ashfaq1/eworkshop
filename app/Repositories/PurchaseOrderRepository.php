@@ -29,7 +29,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
         $pageLength = $data['length'];
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
-        $search['search'] = $data['search']['value']; // gets the search value from request
+        $search['search'] = trim((string) ($data['search']['value'] ?? '')); // gets the search value from request
 
         if (isset($data['order']) && ! empty($data['order'])) {
             $index = $data['order'][0]['column'];
@@ -40,7 +40,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $query = PurchaseOrder::forUser($user)
             ->with(['creator', 'works.vehiclePart', 'defectReport.vehicle', 'defectReport.location', 'defectReport']);
 
-        // Apply date range filter
+        // Apply the selected listing date range separately from global text search.
         if (isset($data['start_date']) && ! empty($data['start_date'])) {
             $query->where('issue_date', '>=', $data['start_date']);
         }
@@ -54,7 +54,6 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
                 $q->where('po_no', 'like', '%'.$search['search'].'%')
                     ->orWhere('received_by', 'like', '%'.$search['search'].'%')
                     ->orWhere('received_by_other', 'like', '%'.$search['search'].'%')
-                    ->orWhere('issue_date', 'like', '%'.$search['search'].'%')
                     ->orWhereHas('defectReport', function ($defectQuery) use ($search) {
                         $defectQuery->where('reference_number', 'like', '%'.$search['search'].'%')
                             ->orWhereHas('vehicle', function ($vehicleQuery) use ($search) {
