@@ -290,7 +290,7 @@
 @endsection
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/defect-reports.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/defect-reports.css') }}?v={{ @filemtime(public_path('assets/css/defect-reports.css')) }}">
 @endsection
 
 @section('scripts')
