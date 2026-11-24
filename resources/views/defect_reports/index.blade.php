@@ -397,6 +397,8 @@
             }
         }
 
+        let defectDateRangeManuallyChanged = false;
+
         function applyDefectReportsDatatable() {
             var table = $('#js-defect-report-table').DataTable({
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>><"row"<"col-sm-12 col-md-6"l>>rtip',
@@ -415,11 +417,13 @@
                     url: "{{ route('defect-reports.listing') }}",
                     type: "GET",
                     data: function(d) {
-                        // Add date filter parameters
-                        if ($('#start_date').val()) {
+                        const searchTerm = d.search && d.search.value ? String(d.search.value).trim() : '';
+                        const applyDateRange = searchTerm === '' || defectDateRangeManuallyChanged;
+
+                        if (applyDateRange && $('#start_date').val()) {
                             d.start_date = $('#start_date').val();
                         }
-                        if ($('#end_date').val()) {
+                        if (applyDateRange && $('#end_date').val()) {
                             d.end_date = $('#end_date').val();
                         }
                         return d;
@@ -540,7 +544,8 @@
                         name: 'date',
                         render: function(data, type, row) {
                             return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
-                        }
+                        },
+                        searchable: false
                     },
                     {
                         data: "type",
@@ -1063,6 +1068,8 @@
                         message += ` until ${moment(endDate).format('MMM DD, YYYY')}`;
                     }
                     toastr.success(message);
+                } else {
+                    toastr.info('Change a date to apply the date filter');
                 }
             });
             
@@ -1070,8 +1077,13 @@
             $('#clear-date-filter').click(function() {
                 $('#start_date').val('2026-07-01');
                 $('#end_date').val('2027-06-30');
+                defectDateRangeManuallyChanged = false;
                 $('#js-defect-report-table').DataTable().ajax.reload();
-                toastr.info('Date filter reset to default');
+                toastr.info('Date filter reset to the default range');
+            });
+
+            $('#start_date, #end_date').off('change.defectDateFilter').on('change.defectDateFilter', function() {
+                defectDateRangeManuallyChanged = true;
             });
             
             // Allow Enter key to apply filter

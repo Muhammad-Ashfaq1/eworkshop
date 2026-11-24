@@ -28,7 +28,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
         $pageLength = $data['length'];
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
-        $search['search'] = $data['search']['value']; // gets the search value from request
+        $search['search'] = trim((string) ($data['search']['value'] ?? '')); // gets the search value from request
 
         if (isset($data['order']) && !empty($data['order'])) {
             $index = $data['order'][0]['column'];
@@ -40,7 +40,7 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             ->with(['creator', 'defectWorks', 'vehicle', 'location', 'fleetManager', 'mvi'])
             ->withCount('defectWorks');
 
-        // Apply date range filter
+        // Apply the selected listing date range separately from global text search.
         if (isset($data['start_date']) && !empty($data['start_date'])) {
             $query->where('date', '>=', $data['start_date']);
         }
@@ -53,7 +53,6 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $query->where(function($q) use ($search) {
                 $q->where('reference_number', 'like', '%' . $search['search'] . '%')
                   ->orWhere('driver_name', 'like', '%' . $search['search'] . '%')
-                  ->orWhere('date', 'like', '%' . $search['search'] . '%')
                   ->orWhere('type', 'like', '%' . $search['search'] . '%')
                   ->orWhereHas('vehicle', function($vehicleQuery) use ($search) {
                       $vehicleQuery->where('vehicle_number', 'like', '%' . $search['search'] . '%');
