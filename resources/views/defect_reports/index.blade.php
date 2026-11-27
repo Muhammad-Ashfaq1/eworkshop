@@ -55,11 +55,11 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label for="start_date" class="form-label">Start Date</label>
-                                                    <input type="date" class="form-control" id="start_date" name="start_date" value="2026-07-01">
+                                                    <input type="date" class="form-control" id="start_date" name="start_date">
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="end_date" class="form-label">End Date</label>
-                                                    <input type="date" class="form-control" id="end_date" name="end_date" value="2027-06-30">
+                                                    <input type="date" class="form-control" id="end_date" name="end_date">
                                                 </div>
                                                 <div class="col-md-4 d-flex align-items-end">
                                                     <div class="btn-group" role="group">
@@ -397,8 +397,6 @@
             }
         }
 
-        let defectDateRangeManuallyChanged = false;
-
         function applyDefectReportsDatatable() {
             var table = $('#js-defect-report-table').DataTable({
                 dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>><"row"<"col-sm-12 col-md-6"l>>rtip',
@@ -417,13 +415,10 @@
                     url: "{{ route('defect-reports.listing') }}",
                     type: "GET",
                     data: function(d) {
-                        const searchTerm = d.search && d.search.value ? String(d.search.value).trim() : '';
-                        const applyDateRange = searchTerm === '' || defectDateRangeManuallyChanged;
-
-                        if (applyDateRange && $('#start_date').val()) {
+                        if ($('#start_date').val()) {
                             d.start_date = $('#start_date').val();
                         }
-                        if (applyDateRange && $('#end_date').val()) {
+                        if ($('#end_date').val()) {
                             d.end_date = $('#end_date').val();
                         }
                         return d;
@@ -545,7 +540,7 @@
                         render: function(data, type, row) {
                             return data ? moment(data).format('MMM DD, YYYY') : 'N/A';
                         },
-                        searchable: false
+                        searchable: true
                     },
                     {
                         data: "type",
@@ -1075,15 +1070,9 @@
             
             // Clear date filter
             $('#clear-date-filter').click(function() {
-                $('#start_date').val('2026-07-01');
-                $('#end_date').val('2027-06-30');
-                defectDateRangeManuallyChanged = false;
+                $('#start_date, #end_date').val('');
                 $('#js-defect-report-table').DataTable().ajax.reload();
-                toastr.info('Date filter reset to the default range');
-            });
-
-            $('#start_date, #end_date').off('change.defectDateFilter').on('change.defectDateFilter', function() {
-                defectDateRangeManuallyChanged = true;
+                toastr.info('Date filter cleared');
             });
             
             // Allow Enter key to apply filter
