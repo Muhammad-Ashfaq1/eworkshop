@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Helpers\DateHelper;
+use App\Helpers\FileUploadManager;
 use App\Interfaces\DefectReportRepositoryInterface;
 use App\Models\DefectReport;
 use App\Models\Work;
-use App\Helpers\FileUploadManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,8 @@ class DefectReportRepository implements DefectReportRepositoryInterface
         $pageNumber = ($data['start'] / $data['length']) + 1; // gets the page number
         $pageLength = $data['length'];
         $skip = ($pageNumber - 1) * $pageLength; // calculates number of records to be skipped
-        $search['search'] = trim((string) ($data['search']['value'] ?? '')); // gets the search value from request
+        $adminSearchBypassesDateRange = $user->hasRole('super_admin') || $user->hasRole('admin');
+        $search['search'] = trim((string) ($data['search']['value'] ?? ''));
 
         if (isset($data['order']) && !empty($data['order'])) {
             $index = $data['order'][0]['column'];
@@ -36,24 +38,36 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             $search['column_name'] = $data['columns'][$index]['name'] ?? 'created_at';
         }
 
-        $query = DefectReport::forUser($user)
+        $baseQuery = DefectReport::forUser($user);
+        $recordsTotal = (clone $baseQuery)->count();
+
+        $query = $baseQuery
             ->with(['creator', 'defectWorks', 'vehicle', 'location', 'fleetManager', 'mvi'])
             ->withCount('defectWorks');
 
-        // Apply the selected listing date range separately from global text search.
-        if (isset($data['start_date']) && !empty($data['start_date'])) {
-            $query->where('date', '>=', $data['start_date']);
-        }
-        if (isset($data['end_date']) && !empty($data['end_date'])) {
-            $query->where('date', '<=', $data['end_date']);
+        // Admin global search spans all dates; date bounds apply when global search is empty.
+        if (!$adminSearchBypassesDateRange || $search['search'] === '') {
+            if (isset($data['start_date']) && !empty($data['start_date'])) {
+                $query->where('date', '>=', $data['start_date']);
+            }
+            if (isset($data['end_date']) && !empty($data['end_date'])) {
+                $query->where('date', '<=', $data['end_date']);
+            }
         }
 
         // Apply search filter
         if (!empty($search['search'])) {
-            $query->where(function($q) use ($search) {
+            $searchDate = DateHelper::parseSearchDate($search['search']);
+            $query->where(function($q) use ($search, $searchDate) {
                 $q->where('reference_number', 'like', '%' . $search['search'] . '%')
                   ->orWhere('driver_name', 'like', '%' . $search['search'] . '%')
                   ->orWhere('type', 'like', '%' . $search['search'] . '%')
+                  ->orWhere(function ($dateQuery) use ($search, $searchDate) {
+                      $dateQuery->whereDate('date', 'like', '%' . $search['search'] . '%');
+                      if ($searchDate !== null) {
+                          $dateQuery->orWhereDate('date', $searchDate);
+                      }
+                  })
                   ->orWhereHas('vehicle', function($vehicleQuery) use ($search) {
                       $vehicleQuery->where('vehicle_number', 'like', '%' . $search['search'] . '%');
                   })
@@ -73,14 +87,14 @@ class DefectReportRepository implements DefectReportRepositoryInterface
             });
         }
 
+        $recordsFiltered = (clone $query)->count();
+
         // Apply ordering with relationship support
         if (isset($search['column_name']) && isset($search['direction'])) {
             $this->applyOrderBy($query, $search['column_name'], $search['direction']);
         } else {
             $query->orderBy('created_at', 'desc');
         }
-
-        $recordsFiltered = $recordsTotal = $query->count(); // counts the total records filtered
 
         $defectReports = $query->skip($skip)->take($pageLength)->get();
 

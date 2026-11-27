@@ -26,6 +26,24 @@ class DateHelper
         return $date->format('M d, Y');
     }
 
+    /** Convert the table's displayed/input date formats to an ISO date for searching. */
+    public static function parseSearchDate(string $value): ?string
+    {
+        foreach (['M d, Y', 'Y-m-d', 'd/m/Y', 'm/d/Y', 'd-m-Y', 'm-d-Y', 'd m Y'] as $format) {
+            try {
+                $date = Carbon::createFromFormat('!' . $format, $value);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if ($date && $date->format($format) === $value) {
+                return $date->format('Y-m-d');
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Format created_at date
      */
